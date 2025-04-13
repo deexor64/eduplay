@@ -1,0 +1,8 @@
+.login-card {
+  background-color: rgb(160, 134, 255);
+  border-radius: 1rem;
+  box-shadow: 4px 4px 4px rgba(0,0,0,0.5);
+  transition: all 0.3s ease;
+  display: block;
+  text-decoration: none;
+}
