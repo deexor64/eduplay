@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+@font-face {
+  font-family: 'ComicSans';
+  src: url('./assets/ComicSansMS.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+    font-family: 'ComicSans', cursive, sans-serif;
+}

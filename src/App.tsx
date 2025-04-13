@@ -11,17 +11,25 @@ import SignupStudent from "./pages/Signup/SignupStudent";
 import SignupParent from "./pages/Signup/SignupParent";
 
 // signin
+import SigninAdmin from "./pages/Signin/SigninAdmin";
+import SigninTeacher from "./pages/Signin/SigninTeacher";
+import SigninStudent from "./pages/Signin/SigninStudent";
+import SigninParent from "./pages/Signin/SigninParent";
 
 
 // dashboard
-
+import DashboardAdmin from "./pages/Dashboard/DashboardAdmin";
+import DashboardTeacher from "./pages/Dashboard/DashboardTeacher";
+import DashboardStudent from "./pages/Dashboard/DashboardStudent";
+import DashboardParent from "./pages/Dashboard/DashboardParent";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        <Route index element={<Home />} />
+        <Route path="/" element={<Home />} />
+        <Route path="home" element={<Home />} />
 
         <Route path="about" element={<About />} />
 
@@ -30,6 +38,20 @@ function App() {
           <Route path="teacher" element={<SignupTeacher />} /> 
           <Route path="student" element={<SignupStudent />} />
           <Route path="parent" element={<SignupParent />} /> 
+        </Route>
+
+        <Route path="signin">
+          <Route path="admin" element={<SigninAdmin />} /> 
+          <Route path="teacher" element={<SigninTeacher />} /> 
+          <Route path="student" element={<SigninStudent />} />
+          <Route path="parent" element={<SigninParent />} /> 
+        </Route>
+
+        <Route path="dashboard">
+          <Route path="admin" element={<DashboardAdmin />} />
+          <Route path="teacher" element={<DashboardTeacher />} />
+          <Route path="student" element={<DashboardStudent />} />
+          <Route path="parent" element={<DashboardParent />} />
         </Route>
 
       </Routes>
