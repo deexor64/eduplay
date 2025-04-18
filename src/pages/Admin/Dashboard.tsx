@@ -1,7 +1,7 @@
-import Navbar from './ui/Navbar';
-import Sidebar from './ui/Sidebar';
+import Navbar from '../ui/Navbar';
+import Sidebar from '../ui/Sidebar';
 
-const DashboardAdmin = () => {
+const Dashboard = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar userName="Admin John" profileImage="https://via.placeholder.com/40" />
@@ -16,4 +16,4 @@ const DashboardAdmin = () => {
   );
 };
 
-export default DashboardAdmin;
+export default Dashboard;

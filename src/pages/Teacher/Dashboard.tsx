@@ -1,8 +1,7 @@
-import Navbar from './ui/NavBar';
-import Sidebar from './ui/Sidebar';
-import QuickLinks from './ui/Quicklinks';
+import Navbar from '../ui/Navbar';
+import Sidebar from '../ui/Sidebar';
 
-function DashboardTeacher() {
+function Dashboard() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar userName="Teacher Emma" profileImage="https://via.placeholder.com/40" />
@@ -17,4 +16,4 @@ function DashboardTeacher() {
   );
 };
 
-export default DashboardTeacher;
+export default Dashboard;

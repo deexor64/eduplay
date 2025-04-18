@@ -1,7 +1,7 @@
-import Navbar from './ui/NavBar';
-import Sidebar from './ui/Sidebar';
+import Navbar from '../ui/Navbar';
+import Sidebar from '../ui/Sidebar';
 
-const DashboardParent = () => {
+const Dashboard = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar userName="Parent Alice" profileImage="https://via.placeholder.com/40" />
@@ -16,4 +16,4 @@ const DashboardParent = () => {
   );
 };
 
-export default DashboardParent;
+export default Dashboard;
