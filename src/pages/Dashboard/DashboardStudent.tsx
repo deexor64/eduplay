@@ -1,6 +1,5 @@
 import Navbar from './ui/NavBar';
 import Sidebar from './ui/Sidebar';
-import QuickLinks from './ui/Quicklinks';
 
 const DashboardStudent = () => {
   return (
@@ -10,11 +9,7 @@ const DashboardStudent = () => {
         <Sidebar links={['Home', 'My Lessons', 'Quizzes', 'Assignments', 'Help']} />
         <main className="flex-1 p-6 bg-gray-50">
           <h2 className="text-2xl font-bold mb-4">Student Dashboard</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <div className="p-4 bg-white shadow rounded-lg">Upcoming Classes</div>
-            <div className="p-4 bg-white shadow rounded-lg">Pending Quizzes</div>
-            <div className="p-4 bg-white shadow rounded-lg">Overall Progress</div>
-          </div>
+          {/* quick view */}
         </main>
       </div>
     </div>

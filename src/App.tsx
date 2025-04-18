@@ -1,8 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import './App.css';
 import Home from './pages/Home';
-import About from './pages/About';
-
 
 // signup
 import SignupAdmin from "./pages/Signup/SignupAdmin";
@@ -15,7 +13,6 @@ import SigninAdmin from "./pages/Signin/SigninAdmin";
 import SigninTeacher from "./pages/Signin/SigninTeacher";
 import SigninStudent from "./pages/Signin/SigninStudent";
 import SigninParent from "./pages/Signin/SigninParent";
-
 
 // dashboard
 import DashboardAdmin from "./pages/Dashboard/DashboardAdmin";
@@ -30,8 +27,6 @@ function App() {
 
         <Route path="/" element={<Home />} />
         <Route path="home" element={<Home />} />
-
-        <Route path="about" element={<About />} />
 
         <Route path="signup">
           <Route path="admin" element={<SignupAdmin />} /> 
