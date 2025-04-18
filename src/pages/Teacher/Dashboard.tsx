@@ -1,5 +1,5 @@
-import Navbar from '../ui/Navbar';
-import Sidebar from '../ui/Sidebar';
+import Navbar from '../ui/Dashboard/Navbar';
+import Sidebar from '../ui/Dashboard/Sidebar';
 
 function Dashboard() {
   return (
