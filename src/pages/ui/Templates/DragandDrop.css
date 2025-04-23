@@ -1,0 +1,42 @@
+/* Input styling */
+.input {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    background-color: white;
+    outline: none;
+    box-shadow: 0 0 0 1px transparent;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  
+  .input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+  }
+  
+  /* File upload area */
+  .file-upload-area {
+    position: relative;
+    padding: 2rem;
+    text-align: center;
+    border: 2px dashed #cbd5e1;
+    border-radius: 0.75rem;
+    background-color: #f8fafc;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .file-upload-area:hover {
+    background-color: #eef2f7;
+  }
+  
+  .file-input {
+    opacity: 0;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  

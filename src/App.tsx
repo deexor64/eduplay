@@ -9,9 +9,9 @@ import Home from './pages/Home';
 // import AdminDashboard from "./pages/Admin/Dashboard";
 
 // teacher
-import TeacherSignup from "./pages/Teacher/Signup";
-import TeacherSignin from "./pages/Teacher/Signin";
-import TeacherDashboard from "./pages/Teacher/Dashboard";
+// import TeacherSignup from "./pages/Teacher/Signup";
+// import TeacherSignin from "./pages/Teacher/Signin";
+// import TeacherDashboard from "./pages/Teacher/Dashboard";
 
 // student
 import StudentSignup from "./pages/Student/Signup";
@@ -24,6 +24,13 @@ import StudentDashboard from "./pages/Student/Dashboard";
 // import ParentDashboard from "./pages/Parent/Dashboard";
 
 
+
+
+
+import DragandDrop from "./pages/Lessons/DragandDrop";
+import DragandDropTemplate from "./pages/Templates/DragandDrop";
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -34,23 +41,31 @@ function App() {
 
         <Route path="signup">
           {/* <Route path="admin" element={<AdminSignup />} />  */}
-          <Route path="teacher" element={<TeacherSignup />} /> 
+          {/* <Route path="teacher" element={<TeacherSignup />} />  */}
           <Route path="student" element={<StudentSignup />} />
           {/* <Route path="parent" element={<ParentSignup />} />  */}
         </Route>
 
         <Route path="signin">
           {/* <Route path="admin" element={<AdminSignin />} />  */}
-          <Route path="teacher" element={<TeacherSignin />} /> 
+          {/* <Route path="teacher" element={<TeacherSignin />} />  */}
           <Route path="student" element={<StudentSignin />} />
           {/* <Route path="parent" element={<ParentSignin />} />  */}
         </Route>
 
         <Route path="dashboard">
           {/* <Route path="admin" element={<AdminDashboard />} /> */}
-          <Route path="teacher" element={<TeacherDashboard />} />
+          {/* <Route path="teacher" element={<TeacherDashboard />} /> */}
           <Route path="student" element={<StudentDashboard />} />
           {/* <Route path="parent" element={<ParentDashboard />} /> */}
+        </Route>
+
+        <Route path="lessons">
+          <Route path="draganddrop" element={<DragandDrop />} />
+        </Route>
+
+        <Route path="templates">
+          <Route path="draganddrop" element={<DragandDropTemplate />} />
         </Route>
 
       </Routes>

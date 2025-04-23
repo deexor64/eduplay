@@ -1,5 +1,5 @@
 import React from 'react';
-import SignupLayout from '../ui/SignupLayout';
+import SignupLayout from '../ui/Signup/SignupLayout';
 
 const Signup = () => {
   return (
