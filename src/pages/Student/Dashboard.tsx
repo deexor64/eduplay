@@ -1,6 +1,6 @@
 import { useEffect } from "react"; 
 import Chart from 'chart.js/auto';
-import "../ui/Dashboard/Dashboard.css";
+import "./Dashboard.css";
 
 const Dashboard = () => {
 

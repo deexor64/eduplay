@@ -1,0 +1,73 @@
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  background-color: #f8fafc;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  border-color: #3b82f6;
+  outline: none;
+  background-color: #fff;
+}
+
+.file-input {
+  padding: 0.25rem 0.5rem;
+  background-color: #e5e7eb;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  font-size: 0.875rem;
+}
+
+.basket-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.basket-box {
+  background-color: #f1f5f9;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #cbd5e1;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-size: 0.5rem;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  color: #dc2626;
+}
+
+/* Buttons */
+.btn {
+  font-weight: 600;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: background 0.3s ease;
+}
+
+.btn-green {
+  background-color: #22c55e;
+  color: #fff;
+}
+
+.btn-green:hover {
+  background-color: #16a34a;
+}
+
+.btn-blue {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.btn-blue:hover {
+  background-color: #2563eb;
+}

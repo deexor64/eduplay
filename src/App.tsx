@@ -27,8 +27,7 @@ import StudentDashboard from "./pages/Student/Dashboard";
 
 
 
-import DragandDrop from "./pages/Lessons/DragandDrop";
-import DragandDropTemplate from "./pages/Templates/DragandDrop";
+import PageRenderer from "./utils/PageRenderer";
 
 
 function App() {
@@ -61,15 +60,16 @@ function App() {
         </Route>
 
         <Route path="lessons">
-          <Route path="draganddrop" element={<DragandDrop />} />
+          <Route path=":contentName" element={<PageRenderer path="Lessons" />} />
         </Route>
 
-        <Route path="templates">
-          <Route path="draganddrop" element={<DragandDropTemplate />} />
+        <Route path="createlessons">
+          <Route path=":contentName" element={<PageRenderer path="CreateLessons" />} />
         </Route>
 
       </Routes>
     </BrowserRouter>
+    
   );
 }
 

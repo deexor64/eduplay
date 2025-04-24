@@ -1,4 +1,4 @@
-import "../ui/Lessons/DragandDrop.css"
+import "./DragandDrop.css";
 
 function DragandDrop() {
   return (

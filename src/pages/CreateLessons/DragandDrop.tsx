@@ -1,4 +1,4 @@
-import "../ui/Templates/DragandDrop.css"
+import "./DragandDrop.css";
 
 
 function DragandDropTemplate() {
