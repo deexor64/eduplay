@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router";
-import './App.css';
-import Home from './pages/Home';
-
+import "./App.css";
+import Home from "./pages/Home";
 
 // admin
 // import AdminSignup from "./pages/Admin/Signup";
@@ -23,12 +22,7 @@ import StudentDashboard from "./pages/Student/Dashboard";
 // import ParentSignin from "./pages/Parent/Signin";
 // import ParentDashboard from "./pages/Parent/Dashboard";
 
-
-
-
-
 import PageRenderer from "./utils/PageRenderer";
-
 
 function App() {
   return (
@@ -59,18 +53,16 @@ function App() {
           {/* <Route path="parent" element={<ParentDashboard />} /> */}
         </Route>
 
-        <Route path="lessons">
-          <Route path=":contentName" element={<PageRenderer path="Lessons" />} />
-        </Route>
-
-        <Route path="createlessons">
-          <Route path=":contentName" element={<PageRenderer path="CreateLessons" />} />
+        <Route path="activity">
+          <Route path=":contentName" element={<PageRenderer path="Activity" />} />
+          <Route path="create">
+            <Route path=":contentName" element={<PageRenderer path="Activity/Create" />} />
+          </Route>
         </Route>
 
       </Routes>
     </BrowserRouter>
-    
   );
 }
 
-export default App
+export default App;
