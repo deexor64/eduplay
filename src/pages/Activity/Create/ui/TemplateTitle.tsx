@@ -1,4 +1,4 @@
-function Title(props: any) {
+function TemplateTitle(props: any) {
   return (
     <header className="mb-6">
       <h2 className="text-xl font-semibold mb-4">{props.title}</h2>
@@ -6,4 +6,4 @@ function Title(props: any) {
   );
 }
 
-export default Title;
+export default TemplateTitle;

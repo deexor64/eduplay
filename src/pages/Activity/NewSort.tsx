@@ -1,33 +1,10 @@
-import Footer from "./ui/Footer";
-
+import Layout from "./ui/Layout";
 import "./NewSort.css";
 
 function NewSort() {
   return (
-    <div className="max-w-6xl mx-auto p-4">
-      {/* Title */}
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Sort the Recyclables
-        </h1>
-      </header>
 
-      {/* Cover Image */}
-      <section className="mb-6">
-        <img
-          src="https://via.placeholder.com/600x200?text=Lesson+Cover+Image"
-          alt="Cover"
-          className="w-full h-[2in] object-contain rounded-xl shadow-md border"
-        />
-      </section>
-
-      {/* Description */}
-      <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">
-        <p className="text-lg text-gray-700">
-          🧠 Drag and drop each item into the correct basket below. Make sure
-          every item is sorted before you submit.
-        </p>
-      </section>
+    <Layout title="Sort the Recyclables">
 
       {/* Items Box */}
       <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
@@ -63,9 +40,8 @@ function NewSort() {
         </div>
       </section>
 
-      {/* Footer Navigation */}
-      <Footer />
-    </div>
+    </Layout >
+
   );
 }
 
