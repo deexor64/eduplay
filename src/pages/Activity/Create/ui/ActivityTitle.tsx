@@ -1,7 +1,7 @@
 function ActivityTitle() {
   return (
     <section className="mb-4 bg-white p-4 rounded-xl shadow-sm">
-      <label htmlFor="lesson-title" className="block font-semibold mb-2">
+      <label htmlFor="lesson-title" className="block text-lg font-semibold mb-2">
         Activity Title
       </label>
       <input id="lesson-title" type="text" className="input"

@@ -1,17 +1,21 @@
 import { useState } from "react";
 
-const [coverImage, setCoverImage] = useState<File | null>(null);
-const [coverImagePreview, setCoverImagePreview] = useState<string>(
-  "https://via.placeholder.com/300x200?text=Cover+Preview",
-);
+
 
 function CoverImage() {
+
+  const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [coverImagePreview, setCoverImagePreview] = useState<string>(
+    "https://via.placeholder.com/300x200?text=Cover+Preview",
+  );
+
   return (
 
     <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">
+
       {/* Upload Cover Image */}
-      <label htmlFor="coverImage" className="block font-semibold mb-2">
-        Upload Cover Image
+      <label htmlFor="coverImage" className="block text-lg font-semibold mb-2">
+        Cover Image
       </label>
       <div className="mb-4">
         <input
@@ -31,17 +35,12 @@ function CoverImage() {
 
       {/* Image Preview */}
       {coverImagePreview && (
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Preview:
-          </label>
-          <div className="w-full max-w-xs overflow-hidden rounded-lg shadow-md border border-gray-200">
-            <img
-              src={coverImagePreview}
-              alt="Cover Preview"
-              className="w-auto h-[2in] object-contain mx-auto"
-            />
-          </div>
+        <div className="mb-6 w-full max-w-xs overflow-hidden rounded-lg shadow-md border border-gray-200">
+          <img
+            src={coverImagePreview}
+            alt="Cover Preview"
+            className="w-auto h-[2in] object-contain mx-auto"
+          />
         </div>
       )}
     </section>
