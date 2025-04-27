@@ -34,7 +34,10 @@ function SortItems() {
 
   // template data
   function getTemplateInputs(): any {
-    return baskets;
+    return {
+      templateData: JSON.stringify(baskets),
+      mediaFiles: mediaFiles
+    };
   }
 
   // --------------------------------------end default------------------------------------
@@ -42,7 +45,7 @@ function SortItems() {
   // baskets
   type BasketItem = {
     type: "text" | "image";
-    value: string;
+    value: string;  // This will store the image hash or text
     label?: string;
   };
 
@@ -50,6 +53,9 @@ function SortItems() {
     title: string;
     items: BasketItem[];
   };
+
+  // Separate state for media files
+  const [mediaFiles, setMediaFiles] = useState<Map<string, File>>(new Map());
 
   const [baskets, setBaskets] = useState<Basket[]>([
     { title: "", items: [{ type: "text", value: "" }] },
@@ -110,8 +116,18 @@ function SortItems() {
     setBaskets(updated);
   }
 
-  return (
+  function handleFileChange(basketIndex: number, itemIndex: number, file: File | null): void {
+    if (file) {
+      const fileHash = `${Date.now()}_${file.name}`;
+      setMediaFiles(new Map(mediaFiles.set(fileHash, file)));
 
+      const updated = baskets.slice();
+      updated[basketIndex].items[itemIndex].value = fileHash;  // Store file hash
+      setBaskets(updated);
+    }
+  }
+
+  return (
     <Layout {...layoutProps}>
 
       <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">
@@ -180,12 +196,7 @@ function SortItems() {
                               required
                               onChange={function (e) {
                                 const file = e.target.files ? e.target.files[0] : null;
-                                if (file) {
-                                  const imageURL = URL.createObjectURL(file);
-                                  const updated = baskets.slice();
-                                  updated[index].items[itemIdx].value = imageURL;
-                                  setBaskets(updated);
-                                }
+                                handleFileChange(index, itemIdx, file);
                               }}
                             />
                           )}
@@ -193,7 +204,7 @@ function SortItems() {
                           {item.value && (
                             <div className="mt-2">
                               <img
-                                src={item.value}
+                                src={URL.createObjectURL(mediaFiles.get(item.value)!)}
                                 alt={item.label || "Item " + (itemIdx + 1)}
                                 className="h-[1in] object-contain rounded-md shadow border"
                               />

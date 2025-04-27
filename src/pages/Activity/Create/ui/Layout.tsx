@@ -4,111 +4,83 @@ import Swal from "sweetalert2";
 type LayoutProps = {
   templateTitle: string;
   validateTemplate: Function;
-  getTemplateInputs: any;
+  getTemplateInputs: Function;
   children: React.ReactNode;
 }
 
 function Layout(props: LayoutProps) {
 
-  // layout inputs
-  type LayoutInputs = {
-    activityTitle: string;
-    description: string;
-    coverImage: File | null;
-  };
+  // form data
+  let formData = new FormData();
 
-  const [layoutInputs, setLayoutInputs] = useState<LayoutInputs>({
-    activityTitle: "",
-    description: "",
-    coverImage: null
-  });
+  formData.append("activityTitle", "");
+  formData.append("coverImage", ""); // image hash
+  formData.append("description", "");
+  formData.append("templateData", ""); // json (contains text and image hashes)
+  formData.append("activityOptions", ""); // json
+  /* additionally contains all File objects */
 
-  // layout operations
+  // form operations
   function setActivityTitle(title: string) {
-    setLayoutInputs(function (prev) {
-      return {
-        ...prev,
-        activityTitle: title
-      };
-    });
+    formData.set("activityTitle", title);
+  }
+
+  const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
+  function setCoverImage(file: File) {
+
+    // delete image
+    let fileHash = formData.get("coverImage")!.toString();
+    if (fileHash.length <= 0) {
+      formData.delete(fileHash);
+    }
+    // add new image
+    fileHash = `${Date.now()}_${file.name}`;
+    formData.set("coverImage", fileHash);
+    formData.append(fileHash, file); // append file to formData
   }
 
   function setDescription(description: string) {
-    setLayoutInputs(function (prev) {
-      return {
-        ...prev,
-        description: description
-      };
-    });
+    formData.set("description", description);
   }
 
-  function setCoverImage(file: File | null) {
-    setLayoutInputs(function (prev) {
-      return {
-        ...prev,
-        coverImage: file
-      };
-    });
+  function setTemplateInputs(templateInputs: any) {
+    formData.set("templateInputs", JSON.stringify(templateInputs.templateData));
+    for (const file in templateInputs.mediaFiles.keys()) {
+      formData.append(file, templateInputs.mediaFiles[file]);
+    }
+  }
+
+  function setActivityOptions(options: string) {
+    formData.set("activityOptions", options);
   }
 
   // validate layout inputs
-  function validateLayout(): { status: boolean, message: string } {
-    if (!layoutInputs.activityTitle.trim()) {
+  function validateForm(): { status: boolean, message: string } {
+
+    if (!formData.get("activityTitle")!.toString().trim()) { // not null assertion
       return { status: false, message: "Title is required." };
     }
-    if (!layoutInputs.description.trim()) {
+    if (!formData.get("description")!.toString().trim()) {
       return { status: false, message: "Description is required." };
     }
-    if (!layoutInputs.coverImage) {
+    if (!formData.get("coverImage")!.toString().trim()) {
       return { status: false, message: "Cover Image is required." };
     }
+
+    let vt = props.validateTemplate()
+    if (!vt.status) {
+      return { status: false, message: vt.message };
+    }
+
     return { status: true, message: "" };
-  }
-
-
-  // send Activity
-  function sendActivity() {
-    const combinedData = {
-      layoutData: layoutInputs,
-      templateData: props.getTemplateInputs()
-    };
-
-    fetch('https://yourserver.com/api/save-template', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(combinedData)
-    })
-      .then(function (response) {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(function (data) {
-        console.log('Success:', data);
-        Swal.fire({
-          title: "Success",
-          text: "Saved successfully",
-          icon: "success",
-        });
-      })
-      .catch(function (error) {
-        console.error('Error:', error);
-        Swal.fire({
-          title: "Error",
-          text: "Failed to save data.",
-          icon: "error",
-        });
-      });
 
   }
 
   // save template
   function handleSave() {
 
-    let valid = validateLayout();
+    // validate form
+    let valid = validateForm();
 
     if (!valid.status) {
       Swal.fire({
@@ -117,23 +89,20 @@ function Layout(props: LayoutProps) {
         icon: "error",
       });
       return;
-    }
-
-    valid = props.validateTemplate();
-
-    if (!valid.status) {
+    } else {
       Swal.fire({
-        title: "Error",
-        text: valid.message,
-        icon: "error",
+        title: "Success",
+        text: "Saved successfully",
+        icon: "success",
       });
-      return;
     }
-    Swal.fire({
-      title: "Success",
-      text: "Saved successfully",
-      icon: "success",
-    });
+
+    // append template data
+    setTemplateInputs(props.getTemplateInputs());
+
+    // send form
+
+
   }
 
   return (
@@ -175,15 +144,16 @@ function Layout(props: LayoutProps) {
               const file = e.target.files ? e.target.files[0] : null;
               if (file) {
                 setCoverImage(file);
+                setCoverImagePreview(URL.createObjectURL(file));
               }
             }}
             className="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 file-input"
           />
         </div>
-        {layoutInputs.coverImage && (
+        {coverImagePreview && (
           <div className="w-full h-[2in] object-contain rounded-xl shadow-md border">
             <img
-              src={URL.createObjectURL(layoutInputs.coverImage)}
+              src={coverImagePreview}
               alt="Cover Preview"
               className="w-auto h-[2in] object-contain mx-auto"
             />
