@@ -1,0 +1,13 @@
+Allowed Features:
+1. Basic JavaScript only – Your team is comfortable with simple loops, conditionals, and variable declarations.
+2. Simple and essential TypeScript features only – Just enough to make type-checking useful.
+3. Ternary operators – For basic conditional rendering or logic (`condition ? a : b`).
+4. Array methods – `map()`, `filter()`, and `reduce()` are allowed.
+
+Not Allowed / Avoid:
+1. Destructuring – Avoid syntax like `const { name } = obj;` or `const [a, b] = array;`.
+2. Spread operator (`...`) – Don't use it for copying or merging arrays/objects.
+3. Arrow functions – Avoid syntax like `(a) => a + 1`.
+4. Complex TS types – Avoid generics, utility types, intersection types, and other advanced TypeScript patterns.
+5. JS class syntax – Keep everything functional (avoid `class MyComponent extends React.Component`).
+6. Optional chaining (`?.`) – Don’t use it for deep property access.
