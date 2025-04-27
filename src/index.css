@@ -1,11 +1,11 @@
 @import "tailwindcss";
-
+/* @import 'sweetalert2/src/sweetalert2.scss' */
 
 @font-face {
-  font-family: 'ComicSans';
-  src: url('./assets/ComicSansMS.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'ComicSans';
+    src: url('./assets/ComicSansMS.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
 
 * {

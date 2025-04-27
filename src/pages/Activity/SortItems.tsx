@@ -1,10 +1,30 @@
 import Layout from "./ui/Layout";
-import "./NewSort.css";
+import "./SortItems.css";
 
-function NewSort() {
+function SortItems() {
+
+  function fetchActivityData() {
+    // Fetch activity data from API or local storage
+  }
+
+  function buildActivityData() {
+    // Build activity data based on fetched data
+  }
+
+  function validateActivityData() {
+    // Validate activity data before submission
+  }
+
+  let layoutProps = {
+    activityTitle: "Sort the Recyclables",
+    coverImageSrc: "",
+    activityDescription: "🧠 Drag and drop each item into the correct basket below.\
+    Make sure every item is sorted before you submit."
+  };
+
   return (
 
-    <Layout title="Sort the Recyclables">
+    <Layout {...layoutProps} >
 
       {/* Items Box */}
       <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
@@ -45,4 +65,4 @@ function NewSort() {
   );
 }
 
-export default NewSort;
+export default SortItems;

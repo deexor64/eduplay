@@ -1,27 +1,61 @@
 import { useState } from "react";
 
 import Layout from "./ui/Layout";
-import "./NewSort.css";
+import "./SortItems.css";
 
-type BasketItem = {
-  type: "text" | "image";
-  value: string;
-  label?: string;
-};
+function SortItems() {
 
-type Basket = {
-  title: string;
-  items: BasketItem[];
-};
+  // --------------------------------------default------------------------------------
 
-function NewSort() {
+  // layout props
+  let layoutProps = {
+    templateTitle: "Sort Items",
+    validateTemplate: validateTemplate,
+    getTemplateInputs: getTemplateInputs,
+    children: null
+  }
 
-  // basket variable
-  // have a sample basket to begin with
+  // validate template
+  function validateTemplate(): { status: boolean, message: string } {
+
+    for (let basket of baskets) {
+      if (!basket.title.trim()) {
+        return { status: false, message: "Each basket must have a title." };
+      }
+      for (let item of basket.items) {
+        if (!item.value.trim()) {
+          return { status: false, message: "Each item must have a value." };
+        }
+      }
+    }
+    return { status: true, message: "" };
+
+  }
+
+  // template data
+  function getTemplateInputs(): any {
+    return baskets;
+  }
+
+  // --------------------------------------end default------------------------------------
+
+  // baskets
+  type BasketItem = {
+    type: "text" | "image";
+    value: string;
+    label?: string;
+  };
+
+  type Basket = {
+    title: string;
+    items: BasketItem[];
+  };
+
   const [baskets, setBaskets] = useState<Basket[]>([
     { title: "", items: [{ type: "text", value: "" }] },
   ]);
 
+  // basket operations
   function addBasket(): void {
     const updatedBaskets = baskets.concat({
       title: "",
@@ -74,30 +108,6 @@ function NewSort() {
     const updated = baskets.slice();
     updated[basketIndex].items[itemIndex].label = label;
     setBaskets(updated);
-  }
-
-
-  function validateTemplate(): boolean {
-    for (let basket of baskets) {
-      if (!basket.title.trim()) {
-        alert("Each basket must have a title!");
-        return false;
-      }
-      for (let item of basket.items) {
-        if (!item.value.trim()) {
-          alert("Each item must have a value!");
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  let layoutProps = {
-    templateTitle: "Sort Items",
-    validateTemplate: validateTemplate,
-    templateData: baskets,
-    children: null
   }
 
   return (
@@ -235,4 +245,4 @@ function NewSort() {
   );
 }
 
-export default NewSort;
+export default SortItems;
