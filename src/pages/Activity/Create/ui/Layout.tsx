@@ -1,75 +1,122 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 
-type LayoutProps = {
-  templateTitle: string;
-  validateTemplate: Function;
-  getTemplateInputs: Function;
-  children: React.ReactNode;
+import generateRandomHash from "../../../utils/generateRandomHash";
+
+type templateProps = {
+  title: string,
+  validateTemplate: Function,
+  getTemplateData: Function,
+  children: React.ReactNode,
 }
 
-function Layout(props: LayoutProps) {
+type templateForm = {
+  title: string,
+  coverImage: string, // image hash string
+  description: string,
+  templateData: string, // json string
+  options: string // json string
+}
+
+function Layout(props: templateProps) {
 
   // form data
-  let formData = new FormData();
+  // formData variable is used instead of FormData class
+  // Otherwise the type checking is a bit hard
+  // all the media files are appended to the form varible
+  // formData is appended to the form varible after
+  // all the type checkings are done
+  const [formData, setFormData] = useState<templateForm>({
+    title: "",
+    coverImage: "",
+    description: "",
+    templateData: "",
+    options: JSON.stringify(
+      {
+        "timeLimit": 0,
+        "isGraded": false
+      }
+    )
+  });
 
-  formData.append("activityTitle", "");
-  formData.append("coverImage", ""); // image hash
-  formData.append("description", "");
-  formData.append("templateData", ""); // json (contains text and image hashes)
-  formData.append("activityOptions", ""); // json
-  /* additionally contains all File objects */
+  const [form, setForm] = useState(new FormData());
 
   // form operations
-  function setActivityTitle(title: string) {
-    formData.set("activityTitle", title);
+  // all form operation are done inside a seperate function
+  function setTitle(title: string) {
+    setFormData(function (prev) { return { ...prev, title: title.trim() } });
   }
 
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
   function setCoverImage(file: File) {
-
-    // delete image
-    let fileHash = formData.get("coverImage")!.toString();
-    if (fileHash.length <= 0) {
-      formData.delete(fileHash);
+    // delete old image
+    let fileHash = formData.coverImage;
+    if (fileHash.length >= 0) {
+      setForm(function (prev) {
+        prev.delete(fileHash);
+        return prev;
+      });
     }
     // add new image
-    fileHash = `${Date.now()}_${file.name}`;
-    formData.set("coverImage", fileHash);
-    formData.append(fileHash, file); // append file to formData
+    fileHash = generateRandomHash(file.name);
+
+    setFormData(function (prev) { return { ...prev, coverImage: fileHash } });
+    setForm(function (prev) {
+      prev.append(fileHash, file);
+      return prev;
+    });
+    setCoverImagePreview(URL.createObjectURL(file));
+
   }
 
   function setDescription(description: string) {
-    formData.set("description", description);
+    setFormData(function (prev) { return { ...prev, description: description.trim() } });
   }
 
-  function setTemplateInputs(templateInputs: any) {
-    formData.set("templateInputs", JSON.stringify(templateInputs.templateData));
-    for (const file in templateInputs.mediaFiles.keys()) {
-      formData.append(file, templateInputs.mediaFiles[file]);
-    }
+  function setTemplateData(templateData: any) {
+    setFormData(function (prev) {
+      return {
+        ...prev,
+        templateData: JSON.stringify(templateData.templateData),
+      }
+    });
+    setForm(function (prev) {
+      for (const fileHash in templateData.mediaFiles.keys()) {
+        prev.append(fileHash, templateData.mediaFiles[fileHash]);
+      }
+      return prev;
+    });
+
   }
 
-  function setActivityOptions(options: string) {
-    formData.set("activityOptions", options);
+  function setOptions(option: string, value: any) {
+    let options = JSON.parse(formData.options);
+    options[option] = value;
+    setFormData(function (prev) {
+      return { ...prev, options: JSON.stringify(options) }
+    });
   }
 
-  // validate layout inputs
-  function validateForm(): { status: boolean, message: string } {
+  // validate template inputs
+  function validateTemplate(): { status: boolean, message: string } {
 
-    if (!formData.get("activityTitle")!.toString().trim()) { // not null assertion
+    if (!formData.title) {
       return { status: false, message: "Title is required." };
     }
-    if (!formData.get("description")!.toString().trim()) {
-      return { status: false, message: "Description is required." };
-    }
-    if (!formData.get("coverImage")!.toString().trim()) {
+    if (!formData.coverImage) {
       return { status: false, message: "Cover Image is required." };
     }
+    if (!formData.description) {
+      return { status: false, message: "Description is required." };
+    }
 
-    let vt = props.validateTemplate()
-    if (!vt.status) {
-      return { status: false, message: vt.message };
+    let validT = props.validateTemplate();
+    if (!validT.status) {
+      return { status: false, message: validT.message };
+    }
+
+    if (!formData.options) { // this check is not required
+      return { status: false, message: "Options are required." };
     }
 
     return { status: true, message: "" };
@@ -80,7 +127,7 @@ function Layout(props: LayoutProps) {
   function handleSave() {
 
     // validate form
-    let valid = validateForm();
+    let valid = validateTemplate();
 
     if (!valid.status) {
       Swal.fire({
@@ -89,29 +136,40 @@ function Layout(props: LayoutProps) {
         icon: "error",
       });
       return;
-    } else {
-      Swal.fire({
-        title: "Success",
-        text: "Saved successfully",
-        icon: "success",
-      });
     }
 
     // append template data
-    setTemplateInputs(props.getTemplateInputs());
+    setTemplateData(props.getTemplateData());
 
-    // send form
+    // create form
+    setForm(function (prev) {
+      prev.append("title", formData.title);
+      prev.append("coverImage", formData.coverImage);
+      prev.append("description", formData.description);
+      prev.append("templateData", formData.templateData);
+      prev.append("options", formData.options);
+      return prev;
+    });
 
+    // request to backend
+    // fetch(form);
+
+    Swal.fire({
+      title: "Success",
+      text: "Saved successfully",
+      icon: "success",
+    });
+
+    console.log(formData);
 
   }
 
   return (
 
     <div className="max-w-6xl mx-auto p-4 bg-blue-100">
-
       {/* template title */}
       <header className="mb-6">
-        <h2 className="text-xl font-semibold mb-4">{props.templateTitle}</h2>
+        <h2 className="text-xl font-semibold mb-4">{props.title}</h2>
       </header>
 
       {/* activity title */}
@@ -124,9 +182,7 @@ function Layout(props: LayoutProps) {
           type="text"
           className="input"
           placeholder="e.g. Sort the Animals"
-          onChange={function (e) {
-            setActivityTitle(e.target.value);
-          }}
+          onChange={function (e) { setTitle(e.target.value) }}
         />
       </section>
 
@@ -140,11 +196,10 @@ function Layout(props: LayoutProps) {
             type="file"
             id="coverImage"
             accept="image/*"
-            onChange={function (e) {
+            onChange={(e) => {
               const file = e.target.files ? e.target.files[0] : null;
               if (file) {
                 setCoverImage(file);
-                setCoverImagePreview(URL.createObjectURL(file));
               }
             }}
             className="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 file-input"
@@ -170,9 +225,7 @@ function Layout(props: LayoutProps) {
           id="lesson-desc"
           className="input"
           placeholder="From the box drag all the animals to the correct box."
-          onChange={function (e) {
-            setDescription(e.target.value);
-          }}
+          onChange={function (e) { setDescription(e.target.value) }}
         />
       </section>
 
@@ -181,11 +234,31 @@ function Layout(props: LayoutProps) {
 
       {/* activity options */}
       <section className="mb-16 bg-white p-4 rounded-xl shadow-sm">
+
         <h2 className="text-lg font-semibold mb-4">Activity Options</h2>
-        <label className="block font-semibold mb-2">Time Limit</label>
-        <input type="number" className="input" placeholder="Time in minutes" />
-        <label className="block font-semibold mb-2">Is graded</label>
-        <input type="checkbox" className="input" />
+
+        <div className="flex flex-row justify-between align-middle text-nowrap gap-4 mt-4">
+          <label className="block font-semibold mb-2">Time Limit</label>
+          <input
+            type="number"
+            min="0"
+            className="input"
+            placeholder="Time in minutes"
+            onChange={function (e) { setOptions("timeLimit", e.target.value) }}
+          />
+        </div>
+
+        <div className="flex flex-row justify-between align-middle text-nowrap gap-4">
+          <label className="block font-semibold mb-2">Is graded</label>
+          <input
+            type="checkbox"
+            value="true"
+            onChange={function (e) {
+              setOptions("isGraded", e.target.value);
+            }}
+          />
+        </div>
+
       </section>
 
       {/* footer */}
@@ -198,7 +271,6 @@ function Layout(props: LayoutProps) {
           Save Lesson
         </button>
       </footer>
-
     </div>
   );
 }

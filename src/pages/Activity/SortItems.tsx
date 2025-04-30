@@ -5,18 +5,58 @@ function SortItems() {
 
   function fetchActivityData() {
     // Fetch activity data from API or local storage
+    let t = {
+      title: "Sort object",
+      coverImage: "1746025057700_cute-giraffe.jpg",
+      description: "🧠 Drag and drop each item into the correct basket below.\n\
+      Make sure every item is sorted before you submit.",
+      templateData: [
+        {
+          "title": "Animals",
+          "items": [
+            {
+              "type": "text",
+              "value": "Cat"
+            },
+            {
+              "type": "image",
+              "value": "1746025125166_cute-giraffe.jpg",
+              "label": "Jiraffe"
+            }
+          ]
+        },
+        {
+          "title": "Vegetables",
+          "items": [
+            {
+              "type": "text",
+              "value": "Carrot"
+            },
+            {
+              "type": "text",
+              "value": "Potatoe"
+            }
+          ]
+        }
+      ],
+      options: {
+        "timeLimit": 0,
+        "isGraded": false
+      }
+    }
+
   }
 
-  function buildActivityData() {
-    // Build activity data based on fetched data
-  }
+  // function buildActivityData() {
+  //   // Build activity data based on fetched data
+  // }
 
-  function validateActivityData() {
-    // Validate activity data before submission
-  }
+  // function validateActivityData() {
+  //   // Validate activity data before submission
+  // }
 
   let layoutProps = {
-    activityTitle: "Sort the Recyclables",
+    activityTitle: "Sort the Objects",
     coverImageSrc: "",
     activityDescription: "🧠 Drag and drop each item into the correct basket below.\
     Make sure every item is sorted before you submit."

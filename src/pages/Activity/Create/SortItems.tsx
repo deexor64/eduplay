@@ -3,15 +3,17 @@ import { useState } from "react";
 import Layout from "./ui/Layout";
 import "./SortItems.css";
 
+import generateRandomHash from "../../utils/generateRandomHash";
+
 function SortItems() {
 
   // --------------------------------------default------------------------------------
 
   // layout props
-  let layoutProps = {
-    templateTitle: "Sort Items",
+  let templateProps = {
+    title: "Sort Items",
     validateTemplate: validateTemplate,
-    getTemplateInputs: getTemplateInputs,
+    getTemplateData: getTemplateData,
     children: null
   }
 
@@ -33,9 +35,9 @@ function SortItems() {
   }
 
   // template data
-  function getTemplateInputs(): any {
+  function getTemplateData(): any {
     return {
-      templateData: JSON.stringify(baskets),
+      templateData: baskets,
       mediaFiles: mediaFiles
     };
   }
@@ -54,15 +56,16 @@ function SortItems() {
     items: BasketItem[];
   };
 
-  // Separate state for media files
-  const [mediaFiles, setMediaFiles] = useState<Map<string, File>>(new Map());
-
+  // basket data
+  // Separate variable for media files
   const [baskets, setBaskets] = useState<Basket[]>([
     { title: "", items: [{ type: "text", value: "" }] },
   ]);
 
+  const [mediaFiles, setMediaFiles] = useState<Map<string, File>>(new Map());
+
   // basket operations
-  function addBasket(): void {
+  function addBasket() {
     const updatedBaskets = baskets.concat({
       title: "",
       items: [{ type: "text", value: "" }],
@@ -70,13 +73,16 @@ function SortItems() {
     setBaskets(updatedBaskets);
   }
 
-  function addItemToBasket(basketIndex: number, type: "text" | "image"): void {
+  function addItemToBasket(basketIndex: number, type: "text" | "image") {
     const updated = baskets.slice();
-    updated[basketIndex].items.push({ type: type, value: "", label: "" });
+    updated[basketIndex].items.push(
+      type == "text" ? { type: type, value: "" } :
+        { type: type, value: "", label: "" }
+    );
     setBaskets(updated);
   }
 
-  function deleteBasket(index: number): void {
+  function deleteBasket(index: number) {
     const updated: Basket[] = [];
     for (let i = 0; i < baskets.length; i++) {
       if (i !== index) {
@@ -118,17 +124,17 @@ function SortItems() {
 
   function handleFileChange(basketIndex: number, itemIndex: number, file: File | null): void {
     if (file) {
-      const fileHash = `${Date.now()}_${file.name}`;
+      const fileHash = generateRandomHash(file.name);
       setMediaFiles(new Map(mediaFiles.set(fileHash, file)));
-
       const updated = baskets.slice();
-      updated[basketIndex].items[itemIndex].value = fileHash;  // Store file hash
+      updated[basketIndex].items[itemIndex].value = fileHash;
       setBaskets(updated);
     }
   }
 
   return (
-    <Layout {...layoutProps}>
+
+    <Layout {...templateProps}>
 
       <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Define Baskets</h2>
@@ -253,6 +259,7 @@ function SortItems() {
         </button>
       </section>
     </Layout>
+
   );
 }
 
