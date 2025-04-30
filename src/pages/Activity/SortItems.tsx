@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DndContext, closestCenter, useDroppable, useDraggable } from "@dnd-kit/core";
+import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-kit/core";
 
 import Layout from "./ui/Layout";
 import "./SortItems.css";
@@ -117,7 +117,8 @@ function SortItems() {
 
   return (
     <Layout {...layoutProps}>
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+
+      <DndContext collisionDetection={rectIntersection} onDragEnd={handleDragEnd}>
         {/* Items Box */}
         <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
           <h2 className="text-xl font-semibold mb-4">Items to Sort</h2>
