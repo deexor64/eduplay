@@ -1,28 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import "./App.css";
-import Home from "./pages/Home";
 
-// admin
-// import AdminSignup from "./pages/Admin/Signup";
-// import AdminSignin from "./pages/Admin/Signin";
-// import AdminDashboard from "./pages/Admin/Dashboard";
+// utils
+import PageRenderer from "./utils/PageRenderer";
+
+// all
+import Home from "./pages/Home";
+import Layout from "./pages/ui/Layout";
+import Dashboard from "./pages/Dashboard/Dashboard";
 
 // teacher
-// import TeacherSignup from "./pages/Teacher/Signup";
-// import TeacherSignin from "./pages/Teacher/Signin";
-// import TeacherDashboard from "./pages/Teacher/Dashboard";
-
-// student
-import StudentSignup from "./pages/Student/Signup";
-import StudentSignin from "./pages/Student/Signin";
-import StudentDashboard from "./pages/Student/Dashboard";
-
-// parent
-// import ParentSignup from "./pages/Parent/Signup";
-// import ParentSignin from "./pages/Parent/Signin";
-// import ParentDashboard from "./pages/Parent/Dashboard";
-
-import PageRenderer from "./utils/PageRenderer";
+import CreateActivity from "./pages/Activity/CreateActivity";
 
 function App() {
   return (
@@ -35,29 +23,29 @@ function App() {
         <Route path="signup">
           {/* <Route path="admin" element={<AdminSignup />} />  */}
           {/* <Route path="teacher" element={<TeacherSignup />} />  */}
-          <Route path="student" element={<StudentSignup />} />
+          {/* <Route path="student" element={<StudentSignup />} /> */}
           {/* <Route path="parent" element={<ParentSignup />} />  */}
         </Route>
 
         <Route path="signin">
           {/* <Route path="admin" element={<AdminSignin />} />  */}
           {/* <Route path="teacher" element={<TeacherSignin />} />  */}
-          <Route path="student" element={<StudentSignin />} />
+          {/* <Route path="student" element={<StudentSignin />} /> */}
           {/* <Route path="parent" element={<ParentSignin />} />  */}
         </Route>
 
-        <Route path="dashboard">
-          {/* <Route path="admin" element={<AdminDashboard />} /> */}
-          {/* <Route path="teacher" element={<TeacherDashboard />} /> */}
-          <Route path="student" element={<StudentDashboard />} />
-          {/* <Route path="parent" element={<ParentDashboard />} /> */}
-        </Route>
+        <Route path=":userType" element={<Layout />}>
 
-        <Route path="activity">
-          <Route path=":contentName" element={<PageRenderer path="Activity" />} />
-          <Route path="create">
-            <Route path=":contentName" element={<PageRenderer path="Activity/Create" />} />
+          <Route path="dashboard" element={<Dashboard />} />
+
+          <Route path="activity">
+            <Route path=":contentName" element={<PageRenderer path="Activity" />} />
+            <Route path="createActivity">
+              <Route index element={<CreateActivity />} />
+              <Route path=":contentName" element={<PageRenderer path="Activity/Create" />} />
+            </Route>
           </Route>
+
         </Route>
 
       </Routes>

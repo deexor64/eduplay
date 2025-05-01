@@ -2,13 +2,13 @@ import { useParams } from "react-router";
 import { Suspense, lazy } from "react";
 
 // import a component by name
-function loadComponent(name: string, path:string) {
+function loadComponent(name: string, path: string) {
   return lazy(() => import(`../pages/${path}/${name}`));
 };
 
 
 // component that renders an another component based on a dynamic name
-function LessonRenderer(props: any) {
+function PageRenderer(props: any) {
 
   const { contentName } = useParams();
 
@@ -29,4 +29,4 @@ function LessonRenderer(props: any) {
   );
 };
 
-export default LessonRenderer;
+export default PageRenderer;

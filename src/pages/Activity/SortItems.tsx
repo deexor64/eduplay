@@ -4,23 +4,15 @@ import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-k
 import Layout from "./ui/Layout";
 import "./SortItems.css";
 
-function DraggableItem(props: { id: string; children: string }) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: props.id,
-  });
 
+function DraggableItem(props: { id: string; children: string }) {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: props.id });
   const style = {
     transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
   };
-
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
-      className="sort-item"
-    >
+    <div ref={setNodeRef} style={style} {...listeners} {...attributes}
+      className="sort-item" >
       {props.children}
     </div>
   );
@@ -28,7 +20,6 @@ function DraggableItem(props: { id: string; children: string }) {
 
 function DroppableZone(props: { id: string; children: any }) {
   const { setNodeRef } = useDroppable({ id: props.id });
-
   return (
     <div ref={setNodeRef} className="basket-content min-h-[80px] bg-slate-100 p-2 rounded">
       {props.children}
@@ -37,14 +28,16 @@ function DroppableZone(props: { id: string; children: any }) {
 }
 
 function SortItems() {
-  const [activityData, setActivityData] = useState<any>(null);
-  const [items, setItems] = useState<{ [location: string]: string[] }>({});
 
-  useEffect(() => {
-    const data = {
+  // ---------------------------------------default--------------------------------------------
+  const [activityData, setActivityData] = useState<any>(null);
+
+  function fetchActivityData(): Promise<void> {
+    return Promise.resolve({
       title: "Sort object",
       coverImage: "1746025057700_cute-giraffe.jpg",
-      description: "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
+      description:
+        "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
       templateData: [
         {
           title: "Animals",
@@ -65,27 +58,28 @@ function SortItems() {
         timeLimit: 0,
         isGraded: false
       }
-    };
+    }).then(setActivityData);
+  }
 
-    setActivityData(data);
+  function buildActivity() {
+    if (!activityData) return;
 
     const initialItems: { [location: string]: string[] } = { box: [] };
 
-    data.templateData.forEach((group) => {
+    activityData.templateData.forEach((group: any) => {
       const basketId = group.title;
       initialItems[basketId] = [];
 
-      group.items.forEach((item) => {
+      group.items.forEach((item: any) => {
         const label = item.label || item.value;
         initialItems.box.push(label);
       });
     });
 
     setItems(initialItems);
-  }, []);
+  }
 
-
-  function gradeLesson() {
+  function gradeActivity() {
     if (!activityData) return;
 
     let correctCount = 0;
@@ -95,13 +89,10 @@ function SortItems() {
       const correctLabels = group.items.map((item: any) => item.label || item.value);
       const userLabels = items[group.title];
 
-      // Sort both arrays before comparing
       const sortedCorrect = [...correctLabels].sort();
       const sortedUser = [...userLabels].sort();
 
-      const isCorrect = JSON.stringify(sortedCorrect) === JSON.stringify(sortedUser);
-
-      if (isCorrect) {
+      if (JSON.stringify(sortedCorrect) === JSON.stringify(sortedUser)) {
         correctCount += 1;
       }
     });
@@ -116,10 +107,22 @@ function SortItems() {
   }
 
 
+  // ---------------------------------------end default--------------------------------------------
+
+  const [items, setItems] = useState<{ [location: string]: string[] }>({ box: [] });
+
+  useEffect(() => {
+    fetchActivityData();
+  }, []);
+
+  useEffect(() => {
+    buildActivity();
+  }, [activityData]);
+
   function handleDragEnd(event: any) {
     const { active, over } = event;
-
     if (!over) return;
+
     const from = findContainer(active.id);
     const to = over.id;
 
@@ -149,9 +152,7 @@ function SortItems() {
 
   return (
     <Layout {...layoutProps}>
-
       <DndContext collisionDetection={rectIntersection} onDragEnd={handleDragEnd}>
-        {/* Items Box */}
         <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
           <h2 className="text-xl font-semibold mb-4">Items to Sort</h2>
           <DroppableZone id="box">
@@ -163,31 +164,28 @@ function SortItems() {
           </DroppableZone>
         </section>
 
-        {/* Baskets */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
           {activityData.templateData.map((group: any) => (
             <div className="basket-box" key={group.title}>
               <h3 className="basket-title">{group.title}</h3>
               <DroppableZone id={group.title}>
-                {items[group.title].map((id) => (
+                {items[group.title] && items[group.title].map((id) => (
                   <DraggableItem key={id} id={id}>{id}</DraggableItem>
                 ))}
               </DroppableZone>
             </div>
           ))}
         </section>
-
       </DndContext>
 
       <div className="text-center mb-10">
         <button
-          onClick={gradeLesson}
+          onClick={gradeActivity}
           className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
         >
           Save & Grade (Temporary)
         </button>
       </div>
-
     </Layout>
   );
 }
