@@ -84,6 +84,38 @@ function SortItems() {
     setItems(initialItems);
   }, []);
 
+
+  function gradeLesson() {
+    if (!activityData) return;
+
+    let correctCount = 0;
+    let totalGroups = activityData.templateData.length;
+
+    activityData.templateData.forEach((group: any) => {
+      const correctLabels = group.items.map((item: any) => item.label || item.value);
+      const userLabels = items[group.title];
+
+      // Sort both arrays before comparing
+      const sortedCorrect = [...correctLabels].sort();
+      const sortedUser = [...userLabels].sort();
+
+      const isCorrect = JSON.stringify(sortedCorrect) === JSON.stringify(sortedUser);
+
+      if (isCorrect) {
+        correctCount += 1;
+      }
+    });
+
+    const passed = correctCount === totalGroups;
+
+    alert(
+      passed
+        ? "🎉 Great job! Everything is sorted correctly."
+        : `✅ You got ${correctCount} out of ${totalGroups} baskets correct.`
+    );
+  }
+
+
   function handleDragEnd(event: any) {
     const { active, over } = event;
 
@@ -144,7 +176,18 @@ function SortItems() {
             </div>
           ))}
         </section>
+
       </DndContext>
+
+      <div className="text-center mb-10">
+        <button
+          onClick={gradeLesson}
+          className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+        >
+          Save & Grade (Temporary)
+        </button>
+      </div>
+
     </Layout>
   );
 }
