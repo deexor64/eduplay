@@ -8,19 +8,18 @@ function Sidebar(props: any) {
 
   if (props.userType === "teacher") {
     links = {
-      "My Class": "/my-class",
+      "My Class": "/teacher/myclass",
       "Create Activity": "/teacher/createactivity",
       "Manage Activity": "/teacher/manageactivities",
-      "Profile": "/profile",
-      "Settings": "/settings",
+      "Profile": "/teacher/profile",
+      "Settings": "/teacher/settings",
     };
   } else if (props.userType === "parent") {
     links = {
-      "My Child": "/my-child",
-      "Progress": "/progress",
-      "Messages": "/messages",
-      "Profile": "/profile",
-      "Settings": "/settings",
+      "My Child": "/parent/mychild",
+      "Contact School": "/parent/contactschool",
+      "Profile": "/parent/profile",
+      "Settings": "/parent/settings",
     };
   } else if (props.userType === "admin") {
     links = {
@@ -30,10 +29,7 @@ function Sidebar(props: any) {
       "System Settings": "/system-settings",
     };
   } else {
-    links = {
-      "Profile": "/profile",
-      "Settings": "/settings",
-    };
+    return;
   }
 
   function toggleSidebar() {
