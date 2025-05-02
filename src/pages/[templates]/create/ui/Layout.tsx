@@ -166,7 +166,8 @@ function Layout(props: templateProps) {
 
   return (
 
-    <div className="max-w-6xl mx-auto p-4 bg-blue-100">
+    <div className="max-w-6xl mx-auto p-4 pb-14 bg-blue-100">
+
       {/* template title */}
       <header className="mb-6">
         <h2 className="text-xl font-semibold mb-4">{props.title}</h2>

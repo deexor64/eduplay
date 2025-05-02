@@ -9,8 +9,8 @@ function Sidebar(props: any) {
   if (props.userType === "teacher") {
     links = {
       "My Class": "/my-class",
-      "Create Activity": "/teacher/create",
-      "Manage Activity": "/manage-activity",
+      "Create Activity": "/teacher/createactivity",
+      "Manage Activity": "/teacher/manageactivities",
       "Profile": "/profile",
       "Settings": "/settings",
     };

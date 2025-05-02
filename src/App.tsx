@@ -14,6 +14,7 @@ import Dashboard from "./pages/userType/(Dashboard)/Dashboard";
 
 // teacher
 import Create from "./pages/Teacher/Create";
+import ManageActivities from "./pages/Teacher/ManageActivities";
 
 var templatesRoute = "[templates]";
 
@@ -33,9 +34,12 @@ function App() {
             <Route index element={<Dashboard />} />
           </Route>
           {/* teacher */}
-          <Route path="create" element={<DashboardLayout />}>
+          <Route path="createactivity" element={<DashboardLayout />}>
             <Route index element={<Create />} />
             <Route path=":contentName" element={<PageRenderer path={`${templatesRoute}/create`} />} />
+          </Route>
+          <Route path="manageactivities" element={<DashboardLayout />}>
+            <Route index element={<ManageActivities />} />
           </Route>
           {/* admin */}
           {/* parent */}
