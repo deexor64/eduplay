@@ -233,8 +233,7 @@ function Layout(props: templateProps) {
       {props.children}
 
       {/* activity options */}
-      <section className="mb-16 bg-white p-4 rounded-xl shadow-sm">
-
+      <section className="mb-4 bg-white p-4 rounded-xl shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Activity Options</h2>
 
         <div className="flex flex-row justify-between align-middle text-nowrap gap-4 mt-4">
@@ -258,17 +257,19 @@ function Layout(props: templateProps) {
             }}
           />
         </div>
-
       </section>
 
       {/* footer */}
-      <footer className="fixed bottom-0 left-0 w-full flex justify-end p-4 bg-white shadow">
-        <button
-          className="font-semibold py-2 px-6 rounded-lg transition
+      <footer className="sticky bottom-0 left-0 w-full flex justify-center gap-4 p-4
+        bg-red-200 shadow rounded-lg">
+        <button className="font-semibold py-2 px-6 rounded-lg transition
+            bg-green-500 text-white hover:bg-green-600">
+          Preview
+        </button>
+        <button className="font-semibold py-2 px-6 rounded-lg transition
           bg-green-500 text-white hover:bg-green-600"
-          onClick={handleSave}
-        >
-          Save Lesson
+          onClick={handleSave}>
+          Save
         </button>
       </footer>
     </div>
