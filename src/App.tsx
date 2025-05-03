@@ -28,19 +28,27 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+
         <Route path="/" element={<Home />} />
         <Route path="home" element={<Home />} />
-        <Route path=":userType"> {/* all */}
+
+        <Route path=":userType">
+
+          {/* all */}
           <Route path="signup" element={<Signup />} />
           <Route path="signin" element={<Signin />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="profile" element={<Profile />} />
           <Route path="settings" element={<Settings />} />
-          <Route> {/* admin */}
+
+          {/* admin */}
+          <Route>
             <Route path="manageusers" element={<ManageUsers />} />
             <Route path="systemsettings" element={<SystemSettings />} />
           </Route>
-          <Route> {/* teacher */}
+
+          {/* teacher */}
+          <Route>
             <Route path="myclass" element={<MyClass />} />
             <Route path="activity">
               { /*temp*/}   <Route path=":templateName" element={<RenderTemplate mode="view" />} />
@@ -49,10 +57,13 @@ function App() {
               <Route path="create/:templateName" element={<RenderTemplate mode="create" />} />
             </Route>
           </Route>
-          <Route> {/* parent */}
+
+          {/* parent */}
+          <Route>
             <Route path="mychild" element={<MyChild />} />
             <Route path="contactschool" element={<ContactSchool />} />
           </Route>
+
         </Route>
 
       </Routes>
