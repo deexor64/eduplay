@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router";
 
-import CommonLayout from "../ui/CommonLayout";
+import CommonLayout from "../../ui/CommonLayout";
 
 
 type Activity = {

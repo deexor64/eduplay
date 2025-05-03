@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router";
 
-import CommonLayout from "../ui/CommonLayout";
+import CommonLayout from "../../ui/CommonLayout";
 
 type Template = {
   templateID: string;
@@ -11,7 +11,7 @@ type Template = {
   previewImage: string;
 };
 
-function ChooseTemplatePage() {
+function CreateActivity() {
 
   if (useParams().userType != "teacher") return;
 
@@ -225,4 +225,4 @@ function ChooseTemplatePage() {
   );
 }
 
-export default ChooseTemplatePage;
+export default CreateActivity;

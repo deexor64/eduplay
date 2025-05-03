@@ -2,9 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router";
 
 import "./App.css";
 
-// utils
-import PageRenderer from "./utils/PageRenderer";
-
 // all
 import Home from "./pages/Home";
 import Signup from "./pages/userType/Signup";
@@ -18,15 +15,14 @@ import ManageUsers from "./pages/Admin/ManageUsers";
 import SystemSettings from "./pages/Admin/SystemSettings";
 
 // teacher
-import Create from "./pages/Teacher/Create";
-import ManageActivities from "./pages/Teacher/ManageActivities";
 import MyClass from "./pages/Teacher/MyClass";
+import CreateActivity from "./pages/Teacher/Activity/CreateActivity";
+import ManageActivities from "./pages/Teacher/Activity/ManageActivities";
+import RenderTemplate from "./pages/Teacher/Activity/RenderTemplate";
 
 // parent
 import MyChild from "./pages/Parent/MyChild";
 import ContactSchool from "./pages/Parent/ContactSchool";
-
-var templatesRoute = "[templates]";
 
 function App() {
   return (
@@ -46,12 +42,12 @@ function App() {
           </Route>
           <Route> {/* teacher */}
             <Route path="myclass" element={<MyClass />} />
-            <Route path=":contentName" element={<PageRenderer path={`${templatesRoute}`} />} />
-            <Route path="createactivity">
-              <Route index element={<Create />} />
-              <Route path=":contentName" element={<PageRenderer path={`${templatesRoute}/create`} />} />
+            <Route path="activity">
+              { /*temp*/}   <Route path=":templateName" element={<RenderTemplate mode="view" />} />
+              <Route path="manage" element={<ManageActivities />} />
+              <Route path="create" element={<CreateActivity />} />
+              <Route path="create/:templateName" element={<RenderTemplate mode="create" />} />
             </Route>
-            <Route path="manageactivities" element={<ManageActivities />} />
           </Route>
           <Route> {/* parent */}
             <Route path="mychild" element={<MyChild />} />

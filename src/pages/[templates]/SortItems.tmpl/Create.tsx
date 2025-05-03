@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import Layout from "./ui/Layout";
+import Layout from "../ui/CreateLayout";
 import generateRandomHash from "../../utils/generateRandomHash";
 
 function SortItems() {
