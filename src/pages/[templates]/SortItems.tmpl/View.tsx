@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-kit/core";
 
-import Layout from "./ui/Layout";
-import "./SortItems.css";
-
+import Layout from "../ui/ViewLayout";
 
 function DraggableItem(props: { id: string; children: string }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: props.id });
@@ -12,7 +10,7 @@ function DraggableItem(props: { id: string; children: string }) {
   };
   return (
     <div ref={setNodeRef} style={style} {...listeners} {...attributes}
-      className="sort-item" >
+      className="inline-block px-4 py-2 bg-yellow-100 text-amber-800 font-semibold rounded-full border border-yellow-300 shadow-sm cursor-grab select-none touch-none hover:scale-105" >
       {props.children}
     </div>
   );
@@ -21,15 +19,13 @@ function DraggableItem(props: { id: string; children: string }) {
 function DroppableZone(props: { id: string; children: any }) {
   const { setNodeRef } = useDroppable({ id: props.id });
   return (
-    <div ref={setNodeRef} className="basket-content min-h-[80px] bg-slate-100 p-2 rounded">
+    <div ref={setNodeRef} className="min-h-[80px] bg-white rounded-lg p-2 border border-dashed border-gray-300 flex flex-wrap gap-2 items-start">
       {props.children}
     </div>
   );
 }
 
 function SortItems() {
-
-  // ---------------------------------------default--------------------------------------------
   const [activityData, setActivityData] = useState<any>(null);
 
   function fetchActivityData(): Promise<void> {
@@ -106,9 +102,6 @@ function SortItems() {
     );
   }
 
-
-  // ---------------------------------------end default--------------------------------------------
-
   const [items, setItems] = useState<{ [location: string]: string[] }>({ box: [] });
 
   useEffect(() => {
@@ -166,8 +159,8 @@ function SortItems() {
 
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
           {activityData.templateData.map((group: any) => (
-            <div className="basket-box" key={group.title}>
-              <h3 className="basket-title">{group.title}</h3>
+            <div className="bg-gray-50 border-2 border-dashed border-gray-300 p-4 rounded-xl min-h-[120px]" key={group.title}>
+              <h3 className="text-lg font-semibold mb-2 text-gray-900">{group.title}</h3>
               <DroppableZone id={group.title}>
                 {items[group.title] && items[group.title].map((id) => (
                   <DraggableItem key={id} id={id}>{id}</DraggableItem>

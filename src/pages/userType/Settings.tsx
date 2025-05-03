@@ -1,8 +1,8 @@
 import { useParams } from "react-router";
 
+import AdminSettings from "../Admin/(AdminSettings)";
 import TeacherSettings from "../Teacher/(TeacherSettings)";
 import ParentSettings from "../Parent/(ParentSettings)";
-// import StudentSettings from "../Student/(StudentSettings)";
 
 function Settings(props: any) {
 
@@ -17,9 +17,9 @@ function Settings(props: any) {
 
   return (
     <>
+      {userType === "admin" && <AdminSettings />}
       {userType === "teacher" && <TeacherSettings />}
       {userType === "parent" && <ParentSettings />}
-      {/* {userType === "parent" && <AdminDashboard />} */}
     </>
   );
 }

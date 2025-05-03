@@ -9,10 +9,14 @@ import PageRenderer from "./utils/PageRenderer";
 import Home from "./pages/Home";
 import Signup from "./pages/userType/Signup";
 import Signin from "./pages/userType/Signin";
-import DashboardLayout from "./pages/userType/(Dashboard)/(DashboardLayout)";
+import DashboardLayout from "./pages/userType/(Dashboard)/ui/DashboardLayout";
 import Dashboard from "./pages/userType/(Dashboard)/Dashboard";
 import Profile from "./pages/userType/Profile";
 import Settings from "./pages/userType/Settings";
+
+// admin
+import ManageUsers from "./pages/Admin/ManageUsers";
+import SystemSettings from "./pages/Admin/SystemSettings";
 
 // teacher
 import Create from "./pages/Teacher/Create";
@@ -46,9 +50,14 @@ function App() {
             <Route path="settings" element={<Settings />} />
           </Route>
           {/* admin */}
+          <Route element={<DashboardLayout />} >
+            <Route path="manageusers" element={<ManageUsers />} />
+            <Route path="systemsettings" element={<SystemSettings />} />
+          </Route>
           {/* teacher */}
           <Route element={<DashboardLayout />} >
             <Route path="myclass" element={<MyClass />} />
+            <Route path=":contentName" element={<PageRenderer path={`${templatesRoute}`} />} />
             <Route path="createactivity">
               <Route index element={<Create />} />
               <Route path=":contentName" element={<PageRenderer path={`${templatesRoute}/create`} />} />

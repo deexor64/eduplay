@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Outlet, useParams } from "react-router";
 
-import Navbar from "./ui/Navbar";
-import Sidebar from "./ui/Sidebar";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 
 function DashboardLayout() {
 

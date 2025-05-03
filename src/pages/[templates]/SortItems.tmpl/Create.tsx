@@ -1,15 +1,9 @@
 import { useState } from "react";
 
 import Layout from "./ui/Layout";
-import "./SortItems.css";
-
 import generateRandomHash from "../../utils/generateRandomHash";
 
 function SortItems() {
-
-  // --------------------------------------default------------------------------------
-
-  // layout props
   let templateProps = {
     title: "Sort Items",
     validateTemplate: validateTemplate,
@@ -17,9 +11,7 @@ function SortItems() {
     children: null
   }
 
-  // validate template
   function validateTemplate(): { status: boolean, message: string } {
-
     for (let basket of baskets) {
       if (!basket.title.trim()) {
         return { status: false, message: "Each basket must have a title." };
@@ -31,10 +23,8 @@ function SortItems() {
       }
     }
     return { status: true, message: "" };
-
   }
 
-  // template data
   function getTemplateData(): any {
     return {
       templateData: baskets,
@@ -42,12 +32,9 @@ function SortItems() {
     };
   }
 
-  // --------------------------------------end default------------------------------------
-
-  // baskets
   type BasketItem = {
     type: "text" | "image";
-    value: string;  // This will store the image hash or text
+    value: string;
     label?: string;
   };
 
@@ -56,15 +43,12 @@ function SortItems() {
     items: BasketItem[];
   };
 
-  // basket data
-  // Separate variable for media files
   const [baskets, setBaskets] = useState<Basket[]>([
     { title: "", items: [{ type: "text", value: "" }] },
   ]);
 
   const [mediaFiles, setMediaFiles] = useState<Map<string, File>>(new Map());
 
-  // basket operations
   function addBasket() {
     const updatedBaskets = baskets.concat({
       title: "",
@@ -133,20 +117,18 @@ function SortItems() {
   }
 
   return (
-
     <Layout {...templateProps}>
-
       <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Define Baskets</h2>
 
-        <div className="basket-container">
+        <div className="flex flex-col gap-6">
           {baskets.map(function (basket: Basket, index: number) {
             return (
-              <div key={index} className="basket-box">
+              <div key={index} className="bg-slate-100 p-4 rounded-xl border border-slate-300">
                 <div className="flex justify-between items-center gap-2 mb-2">
                   <input
                     type="text"
-                    className="input mb-4 text-lg"
+                    className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white mb-4 text-lg"
                     placeholder={"Basket " + (index + 1) + " Title "}
                     value={basket.title}
                     required
@@ -155,7 +137,7 @@ function SortItems() {
                     }}
                   />
                   <button
-                    className="delete-btn"
+                    className="bg-transparent border-none text-red-500 text-2xl cursor-pointer hover:text-red-600"
                     onClick={function () {
                       deleteBasket(index);
                     }}
@@ -173,7 +155,7 @@ function SortItems() {
                       {item.type === "text" ? (
                         <input
                           type="text"
-                          className="input"
+                          className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white"
                           placeholder={"Item " + (itemIdx + 1) + " Text"}
                           value={item.value}
                           required
@@ -185,7 +167,7 @@ function SortItems() {
                         <div className="w-full">
                           <input
                             type="text"
-                            className="input mb-2"
+                            className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white mb-2"
                             placeholder={"Item " + (itemIdx + 1) + " Image Label"}
                             value={item.label || ""}
                             required
@@ -198,7 +180,7 @@ function SortItems() {
                             <input
                               type="file"
                               accept="image/*"
-                              className="input mb-2"
+                              className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white mb-2"
                               required
                               onChange={function (e) {
                                 const file = e.target.files ? e.target.files[0] : null;
@@ -220,7 +202,7 @@ function SortItems() {
                       )}
 
                       <button
-                        className="delete-btn mt-1"
+                        className="bg-transparent border-none text-red-500 text-2xl cursor-pointer hover:text-red-600 mt-1"
                         onClick={function () {
                           deleteItem(index, itemIdx);
                         }}
@@ -233,7 +215,7 @@ function SortItems() {
 
                 <div className="flex gap-2 mt-2">
                   <button
-                    className="btn btn-blue"
+                    className="font-semibold py-2 px-6 rounded-lg transition bg-blue-500 text-white hover:bg-blue-600"
                     onClick={function () {
                       addItemToBasket(index, "text");
                     }}
@@ -241,7 +223,7 @@ function SortItems() {
                     + Add Text
                   </button>
                   <button
-                    className="btn btn-blue"
+                    className="font-semibold py-2 px-6 rounded-lg transition bg-blue-500 text-white hover:bg-blue-600"
                     onClick={function () {
                       addItemToBasket(index, "image");
                     }}
@@ -254,12 +236,11 @@ function SortItems() {
           })}
         </div>
 
-        <button className="btn btn-green mt-4" onClick={addBasket}>
+        <button className="font-semibold py-2 px-6 rounded-lg transition bg-green-500 text-white hover:bg-green-600 mt-4" onClick={addBasket}>
           + Add Basket
         </button>
       </section>
     </Layout>
-
   );
 }
 

@@ -23,10 +23,12 @@ function Sidebar(props: any) {
     };
   } else if (props.userType === "admin") {
     links = {
-      "User Management": "/user-management",
+      "Manage Users": "/admin/manageusers",
       "Content Review": "/content-review",
       "Reports": "/reports",
-      "System Settings": "/system-settings",
+      "System Settings": "/admin/systemsettings",
+      "Admin Settings": "/admin/settings",
+      "Admin profile": "/admin/profile"
     };
   } else {
     return;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 
-import generateRandomHash from "../../../utils/generateRandomHash";
+import generateRandomHash from "../../utils/generateRandomHash";
 
 type templateProps = {
   title: string,
@@ -19,13 +19,6 @@ type templateForm = {
 }
 
 function Layout(props: templateProps) {
-
-  // form data
-  // formData variable is used instead of FormData class
-  // Otherwise the type checking is a bit hard
-  // all the media files are appended to the form varible
-  // formData is appended to the form varible after
-  // all the type checkings are done
   const [formData, setFormData] = useState<templateForm>({
     title: "",
     coverImage: "",
@@ -40,16 +33,13 @@ function Layout(props: templateProps) {
   });
 
   const [form, setForm] = useState(new FormData());
+  const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
 
-  // form operations
-  // all form operation are done inside a seperate function
   function setTitle(title: string) {
     setFormData(function (prev) { return { ...prev, title: title.trim() } });
   }
 
-  const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
   function setCoverImage(file: File) {
-    // delete old image
     let fileHash = formData.coverImage;
     if (fileHash.length >= 0) {
       setForm(function (prev) {
@@ -57,7 +47,6 @@ function Layout(props: templateProps) {
         return prev;
       });
     }
-    // add new image
     fileHash = generateRandomHash(file.name);
 
     setFormData(function (prev) { return { ...prev, coverImage: fileHash } });
@@ -66,7 +55,6 @@ function Layout(props: templateProps) {
       return prev;
     });
     setCoverImagePreview(URL.createObjectURL(file));
-
   }
 
   function setDescription(description: string) {
@@ -86,7 +74,6 @@ function Layout(props: templateProps) {
       }
       return prev;
     });
-
   }
 
   function setOptions(option: string, value: any) {
@@ -97,9 +84,7 @@ function Layout(props: templateProps) {
     });
   }
 
-  // validate template inputs
   function validateTemplate(): { status: boolean, message: string } {
-
     if (!formData.title) {
       return { status: false, message: "Title is required." };
     }
@@ -115,18 +100,14 @@ function Layout(props: templateProps) {
       return { status: false, message: validT.message };
     }
 
-    if (!formData.options) { // this check is not required
+    if (!formData.options) {
       return { status: false, message: "Options are required." };
     }
 
     return { status: true, message: "" };
-
   }
 
-  // save template
   function handleSave() {
-
-    // validate form
     let valid = validateTemplate();
 
     if (!valid.status) {
@@ -138,10 +119,8 @@ function Layout(props: templateProps) {
       return;
     }
 
-    // append template data
     setTemplateData(props.getTemplateData());
 
-    // create form
     setForm(function (prev) {
       prev.append("title", formData.title);
       prev.append("coverImage", formData.coverImage);
@@ -151,9 +130,6 @@ function Layout(props: templateProps) {
       return prev;
     });
 
-    // request to backend
-    // fetch(form);
-
     Swal.fire({
       title: "Success",
       text: "Saved successfully",
@@ -161,13 +137,10 @@ function Layout(props: templateProps) {
     });
 
     console.log(formData);
-
   }
 
   return (
-
     <div className="max-w-6xl mx-auto p-4 pb-14 bg-blue-100">
-
       {/* template title */}
       <header className="mb-6">
         <h2 className="text-xl font-semibold mb-4">{props.title}</h2>
@@ -181,7 +154,7 @@ function Layout(props: templateProps) {
         <input
           id="lesson-title"
           type="text"
-          className="input"
+          className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white"
           placeholder="e.g. Sort the Animals"
           onChange={function (e) { setTitle(e.target.value) }}
         />
@@ -203,7 +176,7 @@ function Layout(props: templateProps) {
                 setCoverImage(file);
               }
             }}
-            className="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 file-input"
+            className="block text-sm text-gray-900 border border-gray-300 rounded-md bg-gray-200 p-1 file:p-1 file:rounded-md file:border file:border-gray-300 file:bg-gray-100"
           />
         </div>
         {coverImagePreview && (
@@ -224,7 +197,7 @@ function Layout(props: templateProps) {
         </label>
         <textarea
           id="lesson-desc"
-          className="input"
+          className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white"
           placeholder="From the box drag all the animals to the correct box."
           onChange={function (e) { setDescription(e.target.value) }}
         />
@@ -237,18 +210,18 @@ function Layout(props: templateProps) {
       <section className="mb-4 bg-white p-4 rounded-xl shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Activity Options</h2>
 
-        <div className="flex flex-row justify-between align-middle text-nowrap gap-4 mt-4">
+        <div className="flex flex-row justify-between items-center text-nowrap gap-4 mt-4">
           <label className="block font-semibold mb-2">Time Limit</label>
           <input
             type="number"
             min="0"
-            className="input"
+            className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white"
             placeholder="Time in minutes"
             onChange={function (e) { setOptions("timeLimit", e.target.value) }}
           />
         </div>
 
-        <div className="flex flex-row justify-between align-middle text-nowrap gap-4">
+        <div className="flex flex-row justify-between items-center text-nowrap gap-4 mt-4">
           <label className="block font-semibold mb-2">Is graded</label>
           <input
             type="checkbox"
@@ -261,15 +234,14 @@ function Layout(props: templateProps) {
       </section>
 
       {/* footer */}
-      <footer className="sticky bottom-0 left-0 w-full flex justify-center gap-4 p-4
-        bg-red-200 shadow rounded-lg">
-        <button className="font-semibold py-2 px-6 rounded-lg transition
-            bg-green-500 text-white hover:bg-green-600">
+      <footer className="sticky bottom-0 left-0 w-full flex justify-center gap-4 p-4 bg-red-200 shadow rounded-lg">
+        <button className="font-semibold py-2 px-6 rounded-lg transition bg-green-500 text-white hover:bg-green-600">
           Preview
         </button>
-        <button className="font-semibold py-2 px-6 rounded-lg transition
-          bg-green-500 text-white hover:bg-green-600"
-          onClick={handleSave}>
+        <button
+          className="font-semibold py-2 px-6 rounded-lg transition bg-green-500 text-white hover:bg-green-600"
+          onClick={handleSave}
+        >
           Save
         </button>
       </footer>
