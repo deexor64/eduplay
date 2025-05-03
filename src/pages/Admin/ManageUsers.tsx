@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import { useParams } from "react-router";
 
-// Dummy User Data Types
+import CommonLayout from "../ui/CommonLayout";
 
 function ManageUsers() {
+
+  if (useParams().userType != "admin") return;
+
   var [selectedTab, setSelectedTab] = useState("Teachers");
 
   var users: any = {
@@ -86,33 +90,37 @@ function ManageUsers() {
   var tabs = ["Admins", "Teachers", "Parents", "Students", "Pending"];
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="text-2xl font-bold text-blue-900 mb-4">User Management</div>
+    <CommonLayout>
 
-      {/* Tab Menu */}
-      <div className="flex space-x-4 mb-6">
-        {tabs.map(function (tab) {
-          return (
-            <button
-              key={tab}
-              onClick={function () { setSelectedTab(tab); }}
-              className={
-                "px-4 py-2 rounded-full text-sm font-medium " +
-                (selectedTab === tab
-                  ? "bg-blue-600 text-white"
-                  : "bg-blue-100 text-blue-800 hover:bg-blue-200")
-              }
-            >
-              {tab}
-            </button>
-          );
-        })}
-      </div>
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="text-2xl font-bold text-blue-900 mb-4">User Management</div>
 
-      <div className="bg-white rounded-xl shadow p-6">
-        {selectedTab === "Pending" ? renderPendingApproval() : renderTable(selectedTab)}
+        {/* Tab Menu */}
+        <div className="flex space-x-4 mb-6">
+          {tabs.map(function (tab) {
+            return (
+              <button
+                key={tab}
+                onClick={function () { setSelectedTab(tab); }}
+                className={
+                  "px-4 py-2 rounded-full text-sm font-medium " +
+                  (selectedTab === tab
+                    ? "bg-blue-600 text-white"
+                    : "bg-blue-100 text-blue-800 hover:bg-blue-200")
+                }
+              >
+                {tab}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="bg-white rounded-xl shadow p-6">
+          {selectedTab === "Pending" ? renderPendingApproval() : renderTable(selectedTab)}
+        </div>
       </div>
-    </div>
+    </CommonLayout>
+
   );
 }
 

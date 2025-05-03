@@ -1,19 +1,15 @@
 import { useState } from "react";
-import { Outlet, useParams } from "react-router";
+import { useParams } from "react-router";
 
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
-function DashboardLayout() {
+function CommonLayout(props: any) {
 
-  // check valid user type -----
-  var params = useParams();
-  var userType = params.userType;
-  var allowedUserTypes = ["admin", "teacher", "parent"];
-  if (!userType || allowedUserTypes.indexOf(userType) === -1) {
-    return;
-  }
-  // end check -----------------
+  // user type check
+  var userType = useParams().userType;
+  if (!["admin", "teacher", "parent"]
+    .includes("" + userType)) return;
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   function toggleSidebar() {
@@ -21,25 +17,22 @@ function DashboardLayout() {
   }
 
   return (
-
     <div className="flex flex-col h-min">
-
       {/* Nav bar and Spacer for Navbar height */}
       <Navbar userType={userType} />
       <div className="w-full h-16" />
-
+      {/* main content */}
       <div className="flex flex-grow" >
         {/* Sidebar with passed toggle function */}
         <Sidebar userType={userType} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-        {/* outlet for dashboard content */}
+        {/* layout content */}
         <section className="flex-grow transition-all duration-300 bg-sky-300"
           style={{ marginLeft: isSidebarOpen ? "12rem" : "4rem" }} >
-          <Outlet />
+          {props.children}
         </section>
       </div>
-
     </div>
   );
 }
 
-export default DashboardLayout;
+export default CommonLayout;

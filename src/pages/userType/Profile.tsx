@@ -1,26 +1,23 @@
 import { useParams } from "react-router";
 
+import CommonLayout from "../ui/CommonLayout";
 import TeacherProfile from "../Teacher/(TeacherProfile)";
 import ParentProfile from "../Parent/(ParentProfile)";
 // import StudentProfile from "../Student/(StudentProfile)";
 
 function Profile(props: any) {
 
-  // check valid user type -----
-  var params = useParams();
-  var userType = params.userType;
-  var allowedUserTypes = ["admin", "teacher", "parent", "student"];
-  if (!userType || allowedUserTypes.indexOf(userType) === -1) {
-    return;
-  }
-  // end check -----------------
+  // user type check
+  var userType = useParams().userType;
+  if (!["admin", "teacher", "parent"]
+    .includes("" + userType)) return;
 
   return (
-    <>
+    <CommonLayout>
       {userType === "teacher" && <TeacherProfile />}
       {userType === "parent" && <ParentProfile />}
       {/* { userType === "parent" && <AdminDashboard />} */}
-    </>
+    </CommonLayout>
   );
 }
 

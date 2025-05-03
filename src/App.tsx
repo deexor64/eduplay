@@ -9,8 +9,7 @@ import PageRenderer from "./utils/PageRenderer";
 import Home from "./pages/Home";
 import Signup from "./pages/userType/Signup";
 import Signin from "./pages/userType/Signin";
-import DashboardLayout from "./pages/userType/(Dashboard)/ui/DashboardLayout";
-import Dashboard from "./pages/userType/(Dashboard)/Dashboard";
+import Dashboard from "./pages/userType/Dashboard";
 import Profile from "./pages/userType/Profile";
 import Settings from "./pages/userType/Settings";
 
@@ -27,35 +26,25 @@ import MyClass from "./pages/Teacher/MyClass";
 import MyChild from "./pages/Parent/MyChild";
 import ContactSchool from "./pages/Parent/ContactSchool";
 
-
 var templatesRoute = "[templates]";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         <Route path="/" element={<Home />} />
         <Route path="home" element={<Home />} />
-
-        <Route path=":userType">
-          {/* all */}
+        <Route path=":userType"> {/* all */}
           <Route path="signup" element={<Signup />} />
           <Route path="signin" element={<Signin />} />
-          <Route path="dashboard" element={<DashboardLayout />} >
-            <Route index element={<Dashboard />} />
-          </Route>
-          <Route element={<DashboardLayout />} >
-            <Route path="profile" element={<Profile />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
-          {/* admin */}
-          <Route element={<DashboardLayout />} >
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="settings" element={<Settings />} />
+          <Route> {/* admin */}
             <Route path="manageusers" element={<ManageUsers />} />
             <Route path="systemsettings" element={<SystemSettings />} />
           </Route>
-          {/* teacher */}
-          <Route element={<DashboardLayout />} >
+          <Route> {/* teacher */}
             <Route path="myclass" element={<MyClass />} />
             <Route path=":contentName" element={<PageRenderer path={`${templatesRoute}`} />} />
             <Route path="createactivity">
@@ -64,8 +53,7 @@ function App() {
             </Route>
             <Route path="manageactivities" element={<ManageActivities />} />
           </Route>
-          {/* parent */}
-          <Route element={<DashboardLayout />} >
+          <Route> {/* parent */}
             <Route path="mychild" element={<MyChild />} />
             <Route path="contactschool" element={<ContactSchool />} />
           </Route>
