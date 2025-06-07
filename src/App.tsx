@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import "./App.css";
 
 // all
+
 import Home from "./pages/Home";
 import Signup from "./pages/userType/Signup";
 import Signin from "./pages/userType/Signin";
