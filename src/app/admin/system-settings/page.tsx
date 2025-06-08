@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { useParams } from "react-router";
+"use client";
 
-import CommonLayout from "../ui/CommonLayout";
+import React, { useState } from "react";
+import { useParams } from "next/navigation";
 
 function SystemSettings() {
 
@@ -32,8 +32,7 @@ function SystemSettings() {
   }
 
   return (
-    <CommonLayout>
-
+    <>
       <div className="max-w-5xl mx-auto p-6 space-y-8">
         <h1 className="text-2xl font-bold text-blue-800">System Settings</h1>
 
@@ -111,7 +110,7 @@ function SystemSettings() {
           </button>
         </div>
       </div>
-    </CommonLayout>
+    </>
 
   );
 }

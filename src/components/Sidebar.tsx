@@ -1,12 +1,17 @@
 import { useState } from "react";
+import { useParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import getUserType from "@/utils/getUserType";
 
 function Sidebar(props: any) {
+  
+  const userType = getUserType();
+  
   const [isOpen, setIsOpen] = useState(true);
 
   var links: { [key: string]: string } = {};
 
-  if (props.userType === "teacher") {
+  if (userType === "teacher") {
     links = {
       "My Class": "/teacher/myclass",
       "Create Activity": "/teacher/activity/create",
@@ -14,19 +19,19 @@ function Sidebar(props: any) {
       "Profile": "/teacher/profile",
       "Settings": "/teacher/settings",
     };
-  } else if (props.userType === "parent") {
+  } else if (userType === "parent") {
     links = {
       "My Child": "/parent/mychild",
       "Contact School": "/parent/contactschool",
       "Profile": "/parent/profile",
       "Settings": "/parent/settings",
     };
-  } else if (props.userType === "admin") {
+  } else if (userType === "admin") {
     links = {
-      "Manage Users": "/admin/manageusers",
+      "Manage Users": "/admin/manage-users",
       "Content Review": "/content-review",
       "Reports": "/reports",
-      "System Settings": "/admin/systemsettings",
+      "System Settings": "/admin/system-settings",
       "Admin Settings": "/admin/settings",
       "Admin profile": "/admin/profile"
     };
@@ -44,7 +49,7 @@ function Sidebar(props: any) {
       {/* Sidebar */}
       <div className={`w-46 h-full bg-gray-100 pl-4 shadow-md transition-all duration-300 absolute
           ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <ul className="space-y-2 mt-16">
+        <ul className="space-y-2 mt-16 bg-blue-100">
           {Object.entries(links).map(([label, href], index) => (
             <li key={index}>
               <Link href={href}>

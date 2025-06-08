@@ -1,11 +1,8 @@
-import React, { useState } from "react";
-import { useParams } from "react-router";
+"use client";
 
-import CommonLayout from "../ui/CommonLayout";
+import React, { useState } from "react";
 
 function ManageUsers() {
-
-  if (useParams().userType != "admin") return;
 
   var [selectedTab, setSelectedTab] = useState("Teachers");
 
@@ -90,7 +87,7 @@ function ManageUsers() {
   var tabs = ["Admins", "Teachers", "Parents", "Students", "Pending"];
 
   return (
-    <CommonLayout>
+    <>
 
       <div className="max-w-6xl mx-auto p-6">
         <div className="text-2xl font-bold text-blue-900 mb-4">User Management</div>
@@ -119,7 +116,7 @@ function ManageUsers() {
           {selectedTab === "Pending" ? renderPendingApproval() : renderTable(selectedTab)}
         </div>
       </div>
-    </CommonLayout>
+    </>
 
   );
 }

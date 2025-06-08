@@ -1,6 +1,6 @@
 import CommonLayout from "@/components/CommonLayout";
 
-export default function DashboardLayout(props: any) {
+export default function SettingsLayout(props: any) {
   return (
     <CommonLayout>
       {props.children}

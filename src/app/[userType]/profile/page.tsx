@@ -1,9 +1,8 @@
-import { useParams } from "react-router";
+import { useParams } from "next/navigation";
 
-import CommonLayout from "../ui/CommonLayout";
-import TeacherProfile from "../Teacher/(TeacherProfile)";
-import ParentProfile from "../Parent/(ParentProfile)";
-// import StudentProfile from "../Student/(StudentProfile)";
+import TeacherProfile from "./_profile/TeacherProfile";
+import ParentProfile from "./_profile/ParentProfile";
+// import AdminProfile from "../_profile/(AdminProfile)";
 
 function Profile(props: any) {
 
@@ -13,11 +12,11 @@ function Profile(props: any) {
     .includes("" + userType)) return;
 
   return (
-    <CommonLayout>
+    <>
       {userType === "teacher" && <TeacherProfile />}
       {userType === "parent" && <ParentProfile />}
       {/* { userType === "parent" && <AdminDashboard />} */}
-    </CommonLayout>
+    </>
   );
 }
 
