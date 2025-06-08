@@ -22,7 +22,8 @@ export default function CommonLayout(props: any) {
         {/* Sidebar with passed toggle function */}
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         {/* layout content */}
-        <section className="flex-grow transition-all duration-300 bg-sky-300"
+        <section className="flex-grow transition-all duration-300 bg-sky-300
+          max-w-6xl mx-auto p-6"
           style={{ marginLeft: isSidebarOpen ? "12rem" : "4rem" }} >
           {props.children}
         </section>

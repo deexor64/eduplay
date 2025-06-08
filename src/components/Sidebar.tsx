@@ -29,11 +29,9 @@ function Sidebar(props: any) {
   } else if (userType === "admin") {
     links = {
       "Manage Users": "/admin/manage-users",
-      "Content Review": "/content-review",
-      "Reports": "/reports",
       "System Settings": "/admin/system-settings",
-      "Admin Settings": "/admin/settings",
-      "Admin profile": "/admin/profile"
+      "Admin profile": "/admin/profile",
+      "Admin Settings": "/admin/settings"
     };
   } else {
     return;
