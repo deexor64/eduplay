@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useParams } from 'next/navigation';
 
 import CommonLayout from "@/components/CommonLayout";
+import Filters, { OptionFilter } from "@/components/view-data/Filters";
 
 
 type Activity = {
@@ -17,10 +18,7 @@ type Activity = {
   previewImage: string;
 };
 
-function ManageActivities() {
-
-  if (useParams().userType != "teacher") return;
-
+export default function ManageActivities() {
 
   const [filterType, setFilterType] = useState("");
   const [filterGrade, setFilterGrade] = useState("");
@@ -113,13 +111,12 @@ function ManageActivities() {
   }, []);
 
   return (
-    <CommonLayout>
-
+    <>
       <div className="max-w-6xl mx-auto p-4 pb-14 min-h-full bg-gradient-to-br bg-yellow-100 to-purple-100
       relative flex justify-center">
         <div className="w-4/5 p-6">
           {/* Filters */}
-          <div className="mb-6 grid grid-cols-2 md:grid-cols-5 gap-4">
+          <Filters>
             <select className="border rounded px-3 py-1 bg-white text-purple-700" onChange={function (e) { setFilterType(e.target.value); }}>
               <option value="">All Types</option>
               <option value="Drag and Drop">Drag and Drop</option>
@@ -153,7 +150,7 @@ function ManageActivities() {
               className="border rounded px-3 py-1 bg-white text-purple-700"
               onChange={handleSearchChange}
             />
-          </div>
+          </Filters>
 
           {/* Activity Cards */}
           <div className="space-y-4">
@@ -214,9 +211,7 @@ function ManageActivities() {
           )}
         </div>
       </div>
-    </CommonLayout>
+    </>
 
   );
 }
-
-export default ManageActivities;

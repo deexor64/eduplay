@@ -3,8 +3,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from 'next/navigation';
 
-import CommonLayout from "@/components/CommonLayout";
-
 type Template = {
   templateID: string;
   name: string;
@@ -13,9 +11,7 @@ type Template = {
   previewImage: string;
 };
 
-function CreateActivity() {
-
-  if (useParams().userType != "teacher") return;
+export default function CreateActivity() {
 
   const [filterType, setFilterType] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -122,11 +118,10 @@ function CreateActivity() {
   }, []);
 
   return (
-
-    <CommonLayout>
-
-      <div className="max-w-6xl mx-auto p-4 pb-14 min-h-full bg-gradient-to-br
-      bg-blue-100 to-pink-100 relative flex justify-center">
+    <>
+      
+      {/* <div className="max-w-6xl mx-auto p-4 pb-14 min-h-full bg-gradient-to-br
+      bg-blue-100 to-pink-100 relative flex justify-center"> */}
 
         {/* Main Content */}
         <div className="w-4/5 p-6">
@@ -220,11 +215,9 @@ function CreateActivity() {
             </div>
           )}
         </div>
-      </div>
+      {/* </div> */}
 
-    </CommonLayout>
+    </>
 
   );
 }
-
-export default CreateActivity;

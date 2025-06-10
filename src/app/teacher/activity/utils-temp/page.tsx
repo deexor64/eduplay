@@ -1,7 +1,6 @@
-import { useParams } from "react-router";
+import { useParams } from "next/navigation";
 import { Suspense, lazy } from "react";
 
-import CommonLayout from "../../ui/CommonLayout";
 
 // import a component by name
 function loadComponent(name: string, mode: "create" | "view") {
@@ -10,7 +9,7 @@ function loadComponent(name: string, mode: "create" | "view") {
 };
 
 // component that renders an another component based on a dynamic name
-function RenderTemplate(props: any) {
+export default function RenderTemplate(props: any) {
 
   const { templateName } = useParams();
 
@@ -26,11 +25,7 @@ function RenderTemplate(props: any) {
 
   return (
     <Suspense fallback={<div>Loading lesson...</div>}>
-      <CommonLayout>
-        <LessonComponent />
-      </CommonLayout>
+      <LessonComponent />
     </Suspense>
   );
 };
-
-export default RenderTemplate;

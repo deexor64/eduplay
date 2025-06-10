@@ -2,34 +2,39 @@
 
 import React, { useState } from "react";
 import Table, { Row } from "@/components/view-data/Table";
-import Tabs, { Tab } from "@/components/view-data/Tabs";
+import Tab, { TabButton, Tabs} from "@/components/view-data/Tabs";
 import Title from "@/components/view-data/Title";
-
+import { generateUniqueID } from "@/utils/generateRandomID";
+import Filters, { OptionFilter } from "@/components/view-data/Filters";
 
 export default function ManageUsers() {
-
-  var [selectedTab, setSelectedTab] = useState("Teachers");
-
-  var users: any = {
-    Admins: [
+  
+  // dbData format 
+  // tabName : [ {row1}, {row2}, ...{rowN}]
+  
+  const dbData = {
+    admin: [
       { id: "a1", name: "Principal Mensah", email: "pmensah@school.edu", status: "Active" },
       { id: "a2", name: "Admin Ama", email: "ama@school.edu", status: "Active" },
+      { id: "a3", name: "Samuel Boateng", email: "sboateng@school.edu", status: "Inactive" },
+      { id: "a4", name: "Esi Nyarko", email: "esi.nyarko@school.edu", status: "Active" },
+      { id: "a5", name: "Daniel Owusu", email: "daniel.owusu@school.edu", status: "Suspended" },
+      { id: "a6", name: "Martha Appiah", email: "m.appiah@school.edu", status: "Active" },
     ],
-    Teachers: [
+    teacher: [
       { id: "t1", name: "Mr. Kwabena", email: "kwabena@school.edu", class: "Grade 6A", status: "Active" },
       { id: "t2", name: "Ms. Juliet", email: "juliet@school.edu", class: "Grade 4B", status: "Suspended" },
     ],
-    Parents: [
-      { id: "p1", name: "Mrs. Sarpong", email: "sarpong@gmail.com", status: "Active" },
-      { id: "p2", name: "Mr. Boateng", email: "boateng@yahoo.com", status: "Active" },
-    ],
-    Students: [
+    student: [
       { id: "s1", name: "Kwame A.", email: "kwame@student.com", class: "Grade 4B", status: "Active" },
       { id: "s2", name: "Akosua D.", email: "akosua@student.com", class: "Grade 6A", status: "Active" },
     ]
   };
-
-
+  
+  var [filteredData, setFilteredData] = useState(dbData);
+ 
+  var [selectedTab, setSelectedTab] = useState<string>("teacher");
+  
   return (
     <>
       {/* Title */}
@@ -37,32 +42,44 @@ export default function ManageUsers() {
 
       {/* Tabs Menu */}
       <Tabs>
-        <Tab tabName="Admins" selected={selectedTab} setSelected={setSelectedTab} >
-          Admins</Tab>
-        <Tab tabName="Teachers" selected={selectedTab} setSelected={setSelectedTab} >
-          Teachers</Tab>
-        <Tab tabName="Students" selected={selectedTab} setSelected={setSelectedTab} >
-          Students</Tab>
+        <TabButton tabName="admin" selected={selectedTab} setSelected={setSelectedTab} >
+          Admins</TabButton>
+        <TabButton tabName="teacher" selected={selectedTab} setSelected={setSelectedTab} >
+          Teachers</TabButton>
+        <TabButton tabName="student" selected={selectedTab} setSelected={setSelectedTab} >
+          Students</TabButton>
       </Tabs>
       
       {/* Filters */}
-      <></>
+      <Filters filterName="status" selected={selectedTab}>
+        <OptionFilter filterName="admin" values={{"status":["All", "Active", "Inactive", "Suspended"]}} 
+        dbData={dbData} filteredData={filteredData} setFilteredData={setFilteredData} />
+      </Filters>
       
       {/* Info */}
-      {selectedTab == "Admins" && (
+      <Tab>
+        
         <Table>
-          <Row RowType="head" RowData={["adfuidv", "hsvdey"]} />
-          <Row RowType="data" RowData={["fuck", "hey"]} />
-        </Table>)
-      }
-      {selectedTab == "Teachers" && (
-        <Table>
-          <Row RowType="head" RowData={["fuck", "hey"]}/>
-          <Row RowType="data" RowData={["fuck", "hey"]}/>
-        </Table>)
-      }
-      
-    </>
-    
+          <thead> 
+          {
+            // @ts-ignore
+            filteredData[selectedTab].length > 0 &&
+            // @ts-ignore
+            <Row rowType="head" rowData={Object.keys(filteredData[selectedTab][0])} />
+          } 
+          </thead>
+          <tbody> 
+          {
+            // @ts-ignore
+            filteredData[selectedTab].map(function (item) {
+              return <Row rowType="data" rowData={Object.values(item)} key={ generateUniqueID()}/>;
+            })
+          } 
+          </tbody>
+        </Table>
+        
+      </Tab>
+
+    </>   
   );
 }
