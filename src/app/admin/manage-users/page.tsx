@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import Table, { Row } from "@/components/view-data/Table";
-import Tab, { TabButton, Tabs} from "@/components/view-data/Tabs";
+import Table, { Row } from "@/components/view-data/table/Table";
+import Tab, { TabButton, Tabs} from "@/components/view-data/Tab";
 import Title from "@/components/view-data/Title";
+import Filters, { InputFilter, OptionFilter } from "@/components/view-data/filter/Filters";
 import { generateUniqueID } from "@/utils/generateRandomID";
-import Filters, { OptionFilter } from "@/components/view-data/Filters";
 
 export default function ManageUsers() {
   
@@ -24,6 +24,7 @@ export default function ManageUsers() {
     teacher: [
       { id: "t1", name: "Mr. Kwabena", email: "kwabena@school.edu", class: "Grade 6A", status: "Active" },
       { id: "t2", name: "Ms. Juliet", email: "juliet@school.edu", class: "Grade 4B", status: "Suspended" },
+      { id: "t3", name: "Ms. Juliet", email: "juliet@school.edu", class: "Grade 4B", status: "Suspended" },
     ],
     student: [
       { id: "s1", name: "Kwame A.", email: "kwame@student.com", class: "Grade 4B", status: "Active" },
@@ -37,6 +38,7 @@ export default function ManageUsers() {
   
   return (
     <>
+      
       {/* Title */}
       <Title title="User Management"/>
 
@@ -51,14 +53,49 @@ export default function ManageUsers() {
       </Tabs>
       
       {/* Filters */}
-      <Filters filterName="status" selected={selectedTab}>
-        <OptionFilter filterName="admin" values={{"status":["All", "Active", "Inactive", "Suspended"]}} 
-        dbData={dbData} filteredData={filteredData} setFilteredData={setFilteredData} />
+      <Filters filterName="admin" selected={selectedTab}>
+        <OptionFilter
+          filterName="admin"
+          values={{ status: ["All", "Active", "Inactive", "Suspended"] }}
+          dbData={dbData}
+          filteredData={filteredData}
+          setFilteredData={setFilteredData}
+        />
+        <OptionFilter
+          filterName="admin"
+          values={{ id: ["All", "a1", "a2", "a3"] }}
+          dbData={dbData}
+          filteredData={filteredData}
+          setFilteredData={setFilteredData}
+        />
+      </Filters>
+      {/* Filters */}
+      <Filters filterName="teacher" selected={selectedTab}>
+        <OptionFilter
+          filterName="teacher"
+          values={{ status: ["All", "Active", "Inactive", "Suspended"] }}
+          dbData={dbData}
+          filteredData={filteredData}
+          setFilteredData={setFilteredData}
+        />
+        <OptionFilter
+          filterName="teacher"
+          values={{ id: ["All", "t1", "t2", "t3"] }}
+          dbData={dbData}
+          filteredData={filteredData}
+          setFilteredData={setFilteredData}
+        />
+        <InputFilter
+          filterName="teacher"
+          field="name"
+          dbData={dbData}
+          filteredData={filteredData}
+          setFilteredData={setFilteredData}
+        />
       </Filters>
       
       {/* Info */}
       <Tab>
-        
         <Table>
           <thead> 
           {
@@ -77,7 +114,6 @@ export default function ManageUsers() {
           } 
           </tbody>
         </Table>
-        
       </Tab>
 
     </>   
