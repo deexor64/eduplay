@@ -7,7 +7,7 @@ export default function Tab(props: any) {
 }
 
 // Wrapper for tab buttons
-export function Tabs(props: any) {
+export function TabButtons(props: any) {
   return (
     <div className="bg-white rounded-xl shadow p-6 mb-5 flex gap-3.5">{props.children}</div>
   );

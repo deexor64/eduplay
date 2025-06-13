@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Table, { Row } from "@/components/view-data/table/Table";
-import Tab, { TabButton, Tabs} from "@/components/view-data/Tab";
+import Tab, { TabButton, TabButtons} from "@/components/view-data/Tab";
 import Title from "@/components/view-data/Title";
 import Filters, { InputFilter, OptionFilter } from "@/components/view-data/filter/Filters";
 import { generateUniqueID } from "@/utils/generateRandomID";
@@ -43,51 +43,51 @@ export default function ManageUsers() {
       <Title title="User Management"/>
 
       {/* Tabs Menu */}
-      <Tabs>
+      <TabButtons>
         <TabButton tabName="admin" selected={selectedTab} setSelected={setSelectedTab} >
           Admins</TabButton>
         <TabButton tabName="teacher" selected={selectedTab} setSelected={setSelectedTab} >
           Teachers</TabButton>
         <TabButton tabName="student" selected={selectedTab} setSelected={setSelectedTab} >
           Students</TabButton>
-      </Tabs>
+      </TabButtons>
       
       {/* Filters */}
-      <Filters filterName="admin" selected={selectedTab}>
+      <Filters filterTab="admin" selected={selectedTab}>
         <OptionFilter
-          filterName="admin"
+          filterTab="admin"
           values={{ status: ["All", "Active", "Inactive", "Suspended"] }}
           dbData={dbData}
           filteredData={filteredData}
           setFilteredData={setFilteredData}
         />
         <OptionFilter
-          filterName="admin"
+          filterTab="admin"
           values={{ id: ["All", "a1", "a2", "a3"] }}
           dbData={dbData}
           filteredData={filteredData}
           setFilteredData={setFilteredData}
         />
       </Filters>
-      {/* Filters */}
-      <Filters filterName="teacher" selected={selectedTab}>
+      
+      <Filters filterTab="teacher" selected={selectedTab}>
         <OptionFilter
-          filterName="teacher"
+          filterTab="teacher"
           values={{ status: ["All", "Active", "Inactive", "Suspended"] }}
           dbData={dbData}
           filteredData={filteredData}
           setFilteredData={setFilteredData}
         />
         <OptionFilter
-          filterName="teacher"
+          filterTab="teacher"
           values={{ id: ["All", "t1", "t2", "t3"] }}
           dbData={dbData}
           filteredData={filteredData}
           setFilteredData={setFilteredData}
         />
         <InputFilter
-          filterName="teacher"
-          field="name"
+          filterTab="teacher"
+          filterKey="name"
           dbData={dbData}
           filteredData={filteredData}
           setFilteredData={setFilteredData}

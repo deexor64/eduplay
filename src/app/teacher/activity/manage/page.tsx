@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useParams } from 'next/navigation';
 
 import CommonLayout from "@/components/CommonLayout";
-import Filters, { OptionFilter } from "@/components/view-data/Filters";
+import Filters, { OptionFilter } from "@/components/view-data/filter/Filters";
 
 
 type Activity = {
@@ -116,7 +116,7 @@ export default function ManageActivities() {
       relative flex justify-center">
         <div className="w-4/5 p-6">
           {/* Filters */}
-          <Filters>
+          {/* <Filters>
             <select className="border rounded px-3 py-1 bg-white text-purple-700" onChange={function (e) { setFilterType(e.target.value); }}>
               <option value="">All Types</option>
               <option value="Drag and Drop">Drag and Drop</option>
@@ -150,7 +150,7 @@ export default function ManageActivities() {
               className="border rounded px-3 py-1 bg-white text-purple-700"
               onChange={handleSearchChange}
             />
-          </Filters>
+          </Filters> */}
 
           {/* Activity Cards */}
           <div className="space-y-4">

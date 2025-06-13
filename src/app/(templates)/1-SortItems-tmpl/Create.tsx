@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import Layout from "../ui/CreateLayout";
-import generateRandomHash from "@/utils/generateRandomHash";
+import generateRandomHash from "@/utils/generateRandomID";
 
 function SortItems() {
   let templateProps = {

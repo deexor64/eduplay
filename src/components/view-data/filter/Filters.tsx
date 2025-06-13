@@ -3,14 +3,14 @@ import { ReactNode, useState } from "react";
 
 // Wrapper for filters
 interface filtersProps {
-  filterName: string;
+  filterTab: string;
   selected: string;
   children: ReactNode;
 }
 
 export default function Filters(props: filtersProps) {
   return (
-    props.filterName == props.selected && (
+    props.filterTab == props.selected && (
       <div className="bg-white rounded-xl shadow p-6 mb-5 flex gap-3.5">{props.children}</div>
     )
   );
@@ -18,7 +18,7 @@ export default function Filters(props: filtersProps) {
 
 // Filter by selecting options
 interface optionFilterProps {
-  filterName: string,
+  filterTab: string,
   values: { [key: string]: Array<"All" | string | number | boolean> },
   dbData: { [key: string]: Array<{ [key: string]: any }> },
   filteredData: { [key: string]: Array<{ [key: string]: any }> },
@@ -26,7 +26,7 @@ interface optionFilterProps {
 }
 
 export function OptionFilter(props: optionFilterProps) {
-  const { filterName, values, dbData, filteredData, setFilteredData } = props;
+  const { filterTab, values, dbData, filteredData, setFilteredData } = props;
   const filterKey = Object.keys(values)[0]; // e.g., 'status' or 'id'
   const [selectedValue, setSelectedValue] = useState<"All" | string | number | boolean>("All");
 
@@ -36,11 +36,11 @@ export function OptionFilter(props: optionFilterProps) {
 
     setFilteredData(function (prevFilteredData: any) {
       // Start with the original dbData for the entity
-      let newData = dbData[filterName];
+      let newData = dbData[filterTab];
       
       // Collect all active filters, including the current one
       const allFilters = Array.from(document.querySelectorAll<HTMLSelectElement>
-        (`select[data-entity="${filterName}"]`))
+        (`select[data-entity="${filterTab}"]`))
         .map(function (select) {
           return {
             key: select.getAttribute("data-filter-key"),
@@ -54,18 +54,22 @@ export function OptionFilter(props: optionFilterProps) {
       });
       return {
         ...prevFilteredData,
-        [filterName]: newData,
+        [filterTab]: newData,
       };
     });
   };
 
   return (
     <div className="mb-6">
+      <label htmlFor={filterTab + filterKey} className="font-medium text-blue-800 mr-1.5">
+        {filterKey}
+      </label>
       <select
+        id={filterTab + filterKey}
         className="border rounded px-3 py-1 bg-white text-purple-700"
         value={selectedValue.toString()}
         onChange={handleFilterChange}
-        data-entity={filterName}
+        data-entity={filterTab}
         data-filter-key={filterKey}
       >
         {values[filterKey].map((value: any) => (
@@ -81,15 +85,15 @@ export function OptionFilter(props: optionFilterProps) {
 
 // Filter by input
 interface inputFilterProps {
-  filterName: string;
-  field: string;
+  filterTab: string;
+  filterKey: string;
   dbData: { [key: string]: Array<{ [key: string]: any }> };
   filteredData: { [key: string]: Array<{ [key: string]: any }> };
   setFilteredData: Function;
 }
 
 export function InputFilter(props: inputFilterProps) {
-  const { filterName, field, dbData, filteredData, setFilteredData } = props;
+  const { filterTab, filterKey, dbData, filteredData, setFilteredData } = props;
   const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = function (e: React.ChangeEvent<HTMLInputElement>) {
@@ -98,10 +102,10 @@ export function InputFilter(props: inputFilterProps) {
 
     setFilteredData(function (prevFilteredData: any) {
       // Start with the original dbData for the entity
-      let newData = dbData[filterName];
+      let newData = dbData[filterTab];
 
       // Apply select filters
-      const selectFilters = Array.from(document.querySelectorAll<HTMLSelectElement>(`select[data-entity="${filterName}"]`))
+      const selectFilters = Array.from(document.querySelectorAll<HTMLSelectElement>(`select[data-entity="${filterTab}"]`))
         .map(function (select) {
           return {
             key: select.getAttribute("data-filter-key"),
@@ -115,7 +119,7 @@ export function InputFilter(props: inputFilterProps) {
       });
 
       // Apply input filters, including the current one
-      const inputFilters = Array.from(document.querySelectorAll<HTMLInputElement>(`input[data-entity="${filterName}"]`))
+      const inputFilters = Array.from(document.querySelectorAll<HTMLInputElement>(`input[data-entity="${filterTab}"]`))
         .map(function (input) {
           return {
             key: input.getAttribute("data-filter-key"),
@@ -132,21 +136,24 @@ export function InputFilter(props: inputFilterProps) {
 
       return {
         ...prevFilteredData,
-        [filterName]: newData,
+        [filterTab]: newData,
       };
     });
   };
 
   return (
     <div className="mb-6">
+      <label htmlFor={filterTab + filterKey} className="font-medium text-blue-800 mr-1.5">
+        {filterKey}
+      </label>
       <input
         type="text"
         className="border rounded px-3 py-1 bg-white text-purple-700"
         value={inputValue}
         onChange={handleInputChange}
-        data-entity={filterName}
-        data-filter-key={field}
-        placeholder={"Search " + field}
+        data-entity={filterTab}
+        data-filter-key={filterKey}
+        placeholder={"Search " + filterKey}
       />
     </div>
   );

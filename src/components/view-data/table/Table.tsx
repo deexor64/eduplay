@@ -1,6 +1,12 @@
+// This table component is only for text rowData
+// Image previews, dynamic content are not supported
+// Must be used solely for text data output from a database
+
+
 import { generateUniqueID } from "@/utils/generateRandomID"
 import { ReactNode } from "react"
 
+// table wrapper
 export default function Table(props: any) {
   return (
     <table className="w-full table-auto text-left">
@@ -14,6 +20,7 @@ interface RowProps {
   rowData: Array<any>
 }
 
+// row
 export function Row (props: RowProps) {
   return (
     <tr className="text-sm text-gray-600">
