@@ -5,13 +5,11 @@ import Footer from "./Footer";
 
 type ViewLayoutProps = {
   dbData: any,
-  gradeActivity: Function
+  gradeActivity?: Function
   children: React.ReactNode
 }
 
 export default function ViewLayout(props: ViewLayoutProps) {
-  
-  
   
   return (
     
