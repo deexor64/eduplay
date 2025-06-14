@@ -1,13 +1,15 @@
-export default function generateRandomHash(inputString: string) {
+export async function generateHash(input: string) {
+  
+  const salt = crypto.getRandomValues(new Uint8Array(16)); // browser-friendly salt
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input + Array.from(salt).join());
 
-  // // Generate a random salt
-  // const salt = crypto.randomBytes(16).toString('hex');
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 
-  // // Create a hash using the input string and the salt
-  // const hash = crypto.createHash('sha256').update(inputString + salt).digest('hex');
-  // under impalemtation
-
-  return `${Date.now()}_${inputString}`;
+  return hashHex; // 64 character hex string
+  
 }
 
 export function generateUniqueID() {

@@ -11,12 +11,12 @@ export default function ImagePreview(props: ImagePreviewProps) {
     props.showPreview && (
       <div
         className="absolute z-50 bg-white border border-gray-300 rounded shadow-lg"
-        style={{ top: 0, right: "100px", width: "192px", height: "192px", padding: "4px"}}
+        style={{ top: 0, right: "100px", width: "408px", height: "408px", padding: "4px"}}
       >
         <Image
           src={props.previewImage}
-          width={192}
-          height={192}
+          width={400}
+          height={400}
           alt="Preview"
           className="w-full h-full object-contain"
         />

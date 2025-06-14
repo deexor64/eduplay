@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-kit/core";
+"use client";
 
-import Layout from "../ui/ViewLayout";
+import { useEffect, useState } from "react";
+import ViewLayout from "@/app/templates/_common-template/view-layout/ViewLayout";
+import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-kit/core";
 
 function DraggableItem(props: { id: string; children: string }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: props.id });
@@ -26,62 +27,42 @@ function DroppableZone(props: { id: string; children: any }) {
 }
 
 function SortItems() {
-  const [activityData, setActivityData] = useState<any>(null);
-
-  function fetchActivityData(): Promise<void> {
-    return Promise.resolve({
-      title: "Sort object",
-      coverImage: "1746025057700_cute-giraffe.jpg",
-      description:
-        "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
-      templateData: [
-        {
-          title: "Animals",
-          items: [
-            { type: "text", value: "Cat" },
-            { type: "image", value: "1746025125166_cute-giraffe.jpg", label: "Jiraffe" }
-          ]
-        },
-        {
-          title: "Vegetables",
-          items: [
-            { type: "text", value: "Carrot" },
-            { type: "text", value: "Potatoe" }
-          ]
-        }
-      ],
-      options: {
-        timeLimit: 0,
-        isGraded: false
+  
+  const dbData = {
+    title: "Sort object",
+    coverImage: "1746025057700_cute-giraffe.jpg",
+    description:
+      "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
+    lessonData: [
+      {
+        title: "Animals",
+        items: [
+          { type: "text", value: "Cat" },
+          { type: "image", value: "1746025125166_cute-giraffe.jpg", label: "Jiraffe" }
+        ]
+      },
+      {
+        title: "Vegetables",
+        items: [
+          { type: "text", value: "Carrot" },
+          { type: "text", value: "Potatoe" }
+        ]
       }
-    }).then(setActivityData);
+    ],
+    options: {
+      timeLimit: 0,
+      isGraded: false
+    }
   }
-
-  function buildActivity() {
-    if (!activityData) return;
-
-    const initialItems: { [location: string]: string[] } = { box: [] };
-
-    activityData.templateData.forEach((group: any) => {
-      const basketId = group.title;
-      initialItems[basketId] = [];
-
-      group.items.forEach((item: any) => {
-        const label = item.label || item.value;
-        initialItems.box.push(label);
-      });
-    });
-
-    setItems(initialItems);
-  }
-
+  
   function gradeActivity() {
-    if (!activityData) return;
+    
+    if (!dbData) return;
 
     let correctCount = 0;
-    let totalGroups = activityData.templateData.length;
+    let totalGroups = dbData.lessonData.length;
 
-    activityData.templateData.forEach((group: any) => {
+    dbData.lessonData.forEach((group: any) => {
       const correctLabels = group.items.map((item: any) => item.label || item.value);
       const userLabels = items[group.title];
 
@@ -101,16 +82,33 @@ function SortItems() {
         : `✅ You got ${correctCount} out of ${totalGroups} baskets correct.`
     );
   }
+  
+  function buildActivity() {
+    
+    if (!dbData) return;
 
-  const [items, setItems] = useState<{ [location: string]: string[] }>({ box: [] });
+    const initialItems: { [location: string]: string[] } = { box: [] };
 
-  useEffect(() => {
-    fetchActivityData();
-  }, []);
+    dbData.lessonData.forEach((group: any) => {
+      const basketId = group.title;
+      initialItems[basketId] = [];
 
+      group.items.forEach((item: any) => {
+        const label = item.label || item.value;
+        initialItems.box.push(label);
+      });
+    });
+
+    setItems(initialItems);
+  }
+  
+  
+  
   useEffect(() => {
     buildActivity();
-  }, [activityData]);
+  }, []);
+
+  const [items, setItems] = useState<{ [location: string]: string[] }>({ box: [] });
 
   function handleDragEnd(event: any) {
     const { active, over } = event;
@@ -134,17 +132,12 @@ function SortItems() {
     }
     return null;
   }
-
-  if (!activityData) return <div>Loading...</div>;
-
-  let layoutProps = {
-    activityTitle: activityData.title,
-    coverImageSrc: activityData.coverImage,
-    activityDescription: activityData.description,
-  };
+  
 
   return (
-    <Layout {...layoutProps}>
+    
+    <ViewLayout dbData={dbData} gradeActivity={gradeActivity}>
+      
       <DndContext collisionDetection={rectIntersection} onDragEnd={handleDragEnd}>
         <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
           <h2 className="text-xl font-semibold mb-4">Items to Sort</h2>
@@ -158,7 +151,7 @@ function SortItems() {
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-          {activityData.templateData.map((group: any) => (
+          {dbData.lessonData.map((group: any) => (
             <div className="bg-gray-50 border-2 border-dashed border-gray-300 p-4 rounded-xl min-h-[120px]" key={group.title}>
               <h3 className="text-lg font-semibold mb-2 text-gray-900">{group.title}</h3>
               <DroppableZone id={group.title}>
@@ -170,16 +163,9 @@ function SortItems() {
           ))}
         </section>
       </DndContext>
-
-      <div className="text-center mb-10">
-        <button
-          onClick={gradeActivity}
-          className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
-        >
-          Save & Grade (Temporary)
-        </button>
-      </div>
-    </Layout>
+      
+      
+    </ViewLayout>
   );
 }
 

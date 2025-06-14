@@ -1,17 +1,12 @@
-import { useState } from "react";
+"use client"
 
-import Layout from "../ui/CreateLayout";
-import generateRandomHash from "@/utils/generateRandomID";
+import { useState } from "react";
+import {generateHash} from "@/utils/generateRandomID";
+import CreateLayout from "@/app/templates/_common-template/create-layout/CreateLayout";
 
 function SortItems() {
-  let templateProps = {
-    title: "Sort Items",
-    validateTemplate: validateTemplate,
-    getTemplateData: getTemplateData,
-    children: null
-  }
-
-  function validateTemplate(): { status: boolean, message: string } {
+  
+  function validateLessonTemplate() {
     for (let basket of baskets) {
       if (!basket.title.trim()) {
         return { status: false, message: "Each basket must have a title." };
@@ -24,14 +19,17 @@ function SortItems() {
     }
     return { status: true, message: "" };
   }
-
-  function getTemplateData(): any {
+  
+  function getLessonTemplateData() {
     return {
-      templateData: baskets,
+      lessonData: baskets,
       mediaFiles: mediaFiles
     };
   }
 
+  
+  
+  
   type BasketItem = {
     type: "text" | "image";
     value: string;
@@ -106,18 +104,23 @@ function SortItems() {
     setBaskets(updated);
   }
 
-  function handleFileChange(basketIndex: number, itemIndex: number, file: File | null): void {
+  async function handleFileChange(basketIndex: number, itemIndex: number, file: File | null): Promise<void> {
     if (file) {
-      const fileHash = generateRandomHash(file.name);
+      const fileHash = await generateHash(file.name);
       setMediaFiles(new Map(mediaFiles.set(fileHash, file)));
       const updated = baskets.slice();
       updated[basketIndex].items[itemIndex].value = fileHash;
       setBaskets(updated);
     }
   }
-
+  
+  
   return (
-    <Layout {...templateProps}>
+    
+  <CreateLayout templateTitle= {"Sort Items"} 
+    validateLessonTemplate={validateLessonTemplate} 
+    getLessonTemplateData={getLessonTemplateData}>
+      
       <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Define Baskets</h2>
 
@@ -240,7 +243,9 @@ function SortItems() {
           + Add Basket
         </button>
       </section>
-    </Layout>
+      
+    </CreateLayout>
+    
   );
 }
 
