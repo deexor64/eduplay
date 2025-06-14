@@ -1,12 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import Tab, { TabButton, TabButtons } from "@/components/view-data/Tab";
-import Title from "@/components/view-data/Title";
-import Filters, { InputFilter, OptionFilter } from "@/components/view-data/filter/Filters";
-import { generateUniqueID } from "@/utils/generateRandomID";
-import ItemList from "@/components/view-data/item-list/ItemList";
+import Title from "@/components/Title";
+import TabButtonWrapper from "@/components/tab/TabButtonWrapper";
+import TabButton from "@/components/tab/TabButton";
+import TabWrapper  from "@/components/tab/TabWrapper";
+import FilterWrapper from "@/components/filter/FilterWrapper";
+import InputFilter from "@/components/filter/InputFilter";
+import OptionFilter from "@/components/filter/OptionFilter";
+import ItemListWrapper from "@/components/item-list/ItemListWrapper";
 import { CreateLessonItem } from "./_ui/CreateLessonItem";
+import { generateUniqueID } from "@/utils/generateRandomID";
+
 
 export default function CreateLesson() {
   
@@ -44,13 +49,13 @@ export default function CreateLesson() {
       <Title title="Create lessons"/>
 
       {/* Tabs Menu */}
-      <TabButtons>
+      <TabButtonWrapper>
         <TabButton tabName="default" selected={selectedTab} setSelected={setSelectedTab} >
           Admins</TabButton>
-      </TabButtons>
+      </TabButtonWrapper>
       
       {/* Filters */}
-      <Filters filterTab="default" selected={selectedTab}>
+      <FilterWrapper filterTab="default" selected={selectedTab}>
         <OptionFilter
           filterTab="default"
           values={{ type: ["All", "Drag and Drop", "Fill Blanks", "Puzzle"] }}
@@ -65,20 +70,20 @@ export default function CreateLesson() {
           filteredData={filteredData}
           setFilteredData={setFilteredData}
         />
-      </Filters>
+      </FilterWrapper>
       
       
       {/* Info */}
-      <Tab>
-        <ItemList>
+      <TabWrapper>
+        <ItemListWrapper>
           {
             // @ts-ignore
             filteredData[selectedTab].map(function (item) {
               return <CreateLessonItem itemData={item} key={ generateUniqueID()}/>;
             })
           } 
-        </ItemList>
-      </Tab>
+        </ItemListWrapper>
+      </TabWrapper>
 
     </>   
   );

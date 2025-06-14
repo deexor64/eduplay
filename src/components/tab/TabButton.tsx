@@ -1,18 +1,5 @@
 import { ReactNode } from "react";
 
-
-// Container for items
-export default function Tab(props: any) {
-  return <div className="bg-white rounded-xl shadow p-6">{props.children}</div>
-}
-
-// Wrapper for tab buttons
-export function TabButtons(props: any) {
-  return (
-    <div className="bg-white rounded-xl shadow p-6 mb-5 flex gap-3.5">{props.children}</div>
-  );
-}
-
 // Tab button
 interface TabButtonProps {
   tabName: "default" | string,
@@ -21,7 +8,7 @@ interface TabButtonProps {
   children: ReactNode
 }
 
-export function TabButton(props: TabButtonProps) {
+export default function TabButton(props: TabButtonProps) {
   return (
     props.tabName != "default" && (
       <button

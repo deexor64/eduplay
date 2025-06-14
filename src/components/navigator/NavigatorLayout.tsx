@@ -5,7 +5,7 @@ import { useState } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
-export default function CommonLayout(props: any) {
+export default function NavigatorLayout(props: any) {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   

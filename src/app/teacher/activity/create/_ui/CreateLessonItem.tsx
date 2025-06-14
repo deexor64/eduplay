@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import ImagePreview from "@/components/popups/ImagePreview";
 import { useState } from "react";
 
@@ -7,7 +8,6 @@ interface CreateLessonItemProps {
   itemData: {templateId: string, name: string, type: string,
     coverIcon: string, previewImage: string}
 }
-
 
 export function CreateLessonItem(props: CreateLessonItemProps) {
   
@@ -21,10 +21,12 @@ export function CreateLessonItem(props: CreateLessonItemProps) {
       cursor-pointer hover:bg-blue-50 justify-between relative mb-0.5"
     >
       <div className="flex items-center">
-        <img
+        <Image
           src={props.itemData.coverIcon}
           alt="Cover Icon"
-          className="w-16 h-16 mr-4 rounded border border-gray-300 bg-white"
+          width={64}    // 16 * 4 (tailwind w-16 is 4rem = 64px)
+          height={64}   // same for h-16
+          className="mr-4 rounded border border-gray-300 bg-white"
         />
         <div>
           <div className="text-lg font-semibold text-pink-700">
@@ -35,11 +37,12 @@ export function CreateLessonItem(props: CreateLessonItemProps) {
       </div>
       <div className="flex gap-2">
         <ImagePreview previewImage={props.itemData.previewImage} showPreview={showPreview} />
-        <button
+        <i
           className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
-          onClick={function () { setShowPreview(!showPreview) }}>
+          onMouseOver={function () { setShowPreview(!showPreview) }}
+          onMouseLeave={function () { setShowPreview(!showPreview) }}>
           Preview
-        </button>
+        </i>
       </div>
     </div> 
   )

@@ -1,10 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import Table, { Row } from "@/components/view-data/table/Table";
-import Tab, { TabButton, TabButtons} from "@/components/view-data/Tab";
-import Title from "@/components/view-data/Title";
-import Filters, { InputFilter, OptionFilter } from "@/components/view-data/filter/Filters";
+import Title from "@/components/Title";
+import TabButton from "@/components/tab/TabButton";
+import TabButtonWrapper from "@/components/tab/TabButtonWrapper";
+import TabWrapper from "@/components/tab/TabWrapper";
+import FilterWrapper from "@/components/filter/FilterWrapper";
+import InputFilter from "@/components/filter/InputFilter";
+import OptionFilter from "@/components/filter/OptionFilter";
+import TableWrapper from "@/components/table/TableWrapper";
+import TableRow from "@/components/table/TableRow";
 import { generateUniqueID } from "@/utils/generateRandomID";
 
 export default function ManageUsers() {
@@ -43,17 +48,17 @@ export default function ManageUsers() {
       <Title title="User Management"/>
 
       {/* Tabs Menu */}
-      <TabButtons>
+      <TabButtonWrapper>
         <TabButton tabName="admin" selected={selectedTab} setSelected={setSelectedTab} >
           Admins</TabButton>
         <TabButton tabName="teacher" selected={selectedTab} setSelected={setSelectedTab} >
           Teachers</TabButton>
         <TabButton tabName="student" selected={selectedTab} setSelected={setSelectedTab} >
           Students</TabButton>
-      </TabButtons>
+      </TabButtonWrapper>
       
       {/* Filters */}
-      <Filters filterTab="admin" selected={selectedTab}>
+      <FilterWrapper filterTab="admin" selected={selectedTab}>
         <OptionFilter
           filterTab="admin"
           values={{ status: ["All", "Active", "Inactive", "Suspended"] }}
@@ -68,9 +73,9 @@ export default function ManageUsers() {
           filteredData={filteredData}
           setFilteredData={setFilteredData}
         />
-      </Filters>
+      </FilterWrapper>
       
-      <Filters filterTab="teacher" selected={selectedTab}>
+      <FilterWrapper filterTab="teacher" selected={selectedTab}>
         <OptionFilter
           filterTab="teacher"
           values={{ status: ["All", "Active", "Inactive", "Suspended"] }}
@@ -92,29 +97,29 @@ export default function ManageUsers() {
           filteredData={filteredData}
           setFilteredData={setFilteredData}
         />
-      </Filters>
+      </FilterWrapper>
       
       {/* Info */}
-      <Tab>
-        <Table>
+      <TabWrapper>
+        <TableWrapper>
           <thead> 
           {
             // @ts-ignore
             filteredData[selectedTab].length > 0 &&
             // @ts-ignore
-            <Row rowType="head" rowData={Object.keys(filteredData[selectedTab][0])} />
+            <TableRow rowType="head" rowData={filteredData[selectedTab][0]} />
           } 
           </thead>
           <tbody> 
           {
             // @ts-ignore
             filteredData[selectedTab].map(function (item) {
-              return <Row rowType="data" rowData={Object.values(item)} key={ generateUniqueID()}/>;
+              return <TableRow rowType="data" rowData={item} key={ generateUniqueID()}/>;
             })
           } 
           </tbody>
-        </Table>
-      </Tab>
+        </TableWrapper>
+      </TabWrapper>
 
     </>   
   );

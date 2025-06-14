@@ -1,6 +1,6 @@
 
 // wrapper
-export default function ItemList(props: any) {
+export default function ItemListWrapper(props: any) {
   return (
     <div className="w-full table-auto text-left">
       {props.children}
