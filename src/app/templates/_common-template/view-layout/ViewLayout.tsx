@@ -2,14 +2,41 @@ import { useState } from "react";
 import ActivityTitle from "./ActivityTitle";
 import CoverImage from "./CoverImage";
 import Footer from "./Footer";
+import Description from "./Description";
 
 type ViewLayoutProps = {
   dbData: any,
-  gradeActivity?: Function
+  gradeLesson: () => { status: boolean, message: string},
+  getLessonData: () => any,
   children: React.ReactNode
 }
 
 export default function ViewLayout(props: ViewLayoutProps) {
+  
+  // actual form sent to server
+  const [form, setForm] = useState(new FormData());
+  
+  function validateTemplate(): { status: boolean, message: string } {
+
+    // validate lesson template
+    let validT = props.gradeLesson();
+    if (!validT.status) {
+      return validT;
+    }
+    
+  // append lesson template data to form
+    setForm(function (prev) {
+      return {
+        lessonData: props.getLessonData(),
+        ...props.dbData,
+      }
+    });
+    
+    console.log(form);
+
+    return validT;
+    
+  }
   
   return (
     
@@ -22,17 +49,13 @@ export default function ViewLayout(props: ViewLayoutProps) {
       <CoverImage coverImage={ props.dbData.coverImage} />
 
       {/* description */}
-      <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">
-        <p className="text-lg text-gray-700">
-          {props.dbData.description}
-        </p>
-      </section>
+      <Description>{ props.dbData.description }</Description>
 
       {/* activity content */}
       {props.children}
       
       {/* footer */}
-      <Footer></Footer>
+      <Footer validateTemplate={validateTemplate}></Footer>
       
     </div>
   );

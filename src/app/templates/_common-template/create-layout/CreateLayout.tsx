@@ -8,20 +8,11 @@ import Description from "./Description";
 import ActivityOptions from "./ActivityOptions";
 import Footer from "./Footer";
 
-type ValidateLessonTemplateType = { 
-  status: boolean, 
-  message: string
-} 
-
-type GetLessonTemplateDataType = {
-  lessonData: any,
-  mediaFiles: any
-}
 
 type CreateLayoutProps = {
   templateTitle: string,
-  validateLessonTemplate: () => ValidateLessonTemplateType,
-  getLessonTemplateData: () => GetLessonTemplateDataType,
+  validateLessonTemplate: () => { status: boolean, message: string},
+  getLessonTemplateData: () => { lessonData: any, mediaFiles: any },// mediaFiles: Map<string, File>
   children: React.ReactNode
 }
 
@@ -33,19 +24,16 @@ export default function CreateLayout(props: CreateLayoutProps) {
     coverImage: "",
     description: "",
     lessonData: "", // from children
-    options: JSON.stringify(
-      {
-        "timeLimit": 0,
-        "isGraded": false
-      }
-    )
+    options: {
+      timeLimit: 0,
+      isGraded: false
+    }
   });
   
   // actual form sent to server
   const [form, setForm] = useState(new FormData());
   
-  
-  // 
+  // append lesson template data to form
   function appendLessonTemplate() {
     
     let lessonTemplateData = props.getLessonTemplateData();
@@ -54,7 +42,7 @@ export default function CreateLayout(props: CreateLayoutProps) {
     setFormData(function (prev) {
       return {
         ...prev,
-        templateData: JSON.stringify(lessonTemplateData.lessonData),
+        lessonData: lessonTemplateData.lessonData,
       }
     });
     
@@ -104,9 +92,9 @@ export default function CreateLayout(props: CreateLayoutProps) {
       }
     });
     
-    console.log(formData);
+    console.log(form);
 
-    return { status: true, message: "" };
+    return { status: true, message: "Successfully saved." };
     
   }
   

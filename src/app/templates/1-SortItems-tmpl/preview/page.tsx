@@ -1,86 +1,105 @@
 "use client";
 
-import ViewLayout from "@/app/templates/_common-template/view-layout/ViewLayout";
-import { useEffect, useState } from "react";
+import PreviewLayout from "@/app/templates/_common-template/view-layout/PreviewLayout";
 
-function StaticItem(props: { id: string }) {
+// View-only text item
+function TextItem(props: { id: string }) {
   return (
-    <div className="inline-block px-4 py-2 bg-yellow-100 text-amber-800 font-semibold rounded-full border border-yellow-300 shadow-sm select-none">
+    <div className="h-fit inline-flex items-center justify-center bg-yellow-100 text-amber-800 font-semibold 
+    rounded-xl border border-yellow-300 shadow-sm select-none p-2">
       {props.id}
     </div>
   );
 }
 
-function StaticZone(props: { title: string; items: string[] }) {
+// View-only image item
+function ImageItem(props: { src: string; alt: string }) {
   return (
-    <div className="mb-6">
-      <h3 className="text-lg font-semibold mb-2 text-gray-900">{props.title}</h3>
-      <div className="min-h-[80px] bg-white rounded-lg p-2 border border-dashed border-gray-300 flex flex-wrap gap-2 items-start">
-        {props.items.map((id) => (
-          <StaticItem key={id} id={id} />
-        ))}
-      </div>
+    <img
+      src={`/${props.src}`}
+      alt={props.alt}
+      className="h-20 w-fit object-contain rounded"
+    />
+  );
+}
+
+// Static droppable zone (same visuals, no DnD)
+function DroppableZone(props: { children: any }) {
+  return (
+    <div
+      className="min-h-[80px] bg-white rounded-lg p-2 border border-dashed border-gray-300 
+      flex flex-wrap gap-2 items-start"
+    >
+      {props.children}
     </div>
   );
 }
 
-export default function SortItems() {
-  
+export default function SortItemsPreview() {
   const dbData = {
     title: "Sort object",
     coverImage: "1746025057700_cute-giraffe.jpg",
-    description:
-      "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
+    description:  "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
     lessonData: {
-      box: [
-        { type: "text", value: "Potatoe" }
-      ],
       Animals: [
-        { type: "text", value: "Cat" },
-        { type: "image", value: "test-images/giraffe.jpg", label: "Jiraffe" }
+        { label: "Cat", type: "text", value: "Cat" },
+        { label: "Jiraffe", type: "image", value: "test-images/giraffe.jpg" },
       ],
       Vegetables: [
-        { type: "text", value: "Carrot" }
+        { label: "Carrot", type: "text", value: "Carrot" },
+      ],
+      box: [
+        { label: "Potatoe", type: "text", value: "Potatoe" },
       ],
     },
-    options: {
-      timeLimit: 0,
-      isGraded: false
-    },
-    message: "✅ You got {number-temp} out of {totalGroups-temp} baskets correct."
-
-  }
-
-  const [items, setItems] = useState<{ [location: string]: string[] }>({});
-
-  function buildActivityFromWorked() {
-    if (!dbData || !dbData.lessonData) return;
-    setItems(dbData.lessonData);
-  }
-
-  useEffect(() => {
-    buildActivityFromWorked();
-  }, []);
+  };
 
   return (
-    <ViewLayout dbData={dbData}>
+    <PreviewLayout dbData={dbData}>
+      {/* Box Area */}
       <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
         <h2 className="text-xl font-semibold mb-4">Items to Sort</h2>
-        <StaticZone title="Unsorted Items" items={items.box || []} />
+        <DroppableZone>
+          {dbData.lessonData.box.map((item) =>
+            item.type === "image" ? (
+              <ImageItem key={item.label} src={item.value} alt={item.label} />
+            ) : (
+              <TextItem key={item.label} id={item.label} />
+            )
+          )}
+        </DroppableZone>
       </section>
 
+      {/* Grouped Baskets */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        {Object.keys(items)
-          .filter((key) => key !== "box")
-          .map((groupTitle) => (
+        {Object.keys(dbData.lessonData)
+          .filter((groupKey) => groupKey !== "box")
+          .map((groupKey) => (
             <div
-              key={groupTitle}
               className="bg-gray-50 border-2 border-dashed border-gray-300 p-4 rounded-xl min-h-[120px]"
+              key={groupKey}
             >
-              <StaticZone title={groupTitle} items={items[groupTitle]} />
+              <h3 className="text-lg font-semibold mb-2 text-gray-900">
+                {groupKey}
+              </h3>
+              <DroppableZone>
+                {// @ts-ignore
+                  dbData.lessonData[groupKey].map((item) =>
+                  item.type === "image" ? (
+                    <ImageItem
+                      key={item.label}
+                      src={item.value}
+                      alt={item.label}
+                    />
+                  ) : (
+                    <TextItem key={item.label} id={item.label} />
+                  )
+                )}
+              </DroppableZone>
             </div>
           ))}
       </section>
-    </ViewLayout>
+    </PreviewLayout>
   );
 }
+

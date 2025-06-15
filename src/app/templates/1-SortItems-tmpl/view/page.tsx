@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-kit/core";
 import ViewLayout from "@/app/templates/_common-template/view-layout/ViewLayout";
 
-// Components for rendering
+// text component
 function TextItem(props: { id: string }) {
   return <span>{props.id}</span>;
 }
 
+// image component
 function ImageItem(props: { src: string; alt: string }) {
   return (
     <img
@@ -19,13 +20,16 @@ function ImageItem(props: { src: string; alt: string }) {
   );
 }
 
-// Draggable
+// draggble
 function DraggableItem(props: { id: string; type: string; value: string }) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: props.id });
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: props.id,
+  });
   const style = {
-    transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
+    transform: transform
+      ? `translate(${transform.x}px, ${transform.y}px)`
+      : undefined,
   };
-
   return (
     <div
       ref={setNodeRef}
@@ -45,8 +49,7 @@ function DraggableItem(props: { id: string; type: string; value: string }) {
   );
 }
 
-
-// Droppable
+// droppable
 function DroppableZone(props: { id: string; children: any }) {
   const { setNodeRef } = useDroppable({ id: props.id });
   return (
@@ -60,6 +63,7 @@ function DroppableZone(props: { id: string; children: any }) {
   );
 }
 
+
 function SortItems() {
   
   const dbData = {
@@ -72,38 +76,50 @@ function SortItems() {
         title: "Animals",
         items: [
           { type: "text", value: "Cat" },
-          { type: "image", value: "test-images/giraffe.jpg", label: "Jiraffe" }
-        ]
+          { type: "image", value: "test-images/giraffe.jpg", label: "Jiraffe" },
+        ],
       },
       {
         title: "Vegetables",
         items: [
           { type: "text", value: "Carrot" },
-          { type: "text", value: "Potatoe" }
-        ]
-      }
+          { type: "text", value: "Potatoe" },
+        ],
+      },
     ],
     options: {
       timeLimit: 0,
-      isGraded: false
-    }
+      isGraded: false,
+    },
   };
   
-  function gradeActivity() {
-    if (!dbData) return;
+  function getLessonData() {
+    const workedData: {
+      [key: string]: { label: string; type: string; value: string }[];
+    } = {};
+
+    for (let key in items) {
+      workedData[key] = items[key].map((item) => ({
+        label: item.label,
+        type: item.type,
+        value: item.value,
+      }));
+    }
+    return workedData;
+  }
+
+  function gradeLesson() {
+    const workedData = getLessonData();
+    if (!dbData || !dbData.lessonData) {
+      return { status: false, message: "Missing lesson data." };
+    }
 
     let correctCount = 0;
     let totalGroups = dbData.lessonData.length;
 
-    const workedData: { [key: string]: string[] } = {};
-
-    for (let key in items) {
-      workedData[key] = items[key].map((item) => item.id);
-    }
-
     dbData.lessonData.forEach((group: any) => {
       const correctLabels = group.items.map((item: any) => item.label || item.value);
-      const userLabels = workedData[group.title] || [];
+      const userLabels = (workedData[group.title] || []).map((i) => i.label);
 
       const sortedCorrect = [...correctLabels].sort();
       const sortedUser = [...userLabels].sort();
@@ -114,36 +130,40 @@ function SortItems() {
     });
 
     const passed = correctCount === totalGroups;
+    const message = `${passed ? "🎉 Great job! Everything is sorted correctly.\n" :
+      ""}✅ You got ${correctCount} out of ${totalGroups} baskets correct.`;
 
-    const message = `${passed ? "🎉 Great job! Everything is sorted correctly.\n" : ""}✅ You got ${correctCount} out of ${totalGroups} baskets correct.`;
-
-    alert(message);
+    return { status: true, message: message };
+    
   }
 
+
+  
+  
   const [items, setItems] = useState<{
-    [location: string]: { id: string; type: string; value: string }[];
+    [location: string]: { label: string; type: string; value: string }[];
   }>({ box: [] });
 
   function buildActivity() {
-    if (!dbData) return;
-
     const initialItems: {
-      [location: string]: { id: string; type: string; value: string }[];
+      [location: string]: { label: string; type: string; value: string }[];
     } = { box: [] };
 
-    dbData.lessonData.forEach((group: any) => {
-      const basketId = group.title;
-      initialItems[basketId] = [];
+    if (dbData.lessonData) {
+      dbData.lessonData.forEach((group: any) => {
+        const basketId = group.title;
+        initialItems[basketId] = [];
 
-      group.items.forEach((item: any) => {
-        const label = item.label || item.value;
-        initialItems.box.push({
-          id: label,
-          type: item.type,
-          value: item.value
+        group.items.forEach((item: any) => {
+          const label = item.label || item.value;
+          initialItems.box.push({
+            label: label,
+            type: item.type,
+            value: item.value,
+          });
         });
       });
-    });
+    }
 
     setItems(initialItems);
   }
@@ -151,6 +171,13 @@ function SortItems() {
   useEffect(() => {
     buildActivity();
   }, []);
+
+  function findContainer(label: string): string | null {
+    for (let key in items) {
+      if (items[key].some((item) => item.label === label)) return key;
+    }
+    return null;
+  }
 
   function handleDragEnd(event: any) {
     const { active, over } = event;
@@ -161,38 +188,32 @@ function SortItems() {
 
     if (from && to && from !== to) {
       setItems((prev) => {
-        const activeItem = prev[from].find((item) => item.id === active.id);
+        const activeItem = prev[from].find((item) => item.label === active.id);
         if (!activeItem) return prev;
 
-        const newFrom = prev[from].filter((item) => item.id !== active.id);
-        const newTo = [...prev[to], activeItem];
+        const newFrom = prev[from].filter((item) => item.label !== active.id);
+        const newTo = [...(prev[to] || []), activeItem];
         return { ...prev, [from]: newFrom, [to]: newTo };
       });
     }
   }
 
-  function findContainer(itemId: string): string | null {
-    for (let key in items) {
-      if (items[key].some((item) => item.id === itemId)) return key;
-    }
-    return null;
-  }
-
   return (
-    <ViewLayout dbData={dbData} gradeActivity={gradeActivity}>
+    <ViewLayout dbData={dbData} getLessonData={getLessonData} gradeLesson={gradeLesson}>
       <DndContext collisionDetection={rectIntersection} onDragEnd={handleDragEnd}>
         <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
           <h2 className="text-xl font-semibold mb-4">Items to Sort</h2>
           <DroppableZone id="box">
             <div className="flex flex-wrap gap-4">
-              {items.box.map((item) => (
-                <DraggableItem
-                  key={item.id}
-                  id={item.id}
-                  type={item.type}
-                  value={item.value}
-                />
-              ))}
+              {items.box &&
+                items.box.map((item) => (
+                  <DraggableItem
+                    key={item.label}
+                    id={item.label}
+                    type={item.type}
+                    value={item.value}
+                  />
+                ))}
             </div>
           </DroppableZone>
         </section>
@@ -208,8 +229,8 @@ function SortItems() {
                 {items[group.title] &&
                   items[group.title].map((item) => (
                     <DraggableItem
-                      key={item.id}
-                      id={item.id}
+                      key={item.label}
+                      id={item.label}
                       type={item.type}
                       value={item.value}
                     />
