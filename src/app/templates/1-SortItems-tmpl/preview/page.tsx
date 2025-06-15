@@ -31,18 +31,31 @@ export default function SortItems() {
     coverImage: "1746025057700_cute-giraffe.jpg",
     description:
       "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
-    workedData: {
-      box: ["Potatoe"],
-      Animals: ["Cat", "Jiraffe"],
-      Vegetables: ["Carrot"],
+    lessonData: {
+      box: [
+        { type: "text", value: "Potatoe" }
+      ],
+      Animals: [
+        { type: "text", value: "Cat" },
+        { type: "image", value: "test-images/giraffe.jpg", label: "Jiraffe" }
+      ],
+      Vegetables: [
+        { type: "text", value: "Carrot" }
+      ],
     },
-  };
+    options: {
+      timeLimit: 0,
+      isGraded: false
+    },
+    message: "✅ You got {number-temp} out of {totalGroups-temp} baskets correct."
+
+  }
 
   const [items, setItems] = useState<{ [location: string]: string[] }>({});
 
   function buildActivityFromWorked() {
-    if (!dbData || !dbData.workedData) return;
-    setItems(dbData.workedData);
+    if (!dbData || !dbData.lessonData) return;
+    setItems(dbData.lessonData);
   }
 
   useEffect(() => {
