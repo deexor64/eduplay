@@ -1,5 +1,4 @@
 interface ActivityTitleProps {
-  formData: { [key: string]: any };
   setFormData: Function;
 }
 
@@ -26,7 +25,6 @@ export default function ActivityTitle(props: ActivityTitleProps) {
         transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white"
         placeholder="e.g. Sort the Animals"
         onChange={setActivityTitle}
-        value={props.formData.title || "" }
       />
     </section>
   );

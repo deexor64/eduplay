@@ -1,20 +1,16 @@
 // activity options are predfined
-
-
-interface ActivityOptionsProps {
-  formData: { [key: string]: any };
+type ActivityOptionsProps = {
   setFormData: Function;
 }
 
 export default function ActivityOptions(props: ActivityOptionsProps) {
   
-  
-  function setOptions(option: string, value: any) {
-    let options = JSON.parse(props.formData.options);
-    options[option] = value;
+  function setOptions(option: any, value: any) {
     props.setFormData(function (prev: any) {
+      let options = JSON.parse(prev.options);
+      options[option] = value;
       return { ...prev, options: JSON.stringify(options) }
-    });
+    }); 
   }
   
   return (
@@ -27,10 +23,12 @@ export default function ActivityOptions(props: ActivityOptionsProps) {
         <label className="block font-semibold mb-2">Time Limit</label>
         <input
           type="number"
-          min="0"
+          min={0}
           className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white"
           placeholder="Time in minutes"
-          onChange={function (e) { setOptions("timeLimit", e.target.value) }}
+          onChange={function (e) { 
+            setOptions("timeLimit", Number.parseInt(e.target.value));
+          }}
         />
       </div>
       

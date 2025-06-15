@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { generateHash } from "@/utils/generateRandomID";
 import TemplateTitle from "./TemplateTitle";
 import Title from "@/components/Title";
 import ActivityTitle from "./ActivityTitle";
@@ -7,56 +5,36 @@ import CoverImage from "./CoverImage";
 import Description from "./Description";
 import ActivityOptions from "./ActivityOptions";
 import Footer from "./Footer";
-
+import { useState } from "react";
+import { generateHash } from "@/utils/generateRandomID";
 
 type CreateLayoutProps = {
   templateTitle: string,
-  validateLessonTemplate: () => { status: boolean, message: string},
-  getLessonTemplateData: () => { lessonData: any, mediaFiles: any },// mediaFiles: Map<string, File>
+  validateActivity: () => { status: boolean, message: string},
+  getActivityData: () => { templateName: string, activityData: any, mediaFiles: any },
   children: React.ReactNode
 }
 
 export default function CreateLayout(props: CreateLayoutProps) {
   
-  // temporary object to hold template data
+  // data sent to server 
   const [formData, setFormData] = useState({
+    templateName: "",
     title: "",
     coverImage: "",
     description: "",
-    lessonData: "", // from children
-    options: {
+    activityData: {}, // from children
+    options: JSON.stringify({
       timeLimit: 0,
       isGraded: false
-    }
+    })
   });
   
   // actual form sent to server
   const [form, setForm] = useState(new FormData());
   
-  // append lesson template data to form
-  function appendLessonTemplate() {
-    
-    let lessonTemplateData = props.getLessonTemplateData();
-    
-    // form data
-    setFormData(function (prev) {
-      return {
-        ...prev,
-        lessonData: lessonTemplateData.lessonData,
-      }
-    });
-    
-    // files
-    setForm(function (prev) {
-      for (const fileHash in lessonTemplateData.mediaFiles.keys()) {
-        prev.append(fileHash, lessonTemplateData.mediaFiles[fileHash]);
-      }
-      return prev;
-    });
-    
-  }
-  
-  function validateTemplate(): { status: boolean, message: string } {
+
+  function validateActivity(): { status: boolean, message: string } {
   
     // validate common template
     if (!formData.title) {
@@ -72,29 +50,40 @@ export default function CreateLayout(props: CreateLayoutProps) {
       return { status: false, message: "Options are required." };
     }
     
-    // validate lesson template
-    let validT = props.validateLessonTemplate();
+    // validate activity template
+    let validT = props.validateActivity();
     if (!validT.status) {
       return { status: false, message: validT.message };
     }
 
-    appendLessonTemplate();
+    return { status: true, message: "" };
     
-    // save form 
+  }
+  
+  function finalizeActivity() {
+    
+    let activityData = props.getActivityData();
+    
+    // static info
     setForm(function (prev) {
       return {
         title: formData.title,
         coverImage: formData.coverImage,
         description:  formData.description,
-        lessonData: formData.lessonData,
+        templateName: activityData.templateName,
+        activityData: JSON.stringify(activityData.activityData),
         options: formData.options,
         ...prev
       }
     });
     
-    console.log(form);
-
-    return { status: true, message: "Successfully saved." };
+    // files
+    setForm(function (prev) {
+      for (const fileHash in activityData.mediaFiles.keys()) {
+        prev.append(fileHash, activityData.mediaFiles[fileHash]);
+      }
+      return prev;
+    });
     
   }
   
@@ -106,23 +95,22 @@ export default function CreateLayout(props: CreateLayoutProps) {
       <TemplateTitle>{props.templateTitle}</TemplateTitle>
 
       {/* activity title */}
-      <ActivityTitle formData={formData} setFormData={setFormData} />
+      <ActivityTitle setFormData={setFormData} />
       
       {/* cover image */}
-      <CoverImage formData={formData} setFormData={setFormData}
-      form={form} setForm={setForm} />
+      <CoverImage setFormData={setFormData} setForm={setForm} />
       
       {/* description */}
-      <Description formData={formData} setFormData={setFormData} />
+      <Description setFormData={setFormData} />
       
       {/* template content */}
       {props.children}
 
       {/* activity options */}
-      <ActivityOptions formData={formData} setFormData={setFormData} />
+      <ActivityOptions setFormData={setFormData} />
       
       {/* footer */}
-      <Footer validateTemplate={validateTemplate}></Footer>
+      <Footer validateActivity={validateActivity}></Footer>
       
     </div>
     

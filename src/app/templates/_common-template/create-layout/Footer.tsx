@@ -1,14 +1,14 @@
 import Swal from "sweetalert2";
 
 interface FooterProps {
-  validateTemplate: Function,
+  validateActivity: Function,
 }
 
 export default function Footer(props: FooterProps) {
   
   function handleSave() {
     
-    let valid = props.validateTemplate();
+    let valid = props.validateActivity();
 
     if (!valid.status) {
       

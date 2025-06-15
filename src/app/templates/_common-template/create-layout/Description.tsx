@@ -1,5 +1,4 @@
 interface DescriptionProps {
-  formData: { [key: string]: any };
   setFormData: Function;
 }
 
