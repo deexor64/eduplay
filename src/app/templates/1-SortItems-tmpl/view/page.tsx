@@ -12,11 +12,8 @@ function TextItem(props: { id: string }) {
 // image component
 function ImageItem(props: { src: string; alt: string }) {
   return (
-    <img
-      src={`/${props.src}`}
-      alt={props.alt}
-      className="h-20 w-fit object-contain"
-    />
+    <img src={`/${props.src}`} alt={props.alt}
+      className="h-20 w-fit object-contain" />
   );
 }
 
@@ -66,12 +63,15 @@ function DroppableZone(props: { id: string; children: any }) {
 
 function SortItems() {
   
+  // data recieved from server
   const dbData = {
+    activityID: "1",
+    templateName: "1-SortItems-tmpl",
     title: "Sort object",
     coverImage: "1746025057700_cute-giraffe.jpg",
     description:
       "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
-    lessonData: [
+    activityData: [
       {
         title: "Animals",
         items: [
@@ -93,7 +93,8 @@ function SortItems() {
     },
   };
   
-  function getLessonData() {
+  // common
+  function getResultData() {
     const workedData: {
       [key: string]: { label: string; type: string; value: string }[];
     } = {};
@@ -107,17 +108,20 @@ function SortItems() {
     }
     return workedData;
   }
-
-  function gradeLesson() {
-    const workedData = getLessonData();
-    if (!dbData || !dbData.lessonData) {
-      return { status: false, message: "Missing lesson data." };
-    }
-
+  
+  // common
+  function validateResult(): { status: boolean, message: string } {
+    return { status: true, message: "" }
+  }
+  
+  // common
+  function gradeResult() {
+    
+    const workedData = getResultData();
     let correctCount = 0;
-    let totalGroups = dbData.lessonData.length;
+    let totalGroups = dbData.activityData.length;
 
-    dbData.lessonData.forEach((group: any) => {
+    dbData.activityData.forEach((group: any) => {
       const correctLabels = group.items.map((item: any) => item.label || item.value);
       const userLabels = (workedData[group.title] || []).map((i) => i.label);
 
@@ -133,11 +137,12 @@ function SortItems() {
     const message = `${passed ? "🎉 Great job! Everything is sorted correctly.\n" :
       ""}✅ You got ${correctCount} out of ${totalGroups} baskets correct.`;
 
-    return { status: true, message: message };
+    return { grading: {},
+      examinerDialog: message };
     
   }
-
-
+  
+  
   
   
   const [items, setItems] = useState<{
@@ -149,8 +154,8 @@ function SortItems() {
       [location: string]: { label: string; type: string; value: string }[];
     } = { box: [] };
 
-    if (dbData.lessonData) {
-      dbData.lessonData.forEach((group: any) => {
+    if (dbData.activityData) {
+      dbData.activityData.forEach((group: any) => {
         const basketId = group.title;
         initialItems[basketId] = [];
 
@@ -199,7 +204,8 @@ function SortItems() {
   }
 
   return (
-    <ViewLayout dbData={dbData} getLessonData={getLessonData} gradeLesson={gradeLesson}>
+    <ViewLayout dbData={dbData} getResultData={getResultData} 
+      validateResult={validateResult} gradeResult={gradeResult}>
       <DndContext collisionDetection={rectIntersection} onDragEnd={handleDragEnd}>
         <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
           <h2 className="text-xl font-semibold mb-4">Items to Sort</h2>
@@ -219,7 +225,7 @@ function SortItems() {
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-          {dbData.lessonData.map((group: any) => (
+          {dbData.activityData.map((group: any) => (
             <div
               className="bg-gray-50 border-2 border-dashed border-gray-300 p-4 rounded-xl min-h-[120px]"
               key={group.title}

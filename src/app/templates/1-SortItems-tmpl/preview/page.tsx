@@ -36,11 +36,14 @@ function DroppableZone(props: { children: any }) {
 }
 
 export default function SortItemsPreview() {
+  
   const dbData = {
+    sessionID: "1",
+    templateName: "1-SortItems-tmpl",
     title: "Sort object",
     coverImage: "1746025057700_cute-giraffe.jpg",
     description:  "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
-    lessonData: {
+    resultData: {
       Animals: [
         { label: "Cat", type: "text", value: "Cat" },
         { label: "Jiraffe", type: "image", value: "test-images/giraffe.jpg" },
@@ -52,6 +55,11 @@ export default function SortItemsPreview() {
         { label: "Potatoe", type: "text", value: "Potatoe" },
       ],
     },
+    gradingData: {},
+    options: {
+      timeLimit: 0,
+      isGraded: false,
+    }
   };
 
   return (
@@ -60,7 +68,7 @@ export default function SortItemsPreview() {
       <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
         <h2 className="text-xl font-semibold mb-4">Items to Sort</h2>
         <DroppableZone>
-          {dbData.lessonData.box.map((item) =>
+          {dbData.resultData.box.map((item) =>
             item.type === "image" ? (
               <ImageItem key={item.label} src={item.value} alt={item.label} />
             ) : (
@@ -72,7 +80,7 @@ export default function SortItemsPreview() {
 
       {/* Grouped Baskets */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        {Object.keys(dbData.lessonData)
+        {Object.keys(dbData.resultData)
           .filter((groupKey) => groupKey !== "box")
           .map((groupKey) => (
             <div

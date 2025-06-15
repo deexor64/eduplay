@@ -4,9 +4,11 @@ import { useState } from "react";
 import {generateHash} from "@/utils/generateRandomID";
 import CreateLayout from "@/app/templates/_common-template/create-layout/CreateLayout";
 
-function SortItems() {
+export default function SortItems() {
   
-  function validateLessonTemplate() {
+  // common
+  function validateActivity() {
+    
     for (let basket of baskets) {
       if (!basket.title.trim()) {
         return { status: false, message: "Each basket must have a title." };
@@ -20,15 +22,15 @@ function SortItems() {
     return { status: true, message: "" };
   }
   
-  function getLessonTemplateData() {
+  // common
+  function getActivityData() {
     return {
-      lessonData: baskets,
+      templateName: "1-SortItems-tmpl",
+      activityData: baskets,
       mediaFiles: mediaFiles
     };
   }
 
-  
-  
   
   type BasketItem = {
     type: "text" | "image";
@@ -119,7 +121,7 @@ function SortItems() {
     
   <CreateLayout templateTitle= {"Sort Items"} 
     validateLessonTemplate={validateLessonTemplate} 
-    getLessonTemplateData={getLessonTemplateData}>
+    getActivityData={getActivityData}>
       
       <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Define Baskets</h2>
@@ -248,5 +250,3 @@ function SortItems() {
     
   );
 }
-
-export default SortItems;
