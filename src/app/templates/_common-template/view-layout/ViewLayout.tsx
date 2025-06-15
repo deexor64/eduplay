@@ -6,56 +6,74 @@ import Description from "./Description";
 
 type ViewLayoutProps = {
   dbData: any,
-  gradeLesson: () => { status: boolean, message: string},
-  getLessonData: () => any,
+  getResultData: () => any,
+  validateResult: () => { status: boolean, message: string},
+  gradeResult: () => { grading: {}, examinerDialog: string },
   children: React.ReactNode
 }
 
 export default function ViewLayout(props: ViewLayoutProps) {
   
+  // data recieved from server
+  const dbData = props.dbData;
+  
+  // data sent to server
+  const [formData, setFormData] = useState({
+    activityID: dbData.activityID,
+    resultData: {}, // from children
+    gradingData: {},
+  });
+  
   // actual form sent to server
   const [form, setForm] = useState(new FormData());
   
-  function validateTemplate(): { status: boolean, message: string } {
+  function validateResult(): { status: boolean, message: string } {
+    
+    // no validations for common template
 
     // validate lesson template
-    let validT = props.gradeLesson();
+    let validT = props.validateResult();
     if (!validT.status) {
       return validT;
     }
     
-  // append lesson template data to form
+    return { status: true, message: "" };
+    
+  }
+  
+  function finalizeResult() {
+    
+    // static info
     setForm(function (prev) {
       return {
-        lessonData: props.getLessonData(),
-        ...props.dbData,
+        activityID: formData.activityID,
+        resultData: JSON.stringify(props.getResultData()),
+        gradingData: JSON.stringify(props.gradeResult()),
+        ...prev
       }
     });
     
-    console.log(form);
-
-    return validT;
-    
   }
+  
   
   return (
     
     <div className="max-w-6xl mx-auto p-4 pb-14 bg-blue-100">
       
       {/* activity title */}
-      <ActivityTitle>{ props.dbData.title }</ActivityTitle>
+      <ActivityTitle> { dbData.title }</ActivityTitle>
 
       {/* cover image */}
-      <CoverImage coverImage={ props.dbData.coverImage} />
+      <CoverImage coverImage={ dbData.coverImage} />
 
       {/* description */}
-      <Description>{ props.dbData.description }</Description>
+      <Description>{ dbData.description }</Description>
 
       {/* activity content */}
       {props.children}
       
       {/* footer */}
-      <Footer validateTemplate={validateTemplate}></Footer>
+      <Footer />
       
     </div>
   );

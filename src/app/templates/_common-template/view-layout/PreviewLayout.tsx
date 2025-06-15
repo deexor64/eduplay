@@ -1,7 +1,8 @@
-import { useState } from "react";
 import ActivityTitle from "./ActivityTitle";
 import CoverImage from "./CoverImage";
+import Description from "./Description";
 import Footer from "./Footer";
+import { useState } from "react";
 
 type PreviewLayoutProps = {
   dbData: any,
@@ -10,22 +11,21 @@ type PreviewLayoutProps = {
 
 export default function ViewLayout(props: PreviewLayoutProps) {
   
+  // data recieved from server
+  const dbData = props.dbData;
+  
   return (
     
     <div className="max-w-6xl mx-auto p-4 pb-14 bg-blue-100">
       
       {/* activity title */}
-      <ActivityTitle>{ props.dbData.title }</ActivityTitle>
+      <ActivityTitle> { dbData.title }</ActivityTitle>
 
       {/* cover image */}
-      <CoverImage coverImage={ props.dbData.coverImage} />
+      <CoverImage coverImage={ dbData.coverImage} />
 
       {/* description */}
-      <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">
-        <p className="text-lg text-gray-700">
-          {props.dbData.description}
-        </p>
-      </section>
+      <Description>{ dbData.description }</Description>
 
       {/* activity content */}
       {props.children}
