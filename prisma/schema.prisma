@@ -6,10 +6,23 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+
+
+
+model Teacher {
+  teacherID   String   @id @default(uuid()) // Primary key, UUID
+  indexNumber Int      @unique              // Unique index number
+  fullName    String   @db.VarChar(255)     // Full name
+  firstName   String   @db.VarChar(255)     // First name
+  lastName    String   @db.VarChar(255)     // Last name
+  password    String                        // This will store the hashed password
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
