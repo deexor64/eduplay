@@ -1,6 +1,6 @@
 export async function generateHash(input: string) {
   
-  const salt = crypto.getRandomValues(new Uint8Array(16)); // browser-friendly salt
+  const salt = crypto.getRandomValues(new Uint8Array(16));
   const encoder = new TextEncoder();
   const data = encoder.encode(input + Array.from(salt).join());
 
