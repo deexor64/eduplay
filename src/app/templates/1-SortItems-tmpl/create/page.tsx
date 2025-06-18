@@ -120,7 +120,7 @@ export default function SortItems() {
   return (
     
   <CreateLayout templateTitle= {"Sort Items"} 
-    validateLessonTemplate={validateLessonTemplate} 
+    validateActivity={validateActivity} 
     getActivityData={getActivityData}>
       
       <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">

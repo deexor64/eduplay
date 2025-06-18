@@ -17,12 +17,12 @@ datasource db {
 
 
 model Teacher {
-  teacherID   String   @id @default(uuid()) // Primary key, UUID
-  indexNumber Int      @unique              // Unique index number
-  fullName    String   @db.VarChar(255)     // Full name
-  firstName   String   @db.VarChar(255)     // First name
-  lastName    String   @db.VarChar(255)     // Last name
-  password    String                        // This will store the hashed password
-  createdAt   DateTime @default(now())
+  teacherID   String   @id @default(uuid()) // Primary key UUID
+  indexNumber Int      @unique              // from client
+  fullName    String   @db.VarChar(255)     // from client
+  firstName   String   @db.VarChar(255)     // from client
+  lastName    String   @db.VarChar(255)     // from client
+  password    String                        // Password hash
+  createdAt   DateTime @default(now())      
   updatedAt   DateTime @updatedAt
 }
