@@ -10,7 +10,7 @@ import InputFilter from "@/components/filter/InputFilter";
 import OptionFilter from "@/components/filter/OptionFilter";
 import TableWrapper from "@/components/table/TableWrapper";
 import TableRow from "@/components/table/TableRow";
-import { generateUniqueID } from "@/utils/generateRandomID";
+import { generateUniqueID } from "@/lib/utils/generateRandomString";
 
 export default function ManageUsers() {
   

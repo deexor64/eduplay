@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import getUserType from '@/utils/getUserType';
+import getUserType from '@/lib/utils/getUserType';
 
 export default function Navbar(props: any) {
 

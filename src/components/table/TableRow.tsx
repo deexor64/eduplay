@@ -1,4 +1,4 @@
-import { generateUniqueID } from "@/utils/generateRandomID"
+import { generateUniqueID } from "@/lib/utils/generateRandomString";
 
 interface TableRowProps {
   rowType: "head" | "data",

@@ -1,8 +1,8 @@
 import { ReactNode, useState } from "react";
 import { useParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import getUserType from "@/utils/getUserType";
-import { generateUniqueID } from "@/utils/generateRandomID";
+import getUserType from "@/lib/utils/getUserType";
+import { generateUniqueID } from "@/lib/utils/generateRandomString";
 
 
 interface sideBarLinkProps {
