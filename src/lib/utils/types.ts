@@ -1,3 +1,5 @@
+// user types
+export type UserType = "admin" | "teacher" | "parent" | "student" | "unknown";
 
 // client request type
 export type PostReqType = {

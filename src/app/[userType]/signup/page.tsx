@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, FormEvent} from 'react';
-import { useParams } from "next/navigation";
+import useAuth from '@/hooks/useAuth';
 import Link from 'next/link';
 import Title from '@/components/form/Title';
 import TextInput from '@/components/form/TextInput';
@@ -17,7 +17,7 @@ import GroupTitle from '@/components/form/GroupTitle';
 
 export default function Signup() {
   
-  const userType = useParams().userType;
+  const { userType, setUserType } = useAuth();
   
   const [formData, setFormData] = useState({
     // user
@@ -29,7 +29,7 @@ export default function Signup() {
     phoneNumber: "",
     password: "",
     confirmPassword: "",
-    // teacher
+    // admin teacher student
     indexNumber: "",
   });
   
@@ -42,8 +42,9 @@ export default function Signup() {
   function finalizeForm(): string {
     
     let form: PostReqType = {
-      userType: userType + "",
+      userType: userType,
       formData: {
+        userType: userType,
         fullName: formData.fullName,
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -116,7 +117,11 @@ export default function Signup() {
     
     <form onSubmit={handleSubmit}>
       
-      <Title>Sign Up</Title>
+      <Title>Sign Up <br/> as 
+        {(userType == "admin") &&  " Admin"}
+        {(userType == "teacher") &&  " Teacher"}
+        {(userType == "parent") &&  " Parent"}
+      </Title>
       
       {/* general info */}
       <GroupTitle>General Info</GroupTitle>
@@ -137,11 +142,16 @@ export default function Signup() {
       
       <PasswordInput label="Confirm Password" name="confirmPassword" setFormData={setFormData} />
       
-      {/* professionsal info */}
-      <GroupTitle>Professional Info</GroupTitle>
-      
-      <NumberInput label="Index Number" name="indexNumber" setFormData={setFormData} />
-      
+      { ["admin", "teacher"].includes(userType) &&
+        <>
+          {/* professionsal info */}
+          <GroupTitle>Special Info</GroupTitle>
+          
+          <NumberInput label="Index Number" name="indexNumber" setFormData={setFormData} />
+        
+        </>
+      }
+            
       <SubmitButton>Sign Up</SubmitButton>
         
     </form>

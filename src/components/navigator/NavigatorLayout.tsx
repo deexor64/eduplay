@@ -1,11 +1,22 @@
 'use client';
 
-import { useState } from "react";
-
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import { useEffect, useState } from "react";
+import useAuth  from "@/hooks/useAuth";
+import { useParams } from "next/navigation";
+import useUserType from "@/hooks/useUserType";
 
 export default function NavigatorLayout(props: any) {
+  
+  // user type
+  const { userType, setUserType } = useAuth();
+  
+  const uType = useUserType();
+  
+  useEffect(() => {
+    setUserType(uType);
+  }, []);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   

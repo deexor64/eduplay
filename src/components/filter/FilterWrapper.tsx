@@ -1,10 +1,8 @@
-import { ReactNode } from "react";
-
 // Wrapper for filters
 interface FiltersProps {
   filterTab: string;
   selected: string;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export default function FilterWrapper(props: FiltersProps) {

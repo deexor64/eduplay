@@ -22,7 +22,7 @@ export default function PhoneInput(props: PhoneInputProps) {
       </label>
       <input
         name={props.name}
-        type="number"
+        type="tel"
         id={props.name}
         onChange={handleChange}
         className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -1,20 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import teacherService from '@/lib/services/signup/teacher';
-
-const signupHandlers: { [key: string]: (body: any) => Promise<any> } = {
-  teacher: teacherService,
-  // parent: parentSignup,
-};
+import signupService from '@/lib/services/signupService';
+import { UserType } from '@/lib/utils/types';
 
 export async function POST(req: NextRequest) {
   
   try {
     
-    const body = await req.json();
-    const handler = signupHandlers[body.userType];
+    const users: UserType[] = ["admin", "teacher", "parent", "student"];
     
-    // choose handler based on user type
-    if (!handler) {
+    const body = await req.json();
+    
+    // check user type
+    if (!users.includes(body.userType)) {
       return NextResponse.json(
         { status: false, responseType: "log", data: "Invalid usertype" },
         { status: 400 }
@@ -22,7 +19,7 @@ export async function POST(req: NextRequest) {
     }
     
     // query database
-    let query = await handler(body.formData);
+    let query = await signupService(body);
     if (!query.status) return NextResponse.json(
       query,
       { status: 500 }
@@ -35,7 +32,7 @@ export async function POST(req: NextRequest) {
   
   } catch (err: any) {
     return NextResponse.json(
-      { status: false, responseType: "log", data: "Internal server error: " + err },
+      { status: false, responseType: "log", data: "Internal server error."},
       { status: 500 }
     );
   }

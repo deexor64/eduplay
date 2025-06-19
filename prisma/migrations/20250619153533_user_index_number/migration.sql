@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "indexNumber" SET DATA TYPE VARCHAR(20);
