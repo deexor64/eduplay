@@ -23,7 +23,7 @@ model User {
   email       String   @unique @db.VarChar(255) // unique
   phoneNumber String   @unique @db.VarChar(20)  // unique
   password    String
-  indexNumber String   @unique @db.VarChar(20)  // unique
+  indexNumber String?  @unique @db.VarChar(20)  // unique
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

@@ -24,13 +24,13 @@ export default async function signupService(body: any): Promise<ResType> {
 
     if (existing) return { status: false, resDataType: "warning", data: "Email already exists" };
     
-    existing = await prisma.user.findUnique({ // email
+    existing = await prisma.user.findUnique({ // phone number
       where: { phoneNumber: formData.phoneNumber },
     });
     
     if (existing) return { status: false, resDataType: "warning", data: "Phone Number already exists" };
     
-    existing = await prisma.user.findFirst({ // index number
+    existing = await prisma.user.findUnique({ // index number
       where: { indexNumber: formData.indexNumber },
     });
     

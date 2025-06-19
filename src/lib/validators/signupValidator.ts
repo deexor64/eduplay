@@ -28,10 +28,7 @@ export default function signupValidator(body: any): ResType {
       password: z.string().min(10, "Password must be at least 10 characters"),
     });
     
-    parsed = zObj.safeParse({
-      ...formData,
-      indexNumber: Number(body.indexNumber), // Zod expects number
-    });
+    parsed = zObj.safeParse(formData);
     
   } else {
     
@@ -57,7 +54,7 @@ export default function signupValidator(body: any): ResType {
   }
   
   if (!parsed.success) {
-    return { status: false, resDataType: "error", data: "Invalid data recieved" + parsed.data}
+    return { status: false, resDataType: "error", data: "Invalid data recieved"}
   }
   
   return { status: true, resDataType: "data", data: parsed.data}
