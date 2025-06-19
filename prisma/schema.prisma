@@ -14,15 +14,27 @@ datasource db {
 }
 
 
-
+model User {
+  userID      String   @id @default(uuid())
+  fullName    String   @db.VarChar(255)
+  firstName   String   @db.VarChar(255)
+  lastName    String   @db.VarChar(255)
+  dateOfBirth String   
+  email       String   @unique @db.VarChar(255)
+  phoneNumber String   @unique @db.VarChar(20)
+  password    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  teacher     Teacher? @relation
+  
+}
 
 model Teacher {
-  teacherID   String   @id @default(uuid()) // Primary key UUID
-  indexNumber Int      @unique              // from client
-  fullName    String   @db.VarChar(255)     // from client
-  firstName   String   @db.VarChar(255)     // from client
-  lastName    String   @db.VarChar(255)     // from client
-  password    String                        // Password hash
-  createdAt   DateTime @default(now())      
-  updatedAt   DateTime @updatedAt
+  teacherID   String   @id @default(uuid())
+  userID      String   @unique
+  indexNumber Int      @unique
+  
+  user        User     @relation(fields: [userID], references: [userID])
 }
+

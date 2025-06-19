@@ -1,6 +1,6 @@
 
 // client request type
-export type ReqType = {
+export type PostReqType = {
   userType: string,
   formData: any,
 }

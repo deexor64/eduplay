@@ -1,17 +1,16 @@
 import { ReactNode, useState } from "react";
-import { generateUniqueID } from "@/utils/generateRandomID";
+import { generateUniqueID } from "@/lib/utils/generateRandomString";
 
 // Filter by input
 interface InputFilterProps {
   filterTab: string;
   filterKey: string;
-  dbData: { [key: string]: Array<{ [key: string]: any }> };
-  filteredData: { [key: string]: Array<{ [key: string]: any }> };
+  originalData: { [key: string]: Array<{ [key: string]: any }> };
   setFilteredData: Function;
 }
 
 export default function InputFilter(props: InputFilterProps) {
-  const { filterTab, filterKey, dbData, filteredData, setFilteredData } = props;
+  const { filterTab, filterKey, originalData, setFilteredData } = props;
   const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = function (e: React.ChangeEvent<HTMLInputElement>) {
@@ -20,7 +19,7 @@ export default function InputFilter(props: InputFilterProps) {
 
     setFilteredData(function (prevFilteredData: any) {
       // Start with the original dbData for the entity
-      let newData = dbData[filterTab];
+      let newData = originalData[filterTab];
 
       // Apply select filters
       const selectFilters = Array.from(document.querySelectorAll<HTMLSelectElement>(`select[data-entity="${filterTab}"]`))

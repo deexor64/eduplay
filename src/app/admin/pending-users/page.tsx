@@ -10,7 +10,7 @@ import InputFilter from "@/components/filter/InputFilter";
 import OptionFilter from "@/components/filter/OptionFilter";
 import TableWrapper from "@/components/table/TableWrapper";
 import TableRow from "@/components/table/TableRow";
-import { generateUniqueID } from "@/utils/generateRandomID";
+import { generateUniqueID } from "@/lib/utils/generateRandomString";
 
 export default function ManageUsers() {
   
@@ -62,15 +62,13 @@ export default function ManageUsers() {
         <OptionFilter
           filterTab="admin"
           values={{ status: ["All", "Active", "Inactive", "Suspended"] }}
-          dbData={dbData}
-          filteredData={filteredData}
+          originalData={dbData}
           setFilteredData={setFilteredData}
         />
         <OptionFilter
           filterTab="admin"
           values={{ id: ["All", "a1", "a2", "a3"] }}
-          dbData={dbData}
-          filteredData={filteredData}
+          originalData={dbData}
           setFilteredData={setFilteredData}
         />
       </FilterWrapper>
@@ -79,22 +77,19 @@ export default function ManageUsers() {
         <OptionFilter
           filterTab="teacher"
           values={{ status: ["All", "Active", "Inactive", "Suspended"] }}
-          dbData={dbData}
-          filteredData={filteredData}
+          originalData={dbData}
           setFilteredData={setFilteredData}
         />
         <OptionFilter
           filterTab="teacher"
           values={{ id: ["All", "t1", "t2", "t3"] }}
-          dbData={dbData}
-          filteredData={filteredData}
+          originalData={dbData}
           setFilteredData={setFilteredData}
         />
         <InputFilter
           filterTab="teacher"
           filterKey="name"
-          dbData={dbData}
-          filteredData={filteredData}
+          originalData={dbData}
           setFilteredData={setFilteredData}
         />
       </FilterWrapper>

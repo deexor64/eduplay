@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-import { ResType } from '@/utils/types';
-import { generatePasswordHash } from '@/utils/generatePasswordHash';
+import { PrismaClient } from "@prisma/client";
+import { ResType } from '@/lib/utils/types';
+import { generatePasswordHash } from '@/lib/utils/generatePasswordHash';
 import teacherValidator from '@/lib/validators/signup/teacher';
 
 const prisma = new PrismaClient();
@@ -15,7 +15,19 @@ export default async function teacherService(body: any): Promise<ResType> {
   // uniqueness check
   const data = valid.data;
   
-  const existing = await prisma.teacher.findUnique({
+  let existing = await prisma.user.findUnique({ // email
+    where: { email: data.email },
+  });
+  
+  if (existing) return { status: false, resDataType: "warning", data: "Email already exists" };
+  
+  existing = await prisma.user.findUnique({ // phoneNumber
+    where: { phoneNumber: data.phoneNumber },
+  });
+  
+  if (existing) return { status: false, resDataType: "warning", data: "Phone Number already exists" };
+  
+  existing = await prisma.teacher.findUnique({ // index number
     where: { indexNumber: data.indexNumber },
   });
   
@@ -24,10 +36,22 @@ export default async function teacherService(body: any): Promise<ResType> {
   // finalize and query data
   const hashedPassword = await generatePasswordHash(data.password);
   
+  const newUser = await prisma.user.create({
+    data: {
+      fullName: data.fullName,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      dateOfBirth: data.dateOfBirth,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+      password: hashedPassword
+    },
+  });
+  
   const newTeacher = await prisma.teacher.create({
     data: {
-      ...data,
-      password: hashedPassword
+      indexNumber: data.indexNumber,
+      userID: newUser.userID
     },
   });
   

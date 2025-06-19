@@ -1,17 +1,16 @@
 import { ReactNode, useState } from "react";
-import { generateUniqueID } from "@/utils/generateRandomID";
+import { generateUniqueID } from "@/lib/utils/generateRandomString";
 
 // Filter by selecting options
 interface OptionFilterProps {
   filterTab: string,
   values: { [key: string]: Array<"All" | string | number | boolean> },
-  dbData: { [key: string]: Array<{ [key: string]: any }> },
-  filteredData: { [key: string]: Array<{ [key: string]: any }> },
+  originalData: { [key: string]: Array<{ [key: string]: any }> },
   setFilteredData: Function
 }
 
 export default function OptionFilter(props: OptionFilterProps) {
-  const { filterTab, values, dbData, filteredData, setFilteredData } = props;
+  const { filterTab, values, originalData, setFilteredData } = props;
   const filterKey = Object.keys(values)[0]; // e.g., 'status' or 'id'
   const [selectedValue, setSelectedValue] = useState<"All" | string | number | boolean>("All");
 
@@ -21,7 +20,7 @@ export default function OptionFilter(props: OptionFilterProps) {
 
     setFilteredData(function (prevFilteredData: any) {
       // Start with the original dbData for the entity
-      let newData = dbData[filterTab];
+      let newData = originalData[filterTab];
       
       // Collect all active filters, including the current one
       const allFilters = Array.from(document.querySelectorAll<HTMLSelectElement>
