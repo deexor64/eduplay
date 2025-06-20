@@ -149,7 +149,7 @@ export default function Signup() {
         </>
       }
             
-      <SubmitButton>Sign Up</SubmitButton>
+      <SubmitButton>SignUp</SubmitButton>
         
     </form>
     

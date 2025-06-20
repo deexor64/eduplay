@@ -1,134 +1,131 @@
 "use client";
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent} from 'react';
+import useAuth from '@/hooks/useAuth';
 import Link from 'next/link';
+import Title from '@/components/form/Title';
+import TextInput from '@/components/form/TextInput';
+import PasswordInput from '@/components/form/PasswordInput';
+import SubmitButton from '@/components/form/SumbitButton';
+import EmailInput from '@/components/form/EmailInput';
+import Swal from 'sweetalert2';
+import NumberInput from '@/components/form/NumberInput';
+import { PostReqType } from '@/lib/utils/types';
+import PhoneInput from '@/components/form/PhoneInput';
+import DateInput from '@/components/form/DateInput';
+import GroupTitle from '@/components/form/GroupTitle';
 
-
-interface FormData {
-  fullName: string;
-  username: string;
-  password: string;
-  confirmPassword: string;
-}
-
-const Signup = () => {
+export default function Signup() {
   
+  const { userType, setUserType } = useAuth();
   
-  const [formData, setFormData] = useState<FormData>({
-    fullName: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
+  const [formData, setFormData] = useState({
+    email: undefined,
+    phoneNumber: undefined,
+    password: undefined,
   });
-  const [error, setError] = useState<string>('');
+  
+  function validateForm(): {status: boolean, message: string} {
+    
+    return {status: true, message: ""}
+    
+  }
+  
+  function finalizeForm(): string {
+    
+    // remove unused fields
+    // undefined fileds are stripped at stringify
+    let tempForm = formData;
+    
+    // create form
+    let form: PostReqType = {
+      userType: userType,
+      formData: tempForm,
+    }
+    
+    return JSON.stringify(form);
+    
+  }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  function handleSubmit (e: FormEvent<HTMLFormElement>) {
+    
     e.preventDefault();
-    setError('');
-
-    // Basic client-side validation
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+    
+    // validate
+    let valid = validateForm();
+    if (!valid.status) {
+      Swal.fire({
+        title: "Error",
+        text: valid.message,
+        icon: "error",
+      });
       return;
     }
-
-    // Add API call to your backend (e.g., POST to /api/signup)
-    console.log('Signup Data:', formData);
-    // Example: await fetch('/api/signup', { method: 'POST', body: JSON.stringify(formData) });
+    
+    // finalize
+    let form = finalizeForm();
+    
+    // submit
+    fetch("/api/signin", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+        },
+      body: form
+    })
+    .then(function (res) {
+      console.log(res.body);
+      if (!res.ok) {
+        Swal.fire({
+          title: "Error",
+          text: "not okay",
+          icon: "error",
+        });
+      } else {
+        Swal.fire({
+          title: "Success",
+          text: "okayy",
+          icon: "success",
+        });
+      }
+      return res.json();
+    })
+    .then(function (data) {
+      console.log(data);
+    })
+    .catch(function (err) {
+      console.log(err.message);
+    });
+    
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-md w-full p-6 bg-white rounded-lg shadow-md"
+    
+    <form onSubmit={handleSubmit}>
+      
+      <Title> Sign In <br/> as 
+        {(userType == "ADMIN") &&  " Admin"}
+        {(userType == "TEACHER") &&  " Teacher"}
+        {(userType == "PARENT") &&  " Parent"} </Title>
+      
+      <EmailInput label="E-mail" name="email" setFormData={setFormData} />
+      
+      <PhoneInput label="Phone Number" name="phoneNumber" setFormData={setFormData} />
+
+      <PasswordInput label="Password" name="password" setFormData={setFormData} />
+      
+      <SubmitButton>SignIn</SubmitButton>
+      
+      <Link
+        href="/forgot-password"
+        className="text-blue-500 hover:underline text-sm"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Sign Up</h2>
-
-        <div className="mb-4">
-          <label htmlFor="fullName" className="block text-gray-700 font-medium mb-1">
-            Full Name
-          </label>
-          <input
-            type="text"
-            id="fullName"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="username" className="block text-gray-700 font-medium mb-1">
-            Username
-          </label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="password" className="block text-gray-700 font-medium mb-1">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="confirmPassword" className="block text-gray-700 font-medium mb-1">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition-colors"
-        >
-          Sign Up
-        </button>
-
-        <div className="mt-4 text-center">
-          <Link
-            href="/forgot-password"
-            className="text-blue-500 hover:underline text-sm"
-          >
-            Forgot Password?
-          </Link>
-        </div>
-      </form>
-    </div>
+        Forgot Password?
+      </Link>
+        
+    </form>
+    
   );
 };
 
-export default Signup;
+
