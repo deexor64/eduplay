@@ -14,31 +14,57 @@ datasource db {
 }
 
 model User {
-  userID      String   @id @default(uuid()) // unique
-  userType    String   // admin, teacher, parent
-  fullName    String   @db.VarChar(255)
-  firstName   String   @db.VarChar(255)
-  lastName    String   @db.VarChar(255)
-  dateOfBirth String
-  email       String   @unique @db.VarChar(255) // unique
-  phoneNumber String   @unique @db.VarChar(20)  // unique
+  userID      String   @id @default(uuid())
+  fullName    String 
+  firstName   String 
+  lastName    String 
+  dateOfBirth DateTime?
   password    String
-  indexNumber String?  @unique @db.VarChar(20)  // unique
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
+  admin       Admin?   @relation("admin")
+  teacher     Teacher? @relation("teacher")
+  parent      Parent?  @relation("parent")
+  student     Student? @relation("student")
+  
+}
+
+model Admin {
+  adminID     String   @id @default(uuid())
+  indexNumber String   @unique
+  email       String   @unique
+  phoneNumber String   @unique
+  
+  userID      String   @unique
+  user        User     @relation("admin", fields: [userID], references: [userID])
+}
+
+model Teacher {
+  teacherID   String   @id @default(uuid())
+  indexNumber String   @unique
+  email       String   @unique
+  phoneNumber String   @unique
+  
+  userID      String   @unique
+  user        User     @relation("teacher", fields: [userID], references: [userID])
+}
+
+model Parent {
+  parentID   String   @id @default(uuid())
+  email       String   @unique
+  phoneNumber String   @unique
+  
+  userID      String   @unique
+  user        User     @relation("parent", fields: [userID], references: [userID])
 }
 
 model Student {
   studentID   String   @id @default(uuid())
-  userType    String   // always "student"
-  fullName    String   @db.VarChar(255)
-  firstName   String   @db.VarChar(255)
-  lastName    String   @db.VarChar(255)
-  dateOfBirth String
-  email       String   @db.VarChar(255)         // not unique
-  phoneNumber String   @db.VarChar(20)          // not unique
-  password    String
-  indexNumber String   @unique @db.VarChar(20)  // unique
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  indexNumber String   @unique
+  email       String 
+  phoneNumber String
+  
+  userID      String   @unique
+  user        User     @relation("student", fields: [userID], references: [userID])
 }
