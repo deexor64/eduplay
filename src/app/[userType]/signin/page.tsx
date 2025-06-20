@@ -21,7 +21,6 @@ export default function Signup() {
   
   const [formData, setFormData] = useState({
     email: undefined,
-    phoneNumber: undefined,
     password: undefined,
   });
   
@@ -99,19 +98,18 @@ export default function Signup() {
     
   };
 
+  
   return (
     
     <form onSubmit={handleSubmit}>
-      
+
       <Title> Sign In <br/> as 
         {(userType == "ADMIN") &&  " Admin"}
         {(userType == "TEACHER") &&  " Teacher"}
         {(userType == "PARENT") &&  " Parent"} </Title>
-      
-      <EmailInput label="E-mail" name="email" setFormData={setFormData} />
-      
-      <PhoneInput label="Phone Number" name="phoneNumber" setFormData={setFormData} />
 
+      <EmailInput label="E-mail" name="email" setFormData={setFormData} /> 
+      
       <PasswordInput label="Password" name="password" setFormData={setFormData} />
       
       <SubmitButton>SignIn</SubmitButton>
