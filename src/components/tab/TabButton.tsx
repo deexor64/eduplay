@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 // Tab button
 interface TabButtonProps {
-  tabName: "default" | string,
+  tabName: "DEFAULT" | string,
   setSelected: Function,
   selected: string,
   children: ReactNode
@@ -10,7 +10,7 @@ interface TabButtonProps {
 
 export default function TabButton(props: TabButtonProps) {
   return (
-    props.tabName != "default" && (
+    props.tabName != "DEFAULT" && (
       <button
         onClick={() => props.setSelected(props.tabName)}
         className={

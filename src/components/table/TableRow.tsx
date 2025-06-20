@@ -1,14 +1,14 @@
 import { generateUniqueID } from "@/lib/utils/generateRandomString";
 
 interface TableRowProps {
-  rowType: "head" | "data",
+  rowType: "HEAD" | "DATA",
   rowData: Object
 }
 
 // row
 export default function TableRow (props: TableRowProps) {
   return (
-    props.rowType == "head" ? 
+    props.rowType == "HEAD" ? 
     <tr className="text-sm text-gray-600">
       {Object.keys(props.rowData).map(function (item: any) {
         return (

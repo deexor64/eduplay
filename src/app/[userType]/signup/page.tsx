@@ -118,9 +118,9 @@ export default function Signup() {
     <form onSubmit={handleSubmit}>
       
       <Title>Sign Up <br/> as 
-        {(userType == "admin") &&  " Admin"}
-        {(userType == "teacher") &&  " Teacher"}
-        {(userType == "parent") &&  " Parent"}
+        {(userType == "ADMIN") &&  " Admin"}
+        {(userType == "TEACHER") &&  " Teacher"}
+        {(userType == "PARENT") &&  " Parent"}
       </Title>
       
       {/* general info */}
@@ -142,7 +142,7 @@ export default function Signup() {
       
       <PasswordInput label="Confirm Password" name="confirmPassword" setFormData={setFormData} />
       
-      { ["admin", "teacher"].includes(userType) &&
+      { ["ADMIN", "TEACHER"].includes(userType) &&
         <>
           {/* professionsal info */}
           <GroupTitle>Special Info</GroupTitle>

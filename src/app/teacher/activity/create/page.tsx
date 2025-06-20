@@ -10,13 +10,13 @@ import InputFilter from "@/components/filter/InputFilter";
 import OptionFilter from "@/components/filter/OptionFilter";
 import ItemListWrapper from "@/components/item-list/ItemListWrapper";
 import { CreateLessonItem } from "@/components/item-list/CreateLessonItem";
-import { generateUniqueID } from "@/utils/generateRandomID";
+import { generateUniqueID } from "@/lib/utils/generateRandomString";
 
 
 export default function CreateLesson() {
   
   const dbData = {
-    default: [
+    DEFAULT: [
       { TemplateID: "0", name: "Sort Items", type: "Drag and Drop", templateUrl: "/templates/1-SortItems-tmpl/create",
         coverIcon: "/icons/animal-match.png", previewImage: "/previews/animal-match-preview.png",
       },
@@ -43,7 +43,7 @@ export default function CreateLesson() {
   
   var [filteredData, setFilteredData] = useState(dbData);
  
-  var [selectedTab, setSelectedTab] = useState<string>("default");
+  var [selectedTab, setSelectedTab] = useState<string>("DEFAULT");
   
   return (
     <>
@@ -53,24 +53,22 @@ export default function CreateLesson() {
 
       {/* Tabs Menu */}
       <TabButtonWrapper>
-        <TabButton tabName="default" selected={selectedTab} setSelected={setSelectedTab} >
+        <TabButton tabName="DEFAULT" selected={selectedTab} setSelected={setSelectedTab} >
           Admins</TabButton>
       </TabButtonWrapper>
       
       {/* Filters */}
-      <FilterWrapper filterTab="default" selected={selectedTab}>
+      <FilterWrapper filterTab="DEFAULT" selected={selectedTab}>
         <OptionFilter
-          filterTab="default"
+          filterTab="DEFAULT"
           values={{ type: ["All", "Drag and Drop", "Fill Blanks", "Puzzle"] }}
-          dbData={dbData}
-          filteredData={filteredData}
+          originalData={dbData}
           setFilteredData={setFilteredData}
         />
         <InputFilter
-          filterTab="default"
+          filterTab="DEFAULT"
           filterKey="name"
-          dbData={dbData}
-          filteredData={filteredData}
+          originalData={dbData}
           setFilteredData={setFilteredData}
         />
       </FilterWrapper>

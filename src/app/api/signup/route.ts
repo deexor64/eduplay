@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   
   try {
     
-    const users: UserType[] = ["admin", "teacher", "parent", "student"];
+    const users: UserType[] = ["ADMIN", "TEACHER", "PARENT", "STUDENT"];
     
     const body = await req.json();
     

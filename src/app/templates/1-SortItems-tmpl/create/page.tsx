@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react";
-import {generateHash} from "@/utils/generateRandomID";
+import {generateHash} from "@/lib/utils/generateRandomString";
 import CreateLayout from "@/app/templates/_common-template/create-layout/CreateLayout";
 
 export default function SortItems() {

@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import getUserType from '@/lib/utils/getUserType';
+import getUserType from '@/hooks/useUserType';
 
 export default function Navbar(props: any) {
 
@@ -10,7 +10,7 @@ export default function Navbar(props: any) {
   // route back to dashboard
   const router = useRouter();
   function routeBackToDashboard() { 
-    router.push(`/${userType}/dashboard`)
+    router.push(`/${userType.toLowerCase()}/dashboard`)
   }
 
   return (

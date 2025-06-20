@@ -1,9 +1,8 @@
 import { ReactNode, useState } from "react";
 import { useParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import getUserType from "@/lib/utils/getUserType";
+import useUserType from "@/hooks/useUserType";
 import { generateUniqueID } from "@/lib/utils/generateRandomString";
-
 
 interface sideBarLinkProps {
   link: string,
@@ -28,7 +27,7 @@ interface sideBarProps {
 
 export default function Sidebar(props: sideBarProps) {
   
-  const userType = getUserType();
+  const userType = useUserType();
   
   // side bar
   const [isOpen, setIsOpen] = useState(true);
@@ -43,7 +42,7 @@ export default function Sidebar(props: sideBarProps) {
             
         <ul className="space-y-2 mt-16 bg-blue-100">
           {
-            userType == "teacher" && Object.entries({
+            userType == "TEACHER" && Object.entries({
               "My Class": "/teacher/myclass",
               "Create Activity": "/teacher/activity/create",
               "Manage Activity": "/teacher/activity/manage",
@@ -54,7 +53,7 @@ export default function Sidebar(props: sideBarProps) {
               })
           }
           {
-            userType == "parent" && Object.entries({
+            userType == "PARENT" && Object.entries({
               "My Child": "/parent/mychild",
               "Contact School": "/parent/contactschool",
               "Profile": "/parent/profile",
@@ -64,7 +63,7 @@ export default function Sidebar(props: sideBarProps) {
               })
           }
           {
-            userType == "admin" && Object.entries({
+            userType == "ADMIN" && Object.entries({
               "Manage Users": "/admin/manage-users",
               "System Settings": "/admin/system-settings",
               "Admin profile": "/admin/profile",

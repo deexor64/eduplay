@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 
-import CommonLayout from "../ui/CommonLayout";
+import CommonLayout from "@/components/navigator/NavigatorLayout";
 
 
 type Student = {
@@ -36,7 +36,7 @@ function MyClassPage() {
   }
 
   return (
-    <CommonLayout>
+    <NavigatorLayout>
 
       <div className="max-w-6xl mx-auto p-4 pb-14 min-h-full bg-gradient-to-br bg-yellow-100 to-purple-100
       flex flex-col items-center">
@@ -86,7 +86,7 @@ function MyClassPage() {
           </div>
         </div>
       </div>
-    </CommonLayout>
+    </NavigatorLayout>
 
   );
 }

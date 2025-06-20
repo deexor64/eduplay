@@ -6,7 +6,7 @@ import Description from "./Description";
 import ActivityOptions from "./ActivityOptions";
 import Footer from "./Footer";
 import { useState } from "react";
-import { generateHash } from "@/utils/generateRandomID";
+import { generateHash } from "@/lib/utils/generateRandomString";
 
 type CreateLayoutProps = {
   templateTitle: string,

@@ -10,6 +10,7 @@ import useUserType from "@/hooks/useUserType";
 export default function NavigatorLayout(props: any) {
   
   // user type
+  // setting user type here can use the value by any child component
   const { userType, setUserType } = useAuth();
   
   const uType = useUserType();

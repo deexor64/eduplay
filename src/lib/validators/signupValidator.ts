@@ -9,7 +9,7 @@ export default function signupValidator(body: any): ResType {
   // check data with schema
   let parsed: any = null;
   
-  if (userType === "parent") {
+  if (userType === "PARENT") {
     
     const zObj = z.object({
       userType: z.string(),
@@ -54,7 +54,8 @@ export default function signupValidator(body: any): ResType {
   }
   
   if (!parsed.success) {
-    return { status: false, resDataType: "error", data: "Invalid data recieved"}
+    return { status: false, resDataType: "log", data: "Invalid data recieved: " 
+      + parsed.error.message}
   }
   
   return { status: true, resDataType: "data", data: parsed.data}

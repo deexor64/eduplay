@@ -13,10 +13,10 @@ export default async function signupService(body: any): Promise<ResType> {
   if (!valid.status) return valid;
   
   // uniqueness check
-  const userType = body.userType;
+  const userType: UserType = body.userType;
   const formData = valid.data;
 
-  if (userType === "admin" || userType === "teacher" || userType === "parent") {
+  if (userType === "ADMIN" || userType === "TEACHER" || userType === "PARENT") {
       
     let existing = await prisma.user.findUnique({ // email
       where: { email: formData.email },
@@ -44,7 +44,7 @@ export default async function signupService(body: any): Promise<ResType> {
       },
     });
     
-  } else if (userType === "student" ) {
+  } else if (userType === "STUDENT" ) {
     
     let existing = await prisma.student.findUnique({ // index number
       where: { indexNumber: formData.indexNumber },

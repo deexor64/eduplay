@@ -18,7 +18,7 @@ export default function ManageUsers() {
   // tabName : [ {row1}, {row2}, ...{rowN}]
   
   const dbData = {
-    admin: [
+    ADMIN: [
       { id: "a1", name: "Principal Mensah", email: "pmensah@school.edu", status: "Active" },
       { id: "a2", name: "Admin Ama", email: "ama@school.edu", status: "Active" },
       { id: "a3", name: "Samuel Boateng", email: "sboateng@school.edu", status: "Inactive" },
@@ -26,20 +26,24 @@ export default function ManageUsers() {
       { id: "a5", name: "Daniel Owusu", email: "daniel.owusu@school.edu", status: "Suspended" },
       { id: "a6", name: "Martha Appiah", email: "m.appiah@school.edu", status: "Active" },
     ],
-    teacher: [
+    TEACHER: [
       { id: "t1", name: "Mr. Kwabena", email: "kwabena@school.edu", class: "Grade 6A", status: "Active" },
       { id: "t2", name: "Ms. Juliet", email: "juliet@school.edu", class: "Grade 4B", status: "Suspended" },
       { id: "t3", name: "Ms. Juliet", email: "juliet@school.edu", class: "Grade 4B", status: "Suspended" },
     ],
-    student: [
+    STUDENT: [
       { id: "s1", name: "Kwame A.", email: "kwame@student.com", class: "Grade 4B", status: "Active" },
       { id: "s2", name: "Akosua D.", email: "akosua@student.com", class: "Grade 6A", status: "Active" },
-    ]
+    ],
+    PARENT: [
+      { id: "p1", name: "John Doe", email: "john.doe@school.edu", child: "Kwame A.", status: "Active" },
+      { id: "p2", name: "Jane Smith", email: "jane.smith@school.edu", child: "Akosua D.", status: "Active" },
+    ],
   };
   
   var [filteredData, setFilteredData] = useState(dbData);
  
-  var [selectedTab, setSelectedTab] = useState<string>("teacher");
+  var [selectedTab, setSelectedTab] = useState<string>("TEACHER");
   
   return (
     <>
@@ -49,45 +53,45 @@ export default function ManageUsers() {
 
       {/* Tabs Menu */}
       <TabButtonWrapper>
-        <TabButton tabName="admin" selected={selectedTab} setSelected={setSelectedTab} >
+        <TabButton tabName="ADMIN" selected={selectedTab} setSelected={setSelectedTab} >
           Admins</TabButton>
-        <TabButton tabName="teacher" selected={selectedTab} setSelected={setSelectedTab} >
+        <TabButton tabName="TEACHER" selected={selectedTab} setSelected={setSelectedTab} >
           Teachers</TabButton>
-        <TabButton tabName="student" selected={selectedTab} setSelected={setSelectedTab} >
+        <TabButton tabName="STUDENT" selected={selectedTab} setSelected={setSelectedTab} >
           Students</TabButton>
       </TabButtonWrapper>
       
       {/* Filters */}
-      <FilterWrapper filterTab="admin" selected={selectedTab}>
+      <FilterWrapper filterTab="ADMIN" selected={selectedTab}>
         <OptionFilter
-          filterTab="admin"
+          filterTab="ADMIN"
           values={{ status: ["All", "Active", "Inactive", "Suspended"] }}
           originalData={dbData}
           setFilteredData={setFilteredData}
         />
         <OptionFilter
-          filterTab="admin"
+          filterTab="ADMIN"
           values={{ id: ["All", "a1", "a2", "a3"] }}
           originalData={dbData}
           setFilteredData={setFilteredData}
         />
       </FilterWrapper>
       
-      <FilterWrapper filterTab="teacher" selected={selectedTab}>
+      <FilterWrapper filterTab="TEACHER" selected={selectedTab}>
         <OptionFilter
-          filterTab="teacher"
+          filterTab="TEACHER"
           values={{ status: ["All", "Active", "Inactive", "Suspended"] }}
           originalData={dbData}
           setFilteredData={setFilteredData}
         />
         <OptionFilter
-          filterTab="teacher"
+          filterTab="TEACHER"
           values={{ id: ["All", "t1", "t2", "t3"] }}
           originalData={dbData}
           setFilteredData={setFilteredData}
         />
         <InputFilter
-          filterTab="teacher"
+          filterTab="TEACHER"
           filterKey="name"
           originalData={dbData}
           setFilteredData={setFilteredData}
@@ -102,14 +106,14 @@ export default function ManageUsers() {
             // @ts-ignore
             filteredData[selectedTab].length > 0 &&
             // @ts-ignore
-            <TableRow rowType="head" rowData={filteredData[selectedTab][0]} />
+            <TableRow rowType="HEAD" rowData={filteredData[selectedTab][0]} />
           } 
           </thead>
           <tbody> 
           {
             // @ts-ignore
             filteredData[selectedTab].map(function (item) {
-              return <TableRow rowType="data" rowData={item} key={ generateUniqueID()}/>;
+              return <TableRow rowType="DATA" rowData={item} key={ generateUniqueID()}/>;
             })
           } 
           </tbody>
