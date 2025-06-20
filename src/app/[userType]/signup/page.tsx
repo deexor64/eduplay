@@ -20,17 +20,15 @@ export default function Signup() {
   const { userType, setUserType } = useAuth();
   
   const [formData, setFormData] = useState({
-    // user
-    fullName: "",
-    firstName: "",
-    lastName: "",
-    dateOfBirth: "",
-    email: "",
-    phoneNumber: "",
-    password: "",
-    confirmPassword: "",
-    // admin teacher student
-    indexNumber: "",
+    fullName: undefined,
+    firstName: undefined,
+    lastName: undefined,
+    dateOfBirth: undefined, // admin teacher
+    email: undefined,
+    phoneNumber: undefined,
+    password: undefined,
+    confirmPassword: undefined,
+    indexNumber: undefined, // admin teacher
   });
   
   function validateForm(): {status: boolean, message: string} {
@@ -41,22 +39,18 @@ export default function Signup() {
   
   function finalizeForm(): string {
     
-    let form: PostReqType = {
-      userType: userType,
-      formData: {
-        userType: userType,
-        fullName: formData.fullName,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        dateOfBirth: formData.dateOfBirth,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        password: formData.password,
-        indexNumber: formData.indexNumber,
-      }
-    }
+    // remove unused fields
+    // undefined fileds are stripped at stringify
+    let tempForm = formData;
+    
+    delete tempForm.confirmPassword;
     
     // create form
+    let form: PostReqType = {
+      userType: userType,
+      formData: tempForm,
+    }
+    
     return JSON.stringify(form);
     
   }
@@ -117,11 +111,10 @@ export default function Signup() {
     
     <form onSubmit={handleSubmit}>
       
-      <Title>Sign Up <br/> as 
+      <Title> Sign Up <br/> as 
         {(userType == "ADMIN") &&  " Admin"}
         {(userType == "TEACHER") &&  " Teacher"}
-        {(userType == "PARENT") &&  " Parent"}
-      </Title>
+        {(userType == "PARENT") &&  " Parent"} </Title>
       
       {/* general info */}
       <GroupTitle>General Info</GroupTitle>
@@ -132,7 +125,11 @@ export default function Signup() {
       
       <TextInput label="Last Name" name="lastName" setFormData={setFormData} />
       
-      <DateInput label="Date of Birth" name="dateOfBirth" setFormData={setFormData} />
+      { ["ADMIN", "TEACHER"].includes(userType) &&
+
+          <DateInput label="Date of Birth" name="dateOfBirth" setFormData={setFormData} />
+                  
+      }
       
       <EmailInput label="E-mail" name="email" setFormData={setFormData} />
       
@@ -147,7 +144,7 @@ export default function Signup() {
           {/* professionsal info */}
           <GroupTitle>Special Info</GroupTitle>
           
-          <NumberInput label="Index Number" name="indexNumber" setFormData={setFormData} />
+          <TextInput label="Index Number" name="indexNumber" setFormData={setFormData} />
         
         </>
       }

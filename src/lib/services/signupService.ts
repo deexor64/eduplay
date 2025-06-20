@@ -16,47 +16,124 @@ export default async function signupService(body: any): Promise<ResType> {
   const userType: UserType = body.userType;
   const formData = valid.data;
 
-  if (userType === "ADMIN" || userType === "TEACHER" || userType === "PARENT") {
+  if (userType === "ADMIN") {
       
-    let existing = await prisma.user.findUnique({ // email
-      where: { email: formData.email },
-    });
-
-    if (existing) return { status: false, resDataType: "warning", data: "Email already exists" };
-    
-    existing = await prisma.user.findUnique({ // phone number
-      where: { phoneNumber: formData.phoneNumber },
-    });
-    
-    if (existing) return { status: false, resDataType: "warning", data: "Phone Number already exists" };
-    
-    existing = await prisma.user.findUnique({ // index number
-      where: { indexNumber: formData.indexNumber },
+    let existing = await prisma.admin.findFirst({
+      where: {
+        OR: [
+          { indexNumber: formData.indexNumber },
+          { email: formData.email },
+          { phoneNumber: formData.phoneNumber },
+        ],
+      },
     });
     
-    if (existing) return { status: false, resDataType: "warning", data: "Index number already exists" };
+    if (existing) return { status: false, resDataType: "warning", 
+      data: "Admin already exists" };
     
     // finalize and query
     const newUser = await prisma.user.create({
       data: {
-        ...formData,
+        fullName: formData.fullName,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        dateOfBirth: formData.dateOfBirth,
         password: await generatePasswordHash(formData.password),
+        admin: {
+          create: {
+            indexNumber: formData.indexNumber,
+            email: formData.email,
+            phoneNumber: formData.phoneNumber,
+          }
+        }
+      },
+    });
+  
+  } else if (userType === "TEACHER") {
+    
+    let existing = await prisma.teacher.findFirst({
+      where: {
+        OR: [
+          { indexNumber: formData.indexNumber },
+          { email: formData.email },
+          { phoneNumber: formData.phoneNumber },
+        ],
       },
     });
     
-  } else if (userType === "STUDENT" ) {
+    if (existing) return { status: false, resDataType: "warning",
+      data: "Teacher already exists" };
     
-    let existing = await prisma.student.findUnique({ // index number
+    // finalize and query
+    const newUser = await prisma.user.create({
+      data: {
+        fullName: formData.fullName,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        dateOfBirth: formData.dateOfBirth,
+        password: await generatePasswordHash(formData.password),
+        teacher: {
+          create: {
+            indexNumber: formData.indexNumber,
+            email: formData.email,
+            phoneNumber: formData.phoneNumber,
+          }
+        }
+      },
+    });
+    
+  } else if (userType === "STUDENT") {
+    
+    let existing = await prisma.student.findUnique({
       where: { indexNumber: formData.indexNumber },
     });
     
-    if (existing) return { status: false, resDataType: "warning", data: "Index number already exists" };
+    if (existing) return { status: false, resDataType: "warning", data: "Student already exists" };
+
+    // finalize and query
+    const newUser = await prisma.user.create({
+      data: {
+        fullName: formData.fullName,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        dateOfBirth: formData.dateOfBirth,
+        password: await generatePasswordHash(formData.password),
+        student: {
+          create: {
+            indexNumber: formData.indexNumber,
+            email: formData.email,
+            phoneNumber: formData.phoneNumber,
+          }
+        }
+      },
+    });
+    
+  } else if (userType === "PARENT") {
+    
+    let existing = await prisma.parent.findFirst({
+      where: {
+        OR: [
+          { email: formData.email },
+          { phoneNumber: formData.phoneNumber },
+        ],
+      },
+    });
+    
+    if (existing) return { status: false, resDataType: "warning", data: "User already exists" };
     
     // finalize and query
-    const newUser = await prisma.student.create({
+    const newUser = await prisma.user.create({
       data: {
-        ...formData,
+        fullName: formData.fullName,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         password: await generatePasswordHash(formData.password),
+        parent: {
+          create: {
+            email: formData.email,
+            phoneNumber: formData.phoneNumber,
+          }
+        }
       },
     });
     

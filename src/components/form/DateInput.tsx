@@ -10,7 +10,7 @@ export default function DateInput(props: DateInputProps) {
     props.setFormData(function (prev: any) {
       return {
         ...prev,
-        [props.name]: e.target.value,
+        [props.name]: new Date(e.target.value + "T00:00:00"),
       };
     });
   }
