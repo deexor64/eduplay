@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import signupService from '@/lib/services/signinService';
+import listUserService from '@/lib/services/admin/listUserService';
 import { UserType } from '@/lib/utils/types';
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   
   try {
     
-    const users: UserType[] = ["ADMIN", "TEACHER", "PARENT", "STUDENT"];
+    const users: UserType[] = ["ADMIN"];
     
     const searchParams = req.nextUrl.searchParams;
     const userType = searchParams.get("userType") as UserType;
@@ -20,8 +20,7 @@ export async function POST(req: NextRequest) {
     }
     
     // query database
-    const formData = await req.json();
-    let query = await signupService(formData, userType);
+    let query = await listUserService(searchParams, userType);
     if (!query.status) return NextResponse.json(
       query,
       { status: 500 }

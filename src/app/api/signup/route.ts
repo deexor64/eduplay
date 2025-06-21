@@ -8,10 +8,11 @@ export async function POST(req: NextRequest) {
     
     const users: UserType[] = ["ADMIN", "TEACHER", "PARENT", "STUDENT"];
     
-    const body = await req.json();
+    const searchParams = req.nextUrl.searchParams;
+    const userType = searchParams.get("userType") as UserType;
     
     // check user type
-    if (!users.includes(body.userType)) {
+    if (!users.includes(userType)) {
       return NextResponse.json(
         { status: false, responseType: "log", data: "Invalid usertype" },
         { status: 400 }
@@ -19,7 +20,9 @@ export async function POST(req: NextRequest) {
     }
     
     // query database
-    let query = await signupService(body);
+    const formData = await req.json();
+    let query = await signupService(formData, userType);
+    
     if (!query.status) return NextResponse.json(
       query,
       { status: 500 }
