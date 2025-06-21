@@ -9,8 +9,6 @@ export default function useUserType(): UserType {
   const dynamicUser = String(params.userType).toUpperCase(); // userType slug
   const staticUser = usePathname().split("/")[1].toUpperCase(); // url path
   const cookieUser = "UNKNOWN"; // from cookie
-  
-  console.log(dynamicUser)
 
   if (users.includes(dynamicUser as UserType)) return dynamicUser as UserType;
   if (users.includes(staticUser as UserType)) return staticUser as UserType;

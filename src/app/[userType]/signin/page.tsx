@@ -10,7 +10,6 @@ import SubmitButton from '@/components/form/SumbitButton';
 import EmailInput from '@/components/form/EmailInput';
 import Swal from 'sweetalert2';
 import NumberInput from '@/components/form/NumberInput';
-import { PostReqType } from '@/lib/utils/types';
 import PhoneInput from '@/components/form/PhoneInput';
 import DateInput from '@/components/form/DateInput';
 import GroupTitle from '@/components/form/GroupTitle';
@@ -34,13 +33,7 @@ export default function Signup() {
     
     // remove unused fields
     // undefined fileds are stripped at stringify
-    let tempForm = formData;
-    
-    // create form
-    let form: PostReqType = {
-      userType: userType,
-      formData: tempForm,
-    }
+    let form = formData;
     
     return JSON.stringify(form);
     
@@ -65,7 +58,9 @@ export default function Signup() {
     let form = finalizeForm();
     
     // submit
-    fetch("/api/signin", {
+    const params = new URLSearchParams({ userType: userType });
+    const url = `/api/signup?${params}`;
+    fetch(url, {
       method: "POST",
       headers: {
           "Content-Type": "application/json",
