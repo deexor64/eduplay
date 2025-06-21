@@ -5,16 +5,15 @@ import signupValidator from '@/lib/validators/signupValidator';
 
 const prisma = new PrismaClient();
 
-export default async function signupService(body: any): Promise<ResType> {
+export default async function signupService(formData: any, userType: UserType): Promise<ResType> {
   
   // schema valdiation
-  const valid = await signupValidator(body);
+  const valid = await signupValidator(formData, userType);
   
   if (!valid.status) return valid;
   
   // uniqueness check
-  const userType: UserType = body.userType;
-  const formData = valid.data;
+  formData = valid.data;
 
   if (userType === "ADMIN") {
       

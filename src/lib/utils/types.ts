@@ -1,12 +1,6 @@
 // user types
 export type UserType = "ADMIN" | "TEACHER" | "PARENT" | "STUDENT" | "UNKNOWN";
 
-// client request type
-export type PostReqType = {
-  userType: string,
-  formData: any,
-}
-
 // server response type
 export type ResType = {
   status: boolean, 

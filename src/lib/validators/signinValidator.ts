@@ -1,10 +1,7 @@
 import { z } from "zod";
 import { ResType, UserType } from "@/lib/utils/types";
 
-export default function signinValidator(body: any): ResType {
-  
-  const userType: UserType = body.userType;
-  const formData = body.formData;
+export default function signinValidator(formData: any, userType: UserType): ResType {
   
   // constraints
   let zUser = z.object({

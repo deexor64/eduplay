@@ -6,16 +6,15 @@ import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
-export default async function signupService(body: any): Promise<ResType> {
+export default async function signupService(formData: any, userType: UserType): Promise<ResType> {
   
   // schema valdiation
-  const valid = await signinValidator(body);
+  const valid = await signinValidator(formData, userType);
   
   if (!valid.status) return valid;
   
   // uniqueness check
-  const userType: UserType = body.userType;
-  const formData = valid.data;
+  formData = valid.data;
   
   // check user exists
   function getUserHandler(userType: UserType) { // dynamic user handler
