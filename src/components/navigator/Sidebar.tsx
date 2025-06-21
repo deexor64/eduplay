@@ -64,10 +64,15 @@ export default function Sidebar(props: sideBarProps) {
           }
           {
             userType == "ADMIN" && Object.entries({
-              "Manage Users": "/admin/manage-users",
-              "System Settings": "/admin/system-settings",
+              "Students": "/admin/users/students",
+              "Teachers": "/admin/users/teachers",
+              "Parents": "/admin/users/parents",
+              "Admins": "/admin/users/admins",
+              "Classes": "/admin/school/classes",
+              "Lessons": "/admin/school/lessons",
+              "Templates": "/admin/school/templates",
               "Admin profile": "/admin/profile",
-              "Admin Settings": "/admin/settings"
+              "System Settings": "/admin/system-settings",
             }).map(function ([label, href]) {
                 return <SideBarLink link={href } key={generateUniqueID()}>{label}</SideBarLink>
               })

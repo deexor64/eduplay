@@ -15,7 +15,7 @@ export default function Navbar(props: any) {
 
   return (
     <div className="w-full h-16 bg-blue-600 flex justify-between items-center 
-      px-4 shadow-md fixed z-20">
+      p-4 shadow-md sticky top-0 z-20 ">
       <div
         className="text-white font-bold cursor-pointer"
         onClick={routeBackToDashboard}>
