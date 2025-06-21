@@ -5,17 +5,21 @@ import Title from "@/components/Title";
 import TabButton from "@/components/tab/TabButton";
 import TabButtonWrapper from "@/components/tab/TabButtonWrapper";
 import TabWrapper from "@/components/tab/TabWrapper";
-import FilterWrapper from "@/components/filter/FilterWrapper";
-import InputFilter from "@/components/filter/InputFilter";
-import OptionFilter from "@/components/filter/OptionFilter";
+import FilterWrapper from "@/components/client-filter/FilterWrapper";
+import InputFilter from "@/components/client-filter/InputFilter";
+import OptionFilter from "@/components/client-filter/OptionFilter";
 import TableWrapper from "@/components/table/TableWrapper";
 import TableRow from "@/components/table/TableRow";
 import { generateUniqueID } from "@/lib/utils/generateRandomString";
+import Paginator from "@/components/pagination/Paginator";
+import useAuth from "@/hooks/useAuth";
 
 export default function ManageUsers() {
   
   // dbData format 
   // tabName : [ {row1}, {row2}, ...{rowN}]
+ 
+  const { userType, setUserType } = useAuth();
   
   const dbData = {
     ADMIN: [
@@ -44,6 +48,18 @@ export default function ManageUsers() {
   var [filteredData, setFilteredData] = useState(dbData);
  
   var [selectedTab, setSelectedTab] = useState<string>("TEACHER");
+  
+  
+  async function handleFetch () {
+    
+    const params = new URLSearchParams({ userType: userType, pagination: ""});
+    const url = `/api/manage-users${params}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!res.ok) console.log(data)
+    
+    return data;
+  }
   
   return (
     <>
@@ -119,6 +135,17 @@ export default function ManageUsers() {
           </tbody>
         </TableWrapper>
       </TabWrapper>
+      
+      {/* <PaginationBar
+        totalItems={256}
+        currentPage={currentPage}
+        itemsPerPage={itemsPerPage}
+        onPageChange={(page) => setCurrentPage(page)}
+        onItemsPerPageChange={(limit) => {
+          setItemsPerPage(limit);
+          setCurrentPage(1); // reset to page 1
+        }}
+      /> */}
 
     </>   
   );
