@@ -42,6 +42,8 @@ model Admin {
   indexNumber String @unique
   email       String @unique
   phoneNumber String @unique
+  profileUrl  String @unique
+  displayPic  String @default("/images/avatar.png")
 
   userID String @unique
   user   User   @relation("admin", fields: [userID], references: [userID])
@@ -52,6 +54,8 @@ model Teacher {
   indexNumber String @unique
   email       String @unique
   phoneNumber String @unique
+  profileUrl  String @unique
+  displayPic  String @default("/images/avatar.png")
 
   userID String @unique
   user   User   @relation("teacher", fields: [userID], references: [userID])
@@ -65,6 +69,8 @@ model Parent {
   parentID    String @id @default(uuid())
   email       String @unique
   phoneNumber String @unique
+  profileUrl  String @unique
+  displayPic  String @default("/images/avatar.png")
 
   userID String @unique
   user   User   @relation("parent", fields: [userID], references: [userID])
@@ -75,6 +81,8 @@ model Student {
   indexNumber String @unique
   email       String
   phoneNumber String
+  profileUrl  String @unique
+  displayPic  String @default("/images/avatar.png")
 
   classID String?
   class   Class?  @relation("enroll", fields: [classID], references: [classID])
@@ -91,7 +99,7 @@ model Class {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  managedBy String  @unique
+  managedBy String 
   teacher   Teacher @relation("manageClass", fields: [managedBy], references: [teacherID])
 
   students Student[] @relation("enroll")
