@@ -5,24 +5,25 @@ import signupValidator from '@/lib/validators/signupValidator';
 
 const prisma = new PrismaClient();
 
-export default async function signupService(formData: any, userType: UserType): Promise<ResType> {
+export default async function signupService(searchParams: any, formData: any): Promise<ResType> {
+  
+  const userType = searchParams.userType;
   
   // schema valdiation
-  const valid = await signupValidator(formData, userType);
-  
+  const valid = await signupValidator(searchParams, formData);
   if (!valid.status) return valid;
   
-  // uniqueness check
-  formData = valid.data;
+  // query
+  const data = valid.data;
 
   if (userType === "ADMIN") {
       
     let existing = await prisma.admin.findFirst({
       where: {
         OR: [
-          { indexNumber: formData.indexNumber },
-          { email: formData.email },
-          { phoneNumber: formData.phoneNumber },
+          { indexNumber: data.indexNumber },
+          { email: data.email },
+          { phoneNumber: data.phoneNumber },
         ],
       },
     });
@@ -30,19 +31,19 @@ export default async function signupService(formData: any, userType: UserType): 
     if (existing) return { status: false, resDataType: "warning", 
       data: "Admin already exists" };
     
-    // finalize and query
     const newUser = await prisma.user.create({
       data: {
-        fullName: formData.fullName,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        dateOfBirth: formData.dateOfBirth,
-        password: await generatePasswordHash(formData.password),
+        fullName: data.fullName,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        dateOfBirth: data.dateOfBirth,
+        password: await generatePasswordHash(data.password),
         admin: {
           create: {
-            indexNumber: formData.indexNumber,
-            email: formData.email,
-            phoneNumber: formData.phoneNumber,
+            indexNumber: data.indexNumber,
+            email: data.email,
+            phoneNumber: data.phoneNumber,
+            profileUrl: "profile/admin?indexNumber=" + data.indexNumber
           }
         }
       },
@@ -53,9 +54,9 @@ export default async function signupService(formData: any, userType: UserType): 
     let existing = await prisma.teacher.findFirst({
       where: {
         OR: [
-          { indexNumber: formData.indexNumber },
-          { email: formData.email },
-          { phoneNumber: formData.phoneNumber },
+          { indexNumber: data.indexNumber },
+          { email: data.email },
+          { phoneNumber: data.phoneNumber },
         ],
       },
     });
@@ -66,16 +67,17 @@ export default async function signupService(formData: any, userType: UserType): 
     // finalize and query
     const newUser = await prisma.user.create({
       data: {
-        fullName: formData.fullName,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        dateOfBirth: formData.dateOfBirth,
-        password: await generatePasswordHash(formData.password),
+        fullName: data.fullName,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        dateOfBirth: data.dateOfBirth,
+        password: await generatePasswordHash(data.password),
         teacher: {
           create: {
-            indexNumber: formData.indexNumber,
-            email: formData.email,
-            phoneNumber: formData.phoneNumber,
+            indexNumber: data.indexNumber,
+            email: data.email,
+            phoneNumber: data.phoneNumber,
+            profileUrl: "profile/teacher?indexNumber=" + data.indexNumber
           }
         }
       },
@@ -84,7 +86,7 @@ export default async function signupService(formData: any, userType: UserType): 
   } else if (userType === "STUDENT") {
     
     let existing = await prisma.student.findUnique({
-      where: { indexNumber: formData.indexNumber },
+      where: { indexNumber: data.indexNumber },
     });
     
     if (existing) return { status: false, resDataType: "warning", data: "Student already exists" };
@@ -92,16 +94,17 @@ export default async function signupService(formData: any, userType: UserType): 
     // finalize and query
     const newUser = await prisma.user.create({
       data: {
-        fullName: formData.fullName,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        dateOfBirth: formData.dateOfBirth,
-        password: await generatePasswordHash(formData.password),
+        fullName: data.fullName,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        dateOfBirth: data.dateOfBirth,
+        password: await generatePasswordHash(data.password),
         student: {
           create: {
-            indexNumber: formData.indexNumber,
-            email: formData.email,
-            phoneNumber: formData.phoneNumber,
+            indexNumber: data.indexNumber,
+            email: data.email,
+            phoneNumber: data.phoneNumber,
+            profileUrl: "profile/student?indexNumber=" + data.indexNumber
           }
         }
       },
@@ -112,8 +115,8 @@ export default async function signupService(formData: any, userType: UserType): 
     let existing = await prisma.parent.findFirst({
       where: {
         OR: [
-          { email: formData.email },
-          { phoneNumber: formData.phoneNumber },
+          { email: data.email },
+          { phoneNumber: data.phoneNumber },
         ],
       },
     });
@@ -123,14 +126,15 @@ export default async function signupService(formData: any, userType: UserType): 
     // finalize and query
     const newUser = await prisma.user.create({
       data: {
-        fullName: formData.fullName,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        password: await generatePasswordHash(formData.password),
+        fullName: data.fullName,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        password: await generatePasswordHash(data.password),
         parent: {
           create: {
-            email: formData.email,
-            phoneNumber: formData.phoneNumber,
+            email: data.email,
+            phoneNumber: data.phoneNumber,
+            profileUrl: "profile/parent?indexNumber=" + data.indexNumber
           }
         }
       },

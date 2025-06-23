@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     
     // query database
     const formData = await req.json();
-    let query = await signupService(formData, userType);
+    let query = await signupService(searchParams, formData);
     
     if (!query.status) return NextResponse.json(
       query,
@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
     );
   
   } catch (err: any) {
+    console.log(err);
     return NextResponse.json(
       { status: false, responseType: "log", data: "Internal server error."},
       { status: 500 }

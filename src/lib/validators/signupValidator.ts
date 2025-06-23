@@ -1,10 +1,12 @@
 import { z } from "zod";
 import { ResType, UserType } from "@/lib/utils/types";
 
-export default function signupValidator(formData: any, userType: UserType): ResType {
+export default function signupValidator(searchParams:any, formData: any): ResType {
+  
+  const userType = searchParams.userType;
   
   // constraints
-  let zUser = z.object({
+  let zFormData = z.object({
     fullName: z.string().min(1, "Full name is required"),
     firstName: z.string().min(1, "First name is required"),
     lastName: z.string().min(1, "Last name is required"),
@@ -18,7 +20,7 @@ export default function signupValidator(formData: any, userType: UserType): ResT
 
   if (userType === "ADMIN" || userType === "TEACHER" || userType === "STUDENT") {
     
-    zUser = zUser.extend({
+    zFormData = zFormData.extend({
       dateOfBirth: z.preprocess(
         (val) => (typeof val === "string" ? new Date(val) : val),
         z.date()
@@ -29,7 +31,7 @@ export default function signupValidator(formData: any, userType: UserType): ResT
   }
   
   // parse 
-  const parsed = zUser.safeParse(formData);
+  const parsed = zFormData.safeParse(formData);
   
   if (!parsed.success) {
     return { status: false, resDataType: "log", data: parsed.error.message }
