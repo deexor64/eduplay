@@ -64,10 +64,10 @@ export default function Sidebar(props: sideBarProps) {
           }
           {
             userType == "ADMIN" && Object.entries({
-              "Students": "/admin/users/students",
-              "Teachers": "/admin/users/teachers",
-              "Parents": "/admin/users/parents",
-              "Admins": "/admin/users/admins",
+              "Students": "/admin/users?userListType=student",
+              "Teachers": "/admin/users?userListType=teacher",
+              "Parents": "/admin/users?userListType=parent",
+              "Admins": "/admin/users?userListType=admin",
               "Classes": "/admin/school/classes",
               "Lessons": "/admin/school/lessons",
               "Templates": "/admin/school/templates",

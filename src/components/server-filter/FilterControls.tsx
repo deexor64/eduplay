@@ -2,6 +2,13 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
+/*
+  need a usestate varible with these fields
+  
+  const [triggerFilter, setTriggerFilter] = useState(false);
+  
+*/
+
 type FilterButtonsProps = {
   setFilter: Function;
   setTriggerFilter: (v: boolean) => void;

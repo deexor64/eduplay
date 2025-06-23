@@ -26,7 +26,7 @@ export default function InputFilter(props: InputFilterProps) {
       <input
         id={filterKey}
         type="text"
-        className="border rounded px-3 py-1 bg-white text-purple-700"
+        className="border rounded px-3 py-1 bg-white text-purple-700 w-38"
         onChange={handleInputChange}
       />
     </div>

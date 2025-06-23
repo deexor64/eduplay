@@ -1,5 +1,8 @@
 "use client";
 
+// This component should be used solely for displaying user info
+// Displayed info is predefined inside the component and cannot be modified
+
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback } from "react";
@@ -77,13 +80,14 @@ function ActionButtons({ status, onAction }: {
 
 interface ViewUserItemProps {
   itemData: {
-    name: string;
     indexNumber: string;
-    grade?: string;
     email: string;
-    profileUrl: string;
-    displayPic: string;
-    status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED" | string;
+    profileUrl: string; // url
+    displayPic: string; // url
+    user: {
+      fullName: string;
+      status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED" | string;
+    }
   };
 }
 
@@ -92,9 +96,9 @@ export function ViewUserItem(props: ViewUserItemProps) {
 
   const handleAction = useCallback(
     (action: string) => {
-      alert(`Action "${action}" clicked for user ${itemData.name}`);
+      alert(`Action "${action}" clicked for user ${itemData.user.fullName}`);
     },
-    [itemData.name]
+    [itemData.user.fullName]
   );
 
   return (
@@ -117,17 +121,17 @@ export function ViewUserItem(props: ViewUserItemProps) {
           className="rounded border border-gray-300 bg-white"
         />
         <div>
-          <div className="text-lg font-semibold text-purple-800">{itemData.name}</div>
+          <div className="text-lg font-semibold text-purple-800">{itemData.user.fullName}</div>
           <div className="text-sm text-yellow-600">
-            {itemData.grade && `Grade ${itemData.grade} • `}Index: {itemData.indexNumber}
+            {`Grade ${"temporary"} • Index ${itemData.indexNumber}`}
           </div>
           <div className="text-xs text-gray-600">{itemData.email}</div>
         </div>
       </div>
 
       <div className="flex items-start gap-4">
-        <StatusBadge status={itemData.status} />
-        <ActionButtons status={itemData.status as any} onAction={handleAction} />
+        <StatusBadge status={itemData.user.status} />
+        <ActionButtons status={itemData.user.status as any} onAction={handleAction} />
       </div>
     </Link>
   );

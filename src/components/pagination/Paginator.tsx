@@ -1,5 +1,16 @@
 import React from "react";
 
+/* 
+
+  need a usestate varible with these fields
+  
+  const [pagination, setPagination] = useState({
+    page: 1, 
+    limit: 10
+  }); 
+  
+*/
+
 type PaginationState = {
   page: number;
   limit: number;
@@ -8,11 +19,11 @@ type PaginationState = {
 type PaginatorProps = {
   totalItems: number;
   pagination: PaginationState;
-  onChange: (pagination: PaginationState) => void;
+  setPagination: Function,
 };
 
 export default function Paginator(props: PaginatorProps) {
-  const { totalItems, pagination, onChange } = props;
+  const { totalItems, pagination, setPagination } = props;
 
   const totalPages = Math.ceil(totalItems / pagination.limit);
 
@@ -22,10 +33,10 @@ export default function Paginator(props: PaginatorProps) {
         currentPage={pagination.page}
         totalPages={totalPages}
         onPrev={() =>
-          onChange({ ...pagination, page: Math.max(1, pagination.page - 1) })
+          setPagination({ ...pagination, page: Math.max(1, pagination.page - 1) })
         }
         onNext={() =>
-          onChange({
+          setPagination({
             ...pagination,
             page: Math.min(totalPages, pagination.page + 1),
           })
@@ -34,13 +45,11 @@ export default function Paginator(props: PaginatorProps) {
 
       <ItemsPerPageSelector
         value={pagination.limit}
-        onChange={(limit) => onChange({ page: 1, limit })}
+        onChange={(limit) => setPagination({ page: 1, limit: limit})}
       />
     </div>
   );
 }
-
-// -------------------- Subcomponents --------------------
 
 type PageNavigationProps = {
   currentPage: number;

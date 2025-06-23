@@ -12,7 +12,7 @@ export default function OptionFilter(props: OptionFilterProps) {
 
   const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
     let newValue: string | undefined = e.target.value;
-    (newValue === "All") ? newValue = undefined : newValue = newValue.toLowerCase();
+    (newValue === "All") ? newValue = undefined : newValue = newValue;
     setFilter((prev: any) => ({
       ...prev,
       [filterKey]: newValue,
