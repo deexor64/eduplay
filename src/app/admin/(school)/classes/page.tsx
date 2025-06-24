@@ -7,36 +7,34 @@ import OptionFilter from "@/components/filter/OptionFilter";
 import FilterControls from "@/components/filter/FilterControls";
 import Paginator from "@/components/pagination/Paginator";
 import ItemListWrapper from "@/components/item-list/ItemListWrapper";
-import ViewUserItem from "@/components/item-list/ViewUserItem";
+import ViewClassItem from "@/components/item-list/ViewClassItem";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
-import { generateUniqueID } from "@/lib/utils/generateRandomString";
 
-export default function Users() {
+export default function Classes() {
   
   const userType = "ADMIN";
-  const searchParams = useSearchParams();
-  const userListType = searchParams.get("userListType");
+  // const searchParams = useSearchParams();
+  // const userListType = searchParams.get("userListType");
  
   const [dbData, setDbData] = useState<{
-    users: Array<{
-      indexNumber?: string,
-      email: string,
-      profileUrl: string,
-      displayPic: string,
-      user: {
-        fullName: string,
-        status: string
+    classes: Array<{
+      name?: string,
+      grade: number,
+      classLetter: string,
+      teacher: {
+        user: {
+          fullName: string
+        }
       }
     }>,
     total: number;
-  }>({ users: [], total: 0 });
+  }>({ classes: [], total: 0 });
 
   const [filter, setFilter] = useState({
-    indexNumber: undefined,
-    fullName: undefined,
-    email: undefined,
-    status: undefined
+    grade: undefined,
+    classLetter: undefined,
+    teacherName: undefined,
   });
   
   const [pagination, setPagination] = useState({
@@ -54,13 +52,12 @@ export default function Users() {
   
   useEffect(() => { 
     handleFetch();
-  }, [userListType, pagination]);
+  }, [pagination]);
   
   function finalizeQueryString(): URLSearchParams{
 
     const tempParam = {
       userType: userType,
-      userListType: userListType,
       ...filter,
       ...pagination,
     };
@@ -83,7 +80,7 @@ export default function Users() {
     
     const params = finalizeQueryString();
     
-    const url = `/api/user-management/user-list?${params}`;
+    const url = `/api/school-management/class-list?${params}`;
     const res = await fetch(url);
     
     const data = await res.json();
@@ -98,33 +95,24 @@ export default function Users() {
     <>
       
       {/* Title */}
-      {(userListType === "admin") && <Title title="Manage Admins" />}
-      {(userListType === "teacher") && <Title title="Manage Teachers" />}
-      {(userListType === "student") && <Title title="Manage Students" />}
-      {(userListType === "parent") && <Title title="Manage Parents" />}
+      <Title title="Manage Classes" />
 
       {/* Filters */}
       <FilterWrapper>
-        <InputFilter
-          filterKey="fullName"
-          setFilter={setFilter}
-        >Full Name</InputFilter>
-        {
-          userListType !== "parent" && 
-          <InputFilter
-            filterKey="indexNumber"
-            setFilter={setFilter}
-          >Index NUmber</InputFilter>
-        }
-        <InputFilter
-          filterKey="email"
-          setFilter={setFilter}
-        >Email</InputFilter>
         <OptionFilter
-          filterKey="status"
-          values={["PENDING", "ACTIVE", "INACTIVE", "SUSPENDED"]}
+          filterKey="grade"
+          values={["1", "2", "3", "4", "5"]}
           setFilter={setFilter}
-        >Status</OptionFilter>
+        >Grade</OptionFilter>
+        <OptionFilter
+          filterKey="classLetter"
+          values={["A", "B", "C", "D", "E", "T", "N"]}
+          setFilter={setFilter}
+        >Class Letter</OptionFilter>
+        <InputFilter
+          filterKey="teacherName"
+          setFilter={setFilter}
+        >Teacher Name</InputFilter>
         <div className="ml-auto">
           <FilterControls setFilter={setFilter} setTriggerFilter={setTriggerFilter}/>
         </div>
@@ -133,8 +121,8 @@ export default function Users() {
       {/* Info */}
       <ItemListWrapper>
         {
-          dbData.users.map(function (item) {
-            return <ViewUserItem itemData={item} key={item.indexNumber}/>;
+          dbData.classes.map(function (item) {
+            return <ViewClassItem itemData={item} key={item.grade + item.classLetter + item.name}/>;
           })
         } 
       </ItemListWrapper>

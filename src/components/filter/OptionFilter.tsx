@@ -1,9 +1,10 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, ReactNode } from "react";
 
 interface OptionFilterProps {
   filterKey: string;
   values: string[];
   setFilter: (prev: any) => void;
+  children: ReactNode
 }
 
 export default function OptionFilter(props: OptionFilterProps) {
@@ -22,7 +23,7 @@ export default function OptionFilter(props: OptionFilterProps) {
   return (
     <div>
       <label htmlFor={filterKey} className="font-medium text-blue-800 mr-1.5">
-        {filterKey}
+        {props.children}
       </label>
       <select
         id={filterKey}

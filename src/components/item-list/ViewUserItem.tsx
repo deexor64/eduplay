@@ -14,6 +14,64 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 
+interface ViewUserItemProps {
+  itemData: {
+    indexNumber?: string;
+    email: string;
+    profileUrl: string; // url
+    displayPic: string; // url
+    user: {
+      fullName: string;
+      status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED" | string;
+    }
+  };
+}
+
+export default function ViewUserItem(props: ViewUserItemProps) {
+  const { itemData } = props;
+
+  const handleAction = useCallback(
+    (action: string) => {
+      alert(`Action "${action}" clicked for user ${itemData.user.fullName}`);
+    },
+    [itemData.user.fullName]
+  );
+
+  return (
+    <Link
+      href={itemData.profileUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="border border-blue-200 bg-white rounded-lg p-4 
+        flex items-start gap-4 shadow hover:shadow-lg transition
+        cursor-pointer hover:bg-blue-50 justify-between relative mb-0.5 mt-2"
+      onClick={(e) => { e.preventDefault(); alert("opened"); }} // prevent default to allow buttons to work
+      key={itemData.indexNumber}
+    >
+      <div className="flex items-center gap-4">
+        <Image
+          src={itemData.displayPic}
+          alt="Profile Picture"
+          width={64}
+          height={64}
+          className="rounded border border-gray-300 bg-white"
+        />
+        <div>
+          <div className="text-lg font-semibold text-purple-800">{itemData.user.fullName}</div>
+          <div className="text-sm text-yellow-600">
+            {`Grade ${"temporary"} • Index ${itemData.indexNumber}`}
+          </div>
+          <div className="text-xs text-gray-600">{itemData.email}</div>
+        </div>
+      </div>
+
+      <div className="flex items-start gap-4">
+        <StatusBadge status={itemData.user.status} />
+        <ActionButtons status={itemData.user.status as any} onAction={handleAction} />
+      </div>
+    </Link>
+  );
+}
 
 function StatusBadge({ status }: { status: string }) {
   const statusColors: Record<string, string> = {
@@ -66,7 +124,11 @@ function ActionButtons({ status, onAction }: {
         <button
           key={label}
           className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded flex items-center gap-2"
-          onClick={() => onAction(label)}
+          onClick={(e) => { 
+            e.preventDefault(); 
+            e.stopPropagation(); 
+            return onAction(label) 
+          }}
           type="button"
           title={label}
           aria-label={label}
@@ -78,61 +140,3 @@ function ActionButtons({ status, onAction }: {
   );
 }
 
-interface ViewUserItemProps {
-  itemData: {
-    indexNumber: string;
-    email: string;
-    profileUrl: string; // url
-    displayPic: string; // url
-    user: {
-      fullName: string;
-      status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED" | string;
-    }
-  };
-}
-
-export function ViewUserItem(props: ViewUserItemProps) {
-  const { itemData } = props;
-
-  const handleAction = useCallback(
-    (action: string) => {
-      alert(`Action "${action}" clicked for user ${itemData.user.fullName}`);
-    },
-    [itemData.user.fullName]
-  );
-
-  return (
-    <Link
-      href={itemData.profileUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="border border-blue-200 bg-white rounded-lg p-4 
-        flex items-start gap-4 shadow hover:shadow-lg transition
-        cursor-pointer hover:bg-blue-50 justify-between relative mb-0.5 mt-2"
-      onClick={(e) => { e.preventDefault(); alert("opened"); }} // prevent default to allow buttons to work
-      key={itemData.indexNumber}
-    >
-      <div className="flex items-center gap-4">
-        <Image
-          src={itemData.displayPic}
-          alt="Profile Picture"
-          width={64}
-          height={64}
-          className="rounded border border-gray-300 bg-white"
-        />
-        <div>
-          <div className="text-lg font-semibold text-purple-800">{itemData.user.fullName}</div>
-          <div className="text-sm text-yellow-600">
-            {`Grade ${"temporary"} • Index ${itemData.indexNumber}`}
-          </div>
-          <div className="text-xs text-gray-600">{itemData.email}</div>
-        </div>
-      </div>
-
-      <div className="flex items-start gap-4">
-        <StatusBadge status={itemData.user.status} />
-        <ActionButtons status={itemData.user.status as any} onAction={handleAction} />
-      </div>
-    </Link>
-  );
-}

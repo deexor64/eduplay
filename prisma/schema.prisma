@@ -38,24 +38,22 @@ model User {
 }
 
 model Admin {
-  adminID     String @id @default(uuid())
-  indexNumber String @unique
-  email       String @unique
-  phoneNumber String @unique
-  profileUrl  String @unique
-  displayPic  String @default("/images/avatar.png")
+  adminID       String @id @default(uuid())
+  indexNumber   String @unique
+  email         String @unique
+  phoneNumber   String @unique
+  displayPicUrl String @default("/images/avatar.png")
 
   userID String @unique
   user   User   @relation("admin", fields: [userID], references: [userID])
 }
 
 model Teacher {
-  teacherID   String @id @default(uuid())
-  indexNumber String @unique
-  email       String @unique
-  phoneNumber String @unique
-  profileUrl  String @unique
-  displayPic  String @default("/images/avatar.png")
+  teacherID     String @id @default(uuid())
+  indexNumber   String @unique
+  email         String @unique
+  phoneNumber   String @unique
+  displayPicUrl String @default("/images/avatar.png")
 
   userID String @unique
   user   User   @relation("teacher", fields: [userID], references: [userID])
@@ -66,23 +64,21 @@ model Teacher {
 }
 
 model Parent {
-  parentID    String @id @default(uuid())
-  email       String @unique
-  phoneNumber String @unique
-  profileUrl  String @unique
-  displayPic  String @default("/images/avatar.png")
+  parentID      String @id @default(uuid())
+  email         String @unique
+  phoneNumber   String @unique
+  displayPicUrl String @default("/images/avatar.png")
 
   userID String @unique
   user   User   @relation("parent", fields: [userID], references: [userID])
 }
 
 model Student {
-  studentID   String @id @default(uuid())
-  indexNumber String @unique
-  email       String
-  phoneNumber String
-  profileUrl  String @unique
-  displayPic  String @default("/images/avatar.png")
+  studentID     String @id @default(uuid())
+  indexNumber   String @unique
+  email         String
+  phoneNumber   String
+  displayPicUrl String @default("/images/avatar.png")
 
   classID String?
   class   Class?  @relation("enroll", fields: [classID], references: [classID])
@@ -95,26 +91,36 @@ model Class {
   classID     String   @id @default(uuid())
   name        String?
   grade       Int
-  classLetter String?
+  classLetter String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  managedBy String 
+  managedBy String
   teacher   Teacher @relation("manageClass", fields: [managedBy], references: [teacherID])
 
   students Student[] @relation("enroll")
+
+  @@unique([grade, classLetter])
 }
 
 model Lesson {
-  lessonID     String   @id @default(uuid())
-  title        String
-  coverImage   String?
-  description  String?
-  activityData Json?
-  options      Json? // this may devided into columns
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  lessonID      String   @id @default(uuid())
+  title         String
+  coverImageUrl String? // url
+  description   String?
+  activityData  Json?
+  options       Json? // this may devided into columns
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   createdBy String
   teacher   Teacher @relation("lessonCreator", fields: [createdBy], references: [teacherID])
+}
+
+model templates {
+  templateID   String @id @default(uuid())
+  templateCode String
+  title        String
+  description  String
+  templateType String
 }

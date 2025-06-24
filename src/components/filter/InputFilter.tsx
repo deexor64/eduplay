@@ -1,8 +1,9 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, ReactNode } from "react";
 
 interface InputFilterProps {
   filterKey: string;
   setFilter: (prev: any) => void;
+  children: ReactNode
 }
 
 export default function InputFilter(props: InputFilterProps) {
@@ -21,7 +22,7 @@ export default function InputFilter(props: InputFilterProps) {
   return (
     <div>
       <label htmlFor={filterKey} className="font-medium text-blue-800 mr-1.5">
-        {filterKey}
+        {props.children}
       </label>
       <input
         id={filterKey}

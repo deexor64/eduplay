@@ -24,54 +24,47 @@ export default async function userListService(searchParams: any): Promise<ResTyp
   
   // query
   const data = valid.data;
-
-  const users = await getUserHandler(data.userListType).findMany({
-    where: {
-      indexNumber: data.indexNumber,
-      grade: data.grade,
-      email: data.email,
-      profileUrl: data.profileUrl,
-      displayPic: data.displayPic,
-      user: {
-        fullName: data.fullName,
-        status: data.status,
-      }
-    },
-    select: {
-      indexNumber: true,
-      email: true,
-      profileUrl: true,
-      displayPic: true,
-      user: {
-        select: {
-          fullName: true,
-          status: true
-        },
+  
+  let whereClause: any = { // undefined values are ignored in where clause
+    indexNumber: data.indexNumber,
+    email: data.email,
+    profileUrl: data.profileUrl,
+    displayPic: data.displayPic,
+    user: {
+      fullName: data.fullName,
+      status: data.status,
+    }
+  };
+  
+  let selectClause: any = {
+    indexNumber: true,
+    email: true,
+    profileUrl: true,
+    displayPic: true,
+    user: {
+      select: {
+        fullName: true,
+        status: true
       },
     },
-    skip: (data.page - 1) * data.limit,
-    take: data.limit,
-  });
-  
-  const total = await getUserHandler(data.userListType).count({
-    where: {
-      indexNumber: data.indexNumber,
-      grade: data.grade,
-      email: data.email,
-      profileUrl: data.profileUrl,
-      displayPic: data.displayPic,
-      user: {
-        fullName: data.fullName,
-        status: data.status,  
-      }
-    },
-  })
-
-  const output = {
-    users: users,
-    total: total
   }
   
-  return { status: true, resDataType: "success", data: JSON.stringify(output) };
+  if (data.userListType === "parent") {
+    delete selectClause.indexNumber;
+  }
+
+  const existing = {
+    users: await getUserHandler(data.userListType).findMany({
+      where: whereClause,
+      select: selectClause,
+      skip: (data.page - 1) * data.limit,
+      take: data.limit,
+    }),
+    total: await getUserHandler(data.userListType).count({
+      where: whereClause,
+    })
+  }
+  
+  return { status: true, resDataType: "success", data: JSON.stringify(existing) };
   
 }

@@ -1,0 +1,6 @@
+{
+  "templateCode": "1-SortItems-tmpl",
+  "title": "Sort items",
+  "description": "Move items in the box to correct baskets",
+  "templateType": "Drag and Drop"
+}

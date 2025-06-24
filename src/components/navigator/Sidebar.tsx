@@ -68,9 +68,9 @@ export default function Sidebar(props: sideBarProps) {
               "Teachers": "/admin/users?userListType=teacher",
               "Parents": "/admin/users?userListType=parent",
               "Admins": "/admin/users?userListType=admin",
-              "Classes": "/admin/school/classes",
-              "Lessons": "/admin/school/lessons",
-              "Templates": "/admin/school/templates",
+              "Classes": "/admin/classes",
+              "Lessons": "/admin/lessons",
+              "Templates": "/admin/templates",
               "Admin profile": "/admin/profile",
               "System Settings": "/admin/system-settings",
             }).map(function ([label, href]) {
