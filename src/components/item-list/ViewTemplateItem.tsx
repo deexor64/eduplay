@@ -10,23 +10,21 @@ import Link from "next/link";
 
 interface CreateLessonItemProps {
   itemData: {
-    templateId: string, 
-    name: string, 
-    type: string,
-    templateUrl: string, // url
-    coverIcon: string, // url
-    previewImage: string // url
+    templateCode: string,
+    title: string,
+    description: string,
+    templateType: String
   }
 }
 
-export function CreateLessonItem(props: CreateLessonItemProps) {
+export default function CreateLessonItem(props: CreateLessonItemProps) {
   
   const [showPreview, setShowPreview] = useState(false);
   
   return (
 
     <Link
-      href={props.itemData.templateUrl}
+      href={`/templates/${props.itemData.templateCode}/preview`}
       target="_blank"
       rel="noopener noreferrer"
       className="border border-blue-200 bg-white rounded-lg p-4 
@@ -35,7 +33,7 @@ export function CreateLessonItem(props: CreateLessonItemProps) {
     >
       <div className="flex items-center">
         <Image
-          src={props.itemData.coverIcon}
+          src="/images/avatar.png"
           alt="Cover Icon"
           width={64}    // 16 * 4 (tailwind w-16 is 4rem = 64px)
           height={64}   // same for h-16
@@ -43,13 +41,13 @@ export function CreateLessonItem(props: CreateLessonItemProps) {
         />
         <div>
           <div className="text-lg font-semibold text-pink-700">
-            {props.itemData.name}
+            {props.itemData.title}
           </div>
-          <div className="text-sm text-blue-600">{props.itemData.type}</div>
+          <div className="text-sm text-blue-600">{props.itemData.templateType}</div>
         </div>
       </div>
       <div className="flex gap-2">
-        <ImagePreview previewImage={props.itemData.previewImage} showPreview={showPreview} />
+        <ImagePreview previewImage="/images/avatar.png" showPreview={showPreview} />
         <i
           className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
           onMouseOver={function () { setShowPreview(!showPreview) }}

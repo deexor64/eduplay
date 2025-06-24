@@ -28,6 +28,7 @@ model User {
   dateOfBirth DateTime?
   password    String
   status      Status    @default(PENDING)
+  displayPicUrl String  @default("/images/avatar.png")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -42,7 +43,6 @@ model Admin {
   indexNumber   String @unique
   email         String @unique
   phoneNumber   String @unique
-  displayPicUrl String @default("/images/avatar.png")
 
   userID String @unique
   user   User   @relation("admin", fields: [userID], references: [userID])
@@ -53,7 +53,6 @@ model Teacher {
   indexNumber   String @unique
   email         String @unique
   phoneNumber   String @unique
-  displayPicUrl String @default("/images/avatar.png")
 
   userID String @unique
   user   User   @relation("teacher", fields: [userID], references: [userID])
@@ -67,7 +66,6 @@ model Parent {
   parentID      String @id @default(uuid())
   email         String @unique
   phoneNumber   String @unique
-  displayPicUrl String @default("/images/avatar.png")
 
   userID String @unique
   user   User   @relation("parent", fields: [userID], references: [userID])
@@ -78,7 +76,6 @@ model Student {
   indexNumber   String @unique
   email         String
   phoneNumber   String
-  displayPicUrl String @default("/images/avatar.png")
 
   classID String?
   class   Class?  @relation("enroll", fields: [classID], references: [classID])
@@ -117,10 +114,10 @@ model Lesson {
   teacher   Teacher @relation("lessonCreator", fields: [createdBy], references: [teacherID])
 }
 
-model templates {
+model Templates {
   templateID   String @id @default(uuid())
-  templateCode String
-  title        String
+  templateCode String @unique()
+  title        String @unique()
   description  String
   templateType String
 }

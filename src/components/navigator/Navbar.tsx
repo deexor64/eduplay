@@ -2,6 +2,8 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import getUserType from '@/hooks/useUserType';
+import { faBell, faLongArrowRight, faSignOut } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function Navbar(props: any) {
 
@@ -10,7 +12,7 @@ export default function Navbar(props: any) {
   // route back to dashboard
   const router = useRouter();
   function routeBackToDashboard() { 
-    router.push(`/${userType.toLowerCase()}/dashboard`)
+    router.push(`/${userType.toLowerCase()}/`)
   }
 
   return (
@@ -22,9 +24,9 @@ export default function Navbar(props: any) {
         <span className="text-xl">EduSoft</span>
       </div>
       <div className="flex items-center space-x-4">
-        <button className="text-white">Logout</button>
-        <img src="/profile.png" className="w-8 h-8 rounded-full" alt="Profile" />
-        <button className="text-white">🔔</button>
+        <button className="text-white"><FontAwesomeIcon icon={faBell} /></button>
+        <img src="/images/avatar.png" className="w-8 h-8 rounded-full" alt="Profile" />
+        <button className="text-white"><FontAwesomeIcon icon={faSignOut} /></button>
       </div>
     </div>
   );

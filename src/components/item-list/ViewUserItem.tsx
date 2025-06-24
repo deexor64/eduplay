@@ -18,11 +18,10 @@ interface ViewUserItemProps {
   itemData: {
     indexNumber?: string;
     email: string;
-    profileUrl: string; // url
-    displayPic: string; // url
     user: {
       fullName: string;
       status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED" | string;
+      displayPicUrl: string;
     }
   };
 }
@@ -39,7 +38,7 @@ export default function ViewUserItem(props: ViewUserItemProps) {
 
   return (
     <Link
-      href={itemData.profileUrl}
+      href={""}
       target="_blank"
       rel="noopener noreferrer"
       className="border border-blue-200 bg-white rounded-lg p-4 
@@ -50,7 +49,7 @@ export default function ViewUserItem(props: ViewUserItemProps) {
     >
       <div className="flex items-center gap-4">
         <Image
-          src={itemData.displayPic}
+          src={itemData.user.displayPicUrl}
           alt="Profile Picture"
           width={64}
           height={64}

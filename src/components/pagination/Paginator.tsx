@@ -28,7 +28,8 @@ export default function Paginator(props: PaginatorProps) {
   const totalPages = Math.ceil(totalItems / pagination.limit);
 
   return (
-    <div className="sticky bottom-0 w-full left-0 mt-5 flex justify-center gap-4 p-4 bg-red-200 shadow rounded-lg">
+    <div className="sticky bottom-0 w-full left-0 mt-5 flex justify-center gap-4 p-4 
+      bg-red-200 shadow rounded-lg">
       <PageNavigation
         currentPage={pagination.page}
         totalPages={totalPages}

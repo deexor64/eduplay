@@ -22,17 +22,16 @@ export default function NavigatorLayout(props: any) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
   return (
-    <div className="flex flex-col h-dvh">
+    <div className="flex flex-col h-full">
       {/* Nav bar and Spacer for Navbar height */}
       <Navbar/>
-      <div className="w-full h-16" />
       {/* main content */}
       <div className="flex flex-grow" >
         {/* Sidebar with passed toggle function */}
         <Sidebar toggleSidebar={function() { setIsSidebarOpen(!isSidebarOpen) }} />
         {/* layout content */}
         <section className="flex-grow transition-all duration-300 bg-yellow-100
-          w-full h-full mx-auto p-6"
+          w-full h-lvh mx-auto p-6"
           style={{ marginLeft: isSidebarOpen ? "12rem" : "4rem" }} >
           {props.children}
         </section>
