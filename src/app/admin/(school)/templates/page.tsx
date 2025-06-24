@@ -7,7 +7,8 @@ import OptionFilter from "@/components/filter/OptionFilter";
 import FilterControls from "@/components/filter/FilterControls";
 import Paginator from "@/components/pagination/Paginator";
 import ItemListWrapper from "@/components/item-list/ItemListWrapper";
-import ViewClassItem from "@/components/item-list/ViewClassItem";
+import ViewTemplateItem from "@/components/item-list/ViewTemplateItem";
+import SyncTemplateButton from "@/components/templates/SyncTemplatesButton";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 
@@ -18,23 +19,18 @@ export default function Classes() {
   // const userListType = searchParams.get("userListType");
  
   const [dbData, setDbData] = useState<{
-    classes: Array<{
-      name?: string,
-      grade: number,
-      classLetter: string,
-      teacher: {
-        user: {
-          fullName: string
-        }
-      }
+    templates: Array<{
+      templateCode: string,
+      title: string,
+      description: string,
+      templateType: string
     }>,
     total: number;
-  }>({ classes: [], total: 0 });
+  }>({ templates: [], total: 0 });
 
   const [filter, setFilter] = useState({
-    grade: undefined,
-    classLetter: undefined,
-    teacherName: undefined,
+    templateType: undefined,
+    title: undefined,
   });
   
   const [pagination, setPagination] = useState({
@@ -80,7 +76,7 @@ export default function Classes() {
     
     const params = finalizeQueryString();
     
-    const url = `/api/school-management/class-list?${params}`;
+    const url = `/api/school-management/template-list?${params}`;
     const res = await fetch(url);
     
     const data = await res.json();
@@ -91,38 +87,40 @@ export default function Classes() {
   
   }
   
+  async function syncTemplates() {
+    const url = `/api/school-management/sync-templates?userType=${userType}`;
+    const res = await fetch(url);
+    handleFetch();
+  }
+  
   return (
     <>
       
       {/* Title */}
-      <Title title="Manage Classes" />
+      <Title title="Activity Templates" />
 
       {/* Filters */}
       <FilterWrapper>
         <OptionFilter
-          filterKey="grade"
-          values={["1", "2", "3", "4", "5"]}
+          filterKey="templateType"
+          values={["Drag and Drop", "Match", "Fill Blanks"]}
           setFilter={setFilter}
-        >Grade</OptionFilter>
-        <OptionFilter
-          filterKey="classLetter"
-          values={["A", "B", "C", "D", "E", "T", "N"]}
-          setFilter={setFilter}
-        >Class Letter</OptionFilter>
+        >Type</OptionFilter>
         <InputFilter
-          filterKey="teacherName"
+          filterKey="title"
           setFilter={setFilter}
-        >Teacher Name</InputFilter>
+        >Title</InputFilter>
         <div className="ml-auto">
           <FilterControls setFilter={setFilter} setTriggerFilter={setTriggerFilter}/>
         </div>
+        <SyncTemplateButton syncTemplates={syncTemplates} />
       </FilterWrapper>
       
       {/* Info */}
       <ItemListWrapper>
         {
-          dbData.classes.map(function (item) {
-            return <ViewClassItem itemData={item} key={item.grade + item.classLetter + item.name}/>;
+          dbData.templates.map(function (item) {
+            return <ViewTemplateItem itemData={item} key={item.templateCode}/>;
           })
         } 
       </ItemListWrapper>

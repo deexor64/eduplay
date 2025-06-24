@@ -28,8 +28,6 @@ export default async function userListService(searchParams: any): Promise<ResTyp
   let whereClause: any = { // undefined values are ignored in where clause
     indexNumber: data.indexNumber,
     email: data.email,
-    profileUrl: data.profileUrl,
-    displayPic: data.displayPic,
     user: {
       fullName: data.fullName,
       status: data.status,
@@ -39,11 +37,10 @@ export default async function userListService(searchParams: any): Promise<ResTyp
   let selectClause: any = {
     indexNumber: true,
     email: true,
-    profileUrl: true,
-    displayPic: true,
     user: {
       select: {
         fullName: true,
+        displayPicUrl: true,
         status: true
       },
     },

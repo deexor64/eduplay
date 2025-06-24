@@ -22,10 +22,9 @@ export default function Users() {
     users: Array<{
       indexNumber?: string,
       email: string,
-      profileUrl: string,
-      displayPic: string,
       user: {
         fullName: string,
+        displayPicUrl: string,
         status: string
       }
     }>,
@@ -134,7 +133,7 @@ export default function Users() {
       <ItemListWrapper>
         {
           dbData.users.map(function (item) {
-            return <ViewUserItem itemData={item} key={item.indexNumber}/>;
+            return <ViewUserItem itemData={item} key={item.indexNumber + item.email}/>;
           })
         } 
       </ItemListWrapper>
