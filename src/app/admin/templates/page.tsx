@@ -1,4 +1,4 @@
-import TemplateList from "@/app/templates/TemplateList";
+import TemplateList from "@/app/template/TemplateList";
 
 export default function Templates() {
   return <TemplateList userType="ADMIN"/>

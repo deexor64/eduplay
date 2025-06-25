@@ -14,10 +14,12 @@ import DateInput from '@/components/shared/form/DateInput';
 import GroupTitle from '@/components/shared/form/GroupTitle';
 import { useSearchParams } from 'next/navigation';
 import { UserType } from '@/lib/utils/types';
+import cleanParams from '@/lib/utils/cleanParams';
 
 export default function Signup() {
   
-  const userType = useSearchParams().get("userType") as UserType; 
+  const searchParams = useSearchParams();
+  const userType = searchParams.get("userType") as UserType;
   
   const [formData, setFormData] = useState({
     email: undefined,
@@ -25,72 +27,49 @@ export default function Signup() {
   });
   
   function validateForm(): {status: boolean, message: string} {
-    
-    return {status: true, message: ""}
-    
+    return {status: true, message: ""} 
   }
   
-  function finalizeForm(): string {
+  function finalizeForm(): {form: string, params: URLSearchParams} {
     
-    // remove unused fields
-    // undefined fileds are stripped at stringify
-    let form = formData;
+    // form
+    const form = {
+      ...formData,
+    };
     
-    return JSON.stringify(form);
+    // params
+    const params = cleanParams({ 
+      userType: userType
+    })
+    
+    return {
+      form: JSON.stringify(form),
+      params: new URLSearchParams(params)
+    }
     
   }
 
-  function handleSubmit (e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit (e: FormEvent<HTMLFormElement>) {
     
     e.preventDefault();
     
     // validate
-    let valid = validateForm();
-    if (!valid.status) {
-      Swal.fire({
-        title: "Error",
-        text: valid.message,
-        icon: "error",
-      });
-      return;
-    }
-    
-    // finalize
-    let form = finalizeForm();
+    const valid = validateForm();
+    console.log(valid);
     
     // submit
-    const params = new URLSearchParams({ userType: userType });
-    const url = `/api/signup?${params}`;
-    fetch(url, {
+    const form = finalizeForm();
+    
+    const url = `/api/signin?${form.params}`;
+    const res = await fetch(url, {
       method: "POST",
-      headers: {
-          "Content-Type": "application/json",
-        },
-      body: form
+      headers: { 
+        "Content-Type": "application/json",
+      },
+      body: form.form
     })
-    .then(function (res) {
-      console.log(res.body);
-      if (!res.ok) {
-        Swal.fire({
-          title: "Error",
-          text: "not okay",
-          icon: "error",
-        });
-      } else {
-        Swal.fire({
-          title: "Success",
-          text: "okayy",
-          icon: "success",
-        });
-      }
-      return res.json();
-    })
-    .then(function (data) {
-      console.log(data);
-    })
-    .catch(function (err) {
-      console.log(err.message);
-    });
+    
+    console.log(res.body);
     
   };
 
