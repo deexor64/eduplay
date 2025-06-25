@@ -2,16 +2,16 @@
 
 import { useState, FormEvent} from 'react';
 import Link from 'next/link';
-import Title from '@/components/form/Title';
-import TextInput from '@/components/form/TextInput';
-import PasswordInput from '@/components/form/PasswordInput';
-import SubmitButton from '@/components/form/SumbitButton';
-import EmailInput from '@/components/form/EmailInput';
+import Title from '@/components/shared/form/Title';
+import TextInput from '@/components/shared/form/TextInput';
+import PasswordInput from '@/components/shared/form/PasswordInput';
+import SubmitButton from '@/components/shared/form/SubmitButton';
+import EmailInput from '@/components/shared/form/EmailInput';
 import Swal from 'sweetalert2';
-import NumberInput from '@/components/form/NumberInput';
-import PhoneInput from '@/components/form/PhoneInput';
-import DateInput from '@/components/form/DateInput';
-import GroupTitle from '@/components/form/GroupTitle';
+import NumberInput from '@/components/shared/form/NumberInput';
+import PhoneInput from '@/components/shared/form/PhoneInput';
+import DateInput from '@/components/shared/form/DateInput';
+import GroupTitle from '@/components/shared/form/GroupTitle';
 import { UserType } from '@/lib/utils/types';
 import { useSearchParams } from 'next/navigation';
 
