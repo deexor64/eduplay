@@ -13,5 +13,6 @@ export async function generateHash(input: string) {
 }
 
 export function generateUniqueID() {
-  return crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
+  const randHex = crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
+  return randHex // 1 - 8 character hex string
 }

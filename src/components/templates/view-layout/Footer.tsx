@@ -1,30 +1,30 @@
 import Swal from "sweetalert2";
 
 type FooterProps = {
-  // validateTemplate: Function,
+  validateTemplate: Function,
 }
 
 export default function Footer(props: FooterProps) {
   
   function handleSave() {
     
-    // let valid = props.validateTemplate();
+    let valid = props.validateTemplate();
 
-    // if (!valid.status) {
+    if (!valid.status) {
       
-    //   Swal.fire({
-    //     title: "Error",
-    //     text: valid.message,
-    //     icon: "error",
-    //   });
-    //   return;
-    // }
+      Swal.fire({
+        title: "Error",
+        text: valid.message,
+        icon: "error",
+      });
+      return;
+    }
 
-    // Swal.fire({
-    //   title: "Success",
-    //   text: valid.message,
-    //   icon: "success",
-    // });
+    Swal.fire({
+      title: "Success",
+      text: valid.message,
+      icon: "success",
+    });
     
   }
   
@@ -40,7 +40,7 @@ export default function Footer(props: FooterProps) {
         className="font-semibold py-2 px-6 rounded-lg transition bg-green-500 text-white hover:bg-green-600"
         onClick={handleSave}
       >
-      Grade
+      Preview
       </button>
     </footer>
   

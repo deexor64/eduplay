@@ -3,43 +3,35 @@ import { useState } from "react";
 
 interface CoverImageProps {
   setFormData: Function,
-  setForm: Function
+  setMediaFiles: Function
 }
 
 export default function CoverImage(props: CoverImageProps) {
   
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
   
-  function setCoverImage(file: File) {
+  async function setCoverImage(file: File) {
     
-    // modify formData and actual form
-    props.setFormData(async function (prev: any) { 
+    const newFileHash = await generateHash(file.name);
+    
+    props.setFormData(function (prev: any) { 
       
-      // old file hash
-      let fileHash = prev.coverImage;
+      const oldFileHash = prev.coverImage;
       
-      // delete old image from actual form
-      if (fileHash.length >= 0) {
-        props.setForm(function (prev: any) {
-          prev.delete(fileHash);
-          return prev;
+      // delete old file hash and append new
+      if (oldFileHash.length >= 0) {
+        props.setMediaFiles(function (prev: Map<string, Blob>) {
+          const tempFileList = new Map(prev);
+          tempFileList.delete(oldFileHash);
+          tempFileList.set(newFileHash, file);
+          return tempFileList;
         });
       }
       
-      // new file hash
-      fileHash = await generateHash(file.name);
-      
-      // append new image to actual form
-      props.setForm(function (prev: any) {
-        prev.append(fileHash, file);
-        return prev;
-      });
-      
-      return { ...prev, coverImage: fileHash } 
+      return { ...prev, coverImage: newFileHash } 
       
     });
     
-    // update preview
     setCoverImagePreview(URL.createObjectURL(file));
     
   }

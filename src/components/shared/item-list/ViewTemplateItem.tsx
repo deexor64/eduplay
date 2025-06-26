@@ -4,9 +4,10 @@
 "use client";
 
 import Image from "next/image";
-import ImagePreview from "@/components/popups/ImagePreview";
+import ImagePreview from "@/components/shared/popups/ImagePreview";
 import { useState } from "react";
 import Link from "next/link";
+import { UserType } from "@/lib/utils/types";
 
 interface ViewTemplateItemProps {
   itemData: {
@@ -14,17 +15,18 @@ interface ViewTemplateItemProps {
     title: string,
     description: string,
     templateType: String
-  }
+  },
+  userType: UserType
 }
 
 export default function ViewTemplateItem(props: ViewTemplateItemProps) {
   
-  const [showPreview, setShowPreview] = useState(false);
-  
+  const [showPreview, setShowPreview] = useState(false); 
+
   return (
 
     <Link
-      href={`/templates/${props.itemData.templateCode}/preview`}
+      href={`/template?userType=${props.userType}&viewMode=INSPECT&templateCode=${props.itemData.templateCode}`}
       target="_blank"
       rel="noopener noreferrer"
       className="border border-blue-200 bg-white rounded-lg p-4 

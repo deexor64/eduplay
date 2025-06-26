@@ -2,12 +2,9 @@
 
 import React, { useState } from "react";
 import Title from "@/components/Title";
+import TabWrapper from "@/components/tab/TabWrapper";
 import TabButtonWrapper from "@/components/tab/TabButtonWrapper";
 import TabButton from "@/components/tab/TabButton";
-import TabWrapper  from "@/components/tab/TabWrapper";
-import FilterWrapper from "@/components/client-filter/FilterWrapper";
-import InputFilter from "@/components/client-filter/InputFilter";
-import OptionFilter from "@/components/client-filter/OptionFilter";
 import ItemListWrapper from "@/components/item-list/ItemListWrapper";
 import { CreateLessonItem } from "@/components/item-list/ViewLessonItem";
 import { generateUniqueID } from "@/lib/utils/generateRandomString";
@@ -51,7 +48,7 @@ export default function ViewLesson() {
       </TabButtonWrapper>
       
       {/* Filters */}
-      <FilterWrapper filterTab="DEFAULT" selected={selectedTab}>
+      {/* <FilterWrapper filterTab="DEFAULT" selected={selectedTab}>
         <OptionFilter
           filterTab="DEFAULT"
           values={{ type: ["All", "Drag and Drop", "Fill Blanks", "Puzzle"] }}
@@ -64,7 +61,7 @@ export default function ViewLesson() {
           originalData={dbData}
           setFilteredData={setFilteredData}
         />
-      </FilterWrapper>
+      </FilterWrapper> */}
       
       {/* Info */}
       <TabWrapper>

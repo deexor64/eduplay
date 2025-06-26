@@ -1,0 +1,33 @@
+{
+  "templateCode": "1-SortItems-tmpl",
+  "title": "Sort items",
+  "description": "Move items in the box to correct baskets",
+  "templateType": "Drag and Drop",
+  "sampleLesson": {
+    "templateCode": "1-SortItems-tmpl",
+    "activityTitle": "Sort object",
+    "coverImage": "1746025057700_cute-giraffe.jpg",
+    "description":
+      "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
+    "activityData": [
+      {
+        "title": "Animals",
+        "items": [
+          { "type": "text", "value": "Cat" },
+          { "type": "image", "value": "test-images/giraffe.jpg", "label": "Jiraffe" }
+        ]
+      },
+      {
+        "title": "Vegetables",
+        "items": [
+          { "type": "text", "value": "Carrot" },
+          { "type": "text", "value": "Potatoe" }
+        ]
+      }
+    ],
+    "options": {
+      "timeLimit": 0,
+      "isGraded": false
+    }
+  }
+}

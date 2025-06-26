@@ -5,38 +5,49 @@ import CoverImage from "./CoverImage";
 import Description from "./Description";
 import ActivityOptions from "./ActivityOptions";
 import Footer from "./Footer";
-import { useState } from "react";
-import { generateHash } from "@/lib/utils/generateRandomString";
+import { UserType } from "@/lib/utils/types";
+import UploadProgressBar from "@/components/uploader/UploadProgressBar";
+import { useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import cleanParams from "@/lib/utils/cleanParams";
+import { useEdgeStore } from '@/lib/edgestore';
+import { abort } from "process";
+
+
 
 type CreateLayoutProps = {
   templateTitle: string,
   validateActivity: () => { status: boolean, message: string},
-  getActivityData: () => { templateName: string, activityData: any, mediaFiles: any },
+  getActivityData: () => { activityData: any, mediaFiles: Map<string, File> },
   children: React.ReactNode
 }
 
 export default function CreateLayout(props: CreateLayoutProps) {
+
+  const searchParams = useSearchParams();
+  const templateCode = searchParams.get("templateCode") as UserType;
   
-  // data sent to server 
+  const edgestore = useEdgeStore();
+  
+  // form data
   const [formData, setFormData] = useState({
-    templateName: "",
     title: "",
     coverImage: "",
     description: "",
     activityData: {}, // from children
-    options: JSON.stringify({
+    options: {
       timeLimit: 0,
       isGraded: false
-    })
+    }
   });
   
-  // actual form sent to server
-  const [form, setForm] = useState(new FormData());
+  // media files
+  const [mediaFiles, setMediaFiles] = useState<Map<string, File>>(new Map());
   
-
-  function validateActivity(): { status: boolean, message: string } {
+  // validate
+  function validateForm(): { status: boolean, message: string } {
   
-    // validate common template
+    // validate common form
     if (!formData.title) {
       return { status: false, message: "Title is required." };
     }
@@ -50,55 +61,120 @@ export default function CreateLayout(props: CreateLayoutProps) {
       return { status: false, message: "Options are required." };
     }
     
-    // validate activity template
+    // validate activity form
     let validT = props.validateActivity();
     if (!validT.status) {
       return { status: false, message: validT.message };
     }
 
-    return { status: true, message: "" };
+    return { status: true, message: "Success" };
     
   }
   
-  function finalizeActivity() {
+  function finalizeForm(): {form: string, files: Map<string, File>, 
+    params: URLSearchParams} {
     
-    let activityData = props.getActivityData();
-    
-    // static info
-    setForm(function (prev) {
-      return {
-        title: formData.title,
-        coverImage: formData.coverImage,
-        description:  formData.description,
-        templateName: activityData.templateName,
-        activityData: JSON.stringify(activityData.activityData),
-        options: formData.options,
-        ...prev
-      }
+    // params
+    const params = cleanParams({
+      userType: "TEACHER",
     });
+    
+    // form
+    const activityData = props.getActivityData();
+    
+    const form = {
+      ...formData,
+      templateCode: templateCode,
+      activityData: activityData.activityData,
+    }
     
     // files
-    setForm(function (prev) {
-      for (const fileHash in activityData.mediaFiles.keys()) {
-        prev.append(fileHash, activityData.mediaFiles[fileHash]);
-      }
-      return prev;
-    });
+    const files = new Map<string, File>();
+  
+    for (const fileHash of mediaFiles.keys()) {
+      const file = mediaFiles.get(fileHash);
+      if (file) files.set(fileHash, file);
+    }
+    
+    for (const fileHash of activityData.mediaFiles.keys()) {
+      const file = activityData.mediaFiles.get(fileHash);
+      if (file) files.set(fileHash, file);
+    }
+    
+    return {form: JSON.stringify(form), files: files, 
+      params: new URLSearchParams(params)} 
     
   }
   
-  return (
+  const [uploadProgress, setUploadProgress] = useState({
+    progress: 0,
+    status: "NONE",
+  });
+  const abortSave = useRef(true);
+  
+  async function handleSubmit () {
     
+    // validate
+    const valid = validateForm();
+    console.log(valid);
+    if (!valid.status) return;
+    
+    // submit with progress
+    const form = finalizeForm();
+    
+    const url = `/api/school-management/create-activity?${form.params}`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+      },
+      body: form.form
+    })
+    
+    // edge store
+    const files = form.files;
+    const abortController = new AbortController();
+    
+    setUploadProgress((prev) => ({...prev, status: "PENDING"}));
+    abortSave.current = false;
+    
+    for (const fileHash of files.keys()) {
+      
+      const file = files.get(fileHash);
+      if (!file) continue;
+      
+      const res = await edgestore.edgestore.publicFiles.upload({
+        file,
+        onProgressChange: (progress) => {
+          if (abortSave.current === true) abortController.abort();// abort while uploading
+          setUploadProgress((prev) => ({...prev, progress: progress}));
+        },
+        signal: abortController.signal,
+      });
+      
+      console.log(res)
+      
+    }
+    
+    if (abortSave.current === false) {
+      abortSave.current = true;
+      setUploadProgress({ progress: 100, status: "COMPLETED" });
+    }
+    
+  };
+  
+  return (
+  
     <div className="max-w-6xl mx-auto p-4 pb-14 bg-blue-100">
       
       {/* template title */}
       <TemplateTitle>{props.templateTitle}</TemplateTitle>
-
+      
       {/* activity title */}
       <ActivityTitle setFormData={setFormData} />
       
       {/* cover image */}
-      <CoverImage setFormData={setFormData} setForm={setForm} />
+      <CoverImage setFormData={setFormData} setMediaFiles={setMediaFiles} />
       
       {/* description */}
       <Description setFormData={setFormData} />
@@ -110,7 +186,11 @@ export default function CreateLayout(props: CreateLayoutProps) {
       <ActivityOptions setFormData={setFormData} />
       
       {/* footer */}
-      <Footer validateActivity={validateActivity}></Footer>
+      <Footer handleSubmit={handleSubmit}></Footer>
+      
+      {/* upload progress */}
+      <UploadProgressBar uploadProgress={uploadProgress} setUploadProgress={setUploadProgress}
+      abortSave={abortSave}/>
       
     </div>
     

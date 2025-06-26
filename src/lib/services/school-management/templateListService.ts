@@ -28,13 +28,13 @@ export default async function templateListService(searchParams: any): Promise<Re
   }
   
   const existing = {
-    templates: await prisma.templates.findMany({
+    templates: await prisma.template.findMany({
       where: whereClause,
       select: selectClause,
       skip: (data.page - 1) * data.limit,
       take: data.limit,
     }),
-    total: await prisma.templates.count({
+    total: await prisma.template.count({
       where: whereClause,
     })
   }

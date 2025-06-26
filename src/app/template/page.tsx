@@ -1,0 +1,35 @@
+"use client"
+
+import { TemplateViewMode, UserType } from "@/lib/utils/types";
+import { useSearchParams } from "next/navigation";
+import { lazy, Suspense, useMemo } from "react";
+import { EdgeStoreProvider } from "@/lib/edgestore";
+
+function loadComponent(templateCode: string, viewMode: TemplateViewMode) {
+  if (viewMode === "CREATE") return lazy(() => import(`./${templateCode}/Create.tsx`));
+  else return lazy(() => import(`./${templateCode}/View.tsx`));
+};
+
+export default function Templates(props: any) {
+  
+  const searchParams = useSearchParams();
+  const userType = searchParams.get("userType") as UserType;
+  const viewMode = searchParams.get("viewMode") as TemplateViewMode;
+  const templateCode = searchParams.get("templateCode") as string;
+  
+  console.log("Loading component", templateCode,"  ", viewMode);
+
+  const LessonComponent = useMemo(() => {
+    if (!templateCode || !viewMode) return null;
+    return loadComponent(templateCode, viewMode);
+  }, [templateCode, viewMode]);
+  
+  return LessonComponent ? (
+    <Suspense fallback={<div>Loading lesson...</div>}>
+      <EdgeStoreProvider>
+        <LessonComponent />
+      </EdgeStoreProvider>
+    </Suspense>
+  ) : null;
+
+};

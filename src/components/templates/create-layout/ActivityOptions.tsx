@@ -7,9 +7,9 @@ export default function ActivityOptions(props: ActivityOptionsProps) {
   
   function setOptions(option: any, value: any) {
     props.setFormData(function (prev: any) {
-      let options = JSON.parse(prev.options);
+      let options = prev.options;
       options[option] = value;
-      return { ...prev, options: JSON.stringify(options) }
+      return { ...prev, options: options }
     }); 
   }
   

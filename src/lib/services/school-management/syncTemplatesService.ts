@@ -13,27 +13,30 @@ export default async function syncTemplatesService(searchParams: any): Promise<R
   if (!valid.status) return valid;
   
   // query
-  const templateDir = path.join(process.cwd(), "src/app/templates");
+  const templateDir = path.join(process.cwd(), "src/app/template");
   const folders = fs.readdirSync(templateDir);
   
   for (const folder of folders) {
+    
+    if (folder.split("-")[2] !== "tmpl") continue; // skip non template folders
     
     const metaPath = path.join(templateDir, folder, "meta.json");
     const raw = fs.readFileSync(metaPath, "utf-8");
     const meta = JSON.parse(raw);
 
-    const exists = await prisma.templates.findUnique({
+    const exists = await prisma.template.findUnique({
       where: { templateCode: meta.templateCode },
     });
 
     if (exists) continue;
 
-    const existing = await prisma.templates.create({
+    const existing = await prisma.template.create({
       data: {
         templateCode: meta.templateCode,
-        templateType: meta.templateType,
         title: meta.title,
         description: meta.description,
+        templateType: meta.templateType,
+        sampleLesson: meta.sampleLesson,
       },
     });
     
