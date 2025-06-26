@@ -41,16 +41,6 @@ export default function Classes() {
   
   const [triggerFilter, setTriggerFilter] = useState(false);
   
-  useEffect(() => {
-    if (!triggerFilter) return;
-    setTriggerFilter(false);
-    handleFetch();
-  }, [triggerFilter]);
-  
-  useEffect(() => { 
-    handleFetch();
-  }, [pagination]);
-  
   function finalizeFetchQuery(): URLSearchParams {
 
     // params
@@ -76,6 +66,16 @@ export default function Classes() {
     setDbData(JSON.parse(await res.json()));
   
   }
+  
+  useEffect(() => {
+    if (!triggerFilter) return;
+    setTriggerFilter(false);
+    handleFetch();
+  }, [triggerFilter]);
+  
+  useEffect(() => { 
+    handleFetch();
+  }, [pagination]);
   
   return (
     <>

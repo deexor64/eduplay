@@ -59,7 +59,7 @@ model Teacher {
 
   classes Class[] @relation("manageClass")
 
-  lessons Lesson[] @relation("lessonCreator")
+  // activity Activity[] @relation("activityCreator")
 }
 
 model Parent {
@@ -100,24 +100,31 @@ model Class {
   @@unique([grade, classLetter])
 }
 
-model Lesson {
-  lessonID      String   @id @default(uuid())
+model Activity {
+  activityID    String   @id @default(uuid())
   title         String
-  coverImageUrl String? // url
-  description   String?
-  activityData  Json?
-  options       Json? // this may devided into columns
+  coverImageUrl String
+  description   String
+  activityData  Json
+  isGraded      Boolean @default(false)
+  timeLimit     Int     @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  
+  templateCode String
+  template Template @relation("activityTemplate", fields: [templateCode], references: [templateCode])
 
-  createdBy String
-  teacher   Teacher @relation("lessonCreator", fields: [createdBy], references: [teacherID])
+  // createdBy String
+  // teacher   Teacher @relation("activityCreator", fields: [createdBy], references: [teacherID])
 }
 
-model Templates {
+model Template {
   templateID   String @id @default(uuid())
   templateCode String @unique()
   title        String @unique()
   description  String
   templateType String
+  sampleLesson Json
+  
+  activity Activity[] @relation("activityTemplate")
 }

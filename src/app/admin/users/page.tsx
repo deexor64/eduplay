@@ -46,17 +46,6 @@ export default function Users() {
   
   const [triggerFilter, setTriggerFilter] = useState(false);
   
-  useEffect(() => {
-    if (!triggerFilter) return;
-    setTriggerFilter(false);
-    handleFetch();
-  }, [triggerFilter]);
-  
-  useEffect(() => { 
-    handleFetch();
-  }, [userListType, pagination]);
-  
-  
   function finalizeFetchQuery(): URLSearchParams {
 
     // params
@@ -83,6 +72,16 @@ export default function Users() {
     setDbData(JSON.parse(await res.json()));
   
   }
+  
+  useEffect(() => {
+    if (!triggerFilter) return;
+    setTriggerFilter(false);
+    handleFetch();
+  }, [triggerFilter]);
+  
+  useEffect(() => { 
+    handleFetch();
+  }, [userListType, pagination]);
   
   return (
     <>
