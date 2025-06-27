@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import userListService from '@/lib/services/user-management/userListService';
+import userListService from '@/services/user-management/userListService';
 import { UserType } from '@/lib/utils/types';
 
 export async function GET(req: NextRequest) {

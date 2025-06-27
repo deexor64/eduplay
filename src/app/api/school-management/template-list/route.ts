@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import templateListService from '@/lib/services/school-management/templateListService';
+import templateListService from '@/services/school-management/templateListService';
 import { UserType } from '@/lib/utils/types';
 
 export async function GET(req: NextRequest) {

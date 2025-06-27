@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import signupService from '@/lib/services/signinService';
+import signupService from '@/services/signinService';
 import { UserType } from '@/lib/utils/types';
 
 export async function POST(req: NextRequest) {

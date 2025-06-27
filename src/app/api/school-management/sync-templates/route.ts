@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import syncTemplatesService from '@/lib/services/school-management/syncTemplatesService';
+import syncTemplatesService from '@/services/school-management/syncTemplatesService';
 import { UserType } from '@/lib/utils/types';
 
 export async function GET(req: NextRequest) {

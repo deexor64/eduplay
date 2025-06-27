@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { UserType } from '@/lib/utils/types';
-import createActivityService from '@/lib/services/school-management/createActivityService';
+import createActivityService from '@/services/school-management/createActivityService';
 
 export async function POST(req: NextRequest) {
   
