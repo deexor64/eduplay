@@ -7,9 +7,10 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { dmmfToRuntimeDataModel } from "@prisma/client/runtime/library";
 import cleanParams from "@/lib/utils/cleanParams";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
 
 type ViewLayoutProps = {
-  setDbData: Function,
+  setActivityData: React.Dispatch<React.SetStateAction<any>>,
   getResultData: () => any,
   validateResult: () => { status: boolean, message: string},
   gradeResult: () => { grading: {}, examinerDialog: string },
@@ -36,6 +37,8 @@ export default function ViewLayout(props: ViewLayoutProps) {
     // params
     const params = cleanParams({
       userType: userType,
+      viewMode: viewMode,
+      templateCode: templateCode,
     });
 
     return new URLSearchParams(params);
@@ -50,9 +53,10 @@ export default function ViewLayout(props: ViewLayoutProps) {
     const url = `/api/school-management/view-activity?${params}`;
     const res = await fetch(url);
     
-    console.log(res.body);
-    setDbData(JSON.parse(await res.json()));
-  
+    const resData = await res.json();
+    setDbData(resData.data.sampleActivity);
+    props.setActivityData(resData.data.sampleActivity.activityData);
+    
   }
   
   useEffect(() => {
@@ -66,6 +70,8 @@ export default function ViewLayout(props: ViewLayoutProps) {
   });
   
   function validateForm(): { status: boolean, message: string } {
+    
+    // under devlopment
   
     // no validations for common template
     // validate lesson template
@@ -79,6 +85,7 @@ export default function ViewLayout(props: ViewLayoutProps) {
   }
   
   function finalizeForm(): {form: string, params: URLSearchParams} {
+    // under devlopment
     
     // form
     const form = {
@@ -98,6 +105,7 @@ export default function ViewLayout(props: ViewLayoutProps) {
   }
   
   async function handleSubmit () {
+    // under devlopment
   
     // validate
     const valid = validateForm();
@@ -114,11 +122,8 @@ export default function ViewLayout(props: ViewLayoutProps) {
       },
       body: form.form
     })
-    
-    // ----- new
+ 
     const resData = await res.json();
-    console.log(resData);
-    setDbData(JSON.parse(resData.data));
     
   };
   
@@ -128,14 +133,11 @@ export default function ViewLayout(props: ViewLayoutProps) {
     <div className="max-w-6xl mx-auto p-4 pb-14 bg-blue-100">
       
       {/* activity title */}
-      { 
-        userType === "TEACHER" && viewMode === "INSPECT" ?
-        <ActivityTitle goToTemplate={true}> { dbData.title }</ActivityTitle>
-        : <ActivityTitle goToTemplate={false}> { dbData.title }</ActivityTitle>
-      }
-      
+      <ActivityTitle userType={userType} viewMode={viewMode}>
+        { dbData.title } [SAMPLE] </ActivityTitle>
+
       {/* cover image */}
-      <CoverImage coverImage={ dbData.coverImageUrl} />
+      <CoverImage coverImageUrl={ dbData.coverImageUrl } />
 
       {/* description */}
       <Description>{ dbData.description }</Description>
@@ -144,47 +146,9 @@ export default function ViewLayout(props: ViewLayoutProps) {
       {props.children}
       
       {/* footer */}
-      {
-        ["ADMIN", "TEACHER"].includes(userType) && 
-        <Footer validateTemplate={props.validateResult}/>
-      }
-      {
-        userType === "STUDENT" &&
-        <Footer validateTemplate={props.validateResult}/>
-      }
+      <Footer userType={userType} viewMode={viewMode}
+      validateTemplate={props.validateResult}/>
       
     </div>
   );
 }
-
-
-// samle db dbData
-// 
-// {
-//   activityID: "1",
-//   templateName: "1-SortItems-tmpl",
-//   title: "Sort object",
-//   coverImage: "1746025057700_cute-giraffe.jpg",
-//   description:
-//     "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
-//   activityData: [
-//     {
-//       title: "Animals",
-//       items: [
-//         { type: "text", value: "Cat" },
-//         { type: "image", value: "test-images/giraffe.jpg", label: "Jiraffe" },
-//       ],
-//     },
-//     {
-//       title: "Vegetables",
-//       items: [
-//         { type: "text", value: "Carrot" },
-//         { type: "text", value: "Potatoe" },
-//       ],
-//     },
-//   ],
-//   options: {
-//     timeLimit: 0,
-//     isGraded: false,
-//   },
-// };

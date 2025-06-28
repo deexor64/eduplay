@@ -1,6 +1,9 @@
+import { TemplateViewMode, UserType } from "@/lib/utils/types";
 import Swal from "sweetalert2";
 
 type FooterProps = {
+  userType: UserType,
+  viewMode: TemplateViewMode,
   validateTemplate: Function,
 }
 
@@ -8,23 +11,16 @@ export default function Footer(props: FooterProps) {
   
   function handleSave() {
     
+    // under development
+    
     let valid = props.validateTemplate();
 
     if (!valid.status) {
-      
-      Swal.fire({
-        title: "Error",
-        text: valid.message,
-        icon: "error",
-      });
       return;
     }
 
-    Swal.fire({
-      title: "Success",
-      text: valid.message,
-      icon: "success",
-    });
+    console.log(valid)
+   
     
   }
   
@@ -35,12 +31,6 @@ export default function Footer(props: FooterProps) {
         onClick={handleSave}
       >
       Save
-      </button>
-      <button
-        className="font-semibold py-2 px-6 rounded-lg transition bg-green-500 text-white hover:bg-green-600"
-        onClick={handleSave}
-      >
-      Preview
       </button>
     </footer>
   

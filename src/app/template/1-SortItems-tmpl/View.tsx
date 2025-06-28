@@ -5,6 +5,17 @@ import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-k
 import ViewLayout from "@/components/templates/view-layout/ViewLayout";
 import { dmmfToRuntimeDataModel } from "@prisma/client/runtime/library";
 
+type BasketItem = {
+  type: "text" | "image";
+  value: string;
+  label?: string;
+};
+
+type Basket = {
+  title: string;
+  items: BasketItem[];
+};
+
 // text component
 function TextItem(props: { id: string }) {
   return <span>{props.id}</span>;
@@ -64,11 +75,44 @@ function DroppableZone(props: { id: string; children: any }) {
 
 function SortItems() {
   
-  // data recieved from server
-  const [dbData, setDbData] = useState<any>();
+  // common
+  const [activityData, setActivityData] = useState<Basket[]>([]);
+  
+  // common
+  function buildActivity() {
+
+    const initialItems: {
+      [location: string]: { label: string; type: string; value: string }[];
+    } = { box: [] };
+
+    if (activityData) {
+      activityData.forEach((group: any) => {
+        const basketId = group.title;
+        initialItems[basketId] = [];
+
+        group.items.forEach((item: any) => {
+          const label = item.label || item.value;
+          initialItems.box.push({
+            label: label,
+            type: item.type,
+            value: item.value,
+          });
+        });
+      });
+    }
+
+    setItems(initialItems);
+    
+  }
+  
+  // common
+  useEffect(() => {
+    buildActivity();
+  }, [activityData]);
   
   // common
   function getResultData() {
+    // under development
     const workedData: {
       [key: string]: { label: string; type: string; value: string }[];
     } = {};
@@ -85,17 +129,20 @@ function SortItems() {
   
   // common
   function validateResult(): { status: boolean, message: string } {
+    // under development
     return { status: true, message: "" }
   }
   
   // common
   function gradeResult() {
     
+    // under development
+    
     const workedData = getResultData();
     let correctCount = 0;
-    let totalGroups = dbData.activityData.length;
+    let totalGroups = activityData.length;
 
-    dbData.activityData.forEach((group: any) => {
+    activityData.forEach((group: any) => {
       const correctLabels = group.items.map((item: any) => item.label || item.value);
       const userLabels = (workedData[group.title] || []).map((i) => i.label);
 
@@ -116,40 +163,9 @@ function SortItems() {
     
   }
   
-  
-  
-  
   const [items, setItems] = useState<{
     [location: string]: { label: string; type: string; value: string }[];
-  }>({ box: [] });
-
-  function buildActivity() {
-    const initialItems: {
-      [location: string]: { label: string; type: string; value: string }[];
-    } = { box: [] };
-
-    if (dbData.activityData) {
-      dbData.activityData.forEach((group: any) => {
-        const basketId = group.title;
-        initialItems[basketId] = [];
-
-        group.items.forEach((item: any) => {
-          const label = item.label || item.value;
-          initialItems.box.push({
-            label: label,
-            type: item.type,
-            value: item.value,
-          });
-        });
-      });
-    }
-
-    setItems(initialItems);
-  }
-
-  useEffect(() => {
-    buildActivity();
-  }, []);
+  }>({ box: [] })
 
   function findContainer(label: string): string | null {
     for (let key in items) {
@@ -178,7 +194,7 @@ function SortItems() {
   }
 
   return (
-    <ViewLayout setDbData={setDbData} getResultData={getResultData} 
+    <ViewLayout setActivityData={setActivityData} getResultData={getResultData} 
       validateResult={validateResult} gradeResult={gradeResult}>
       <DndContext collisionDetection={rectIntersection} onDragEnd={handleDragEnd}>
         <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
@@ -199,7 +215,7 @@ function SortItems() {
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-          {dbData.activityData.map((group: any) => (
+          {activityData.map((group: any) => (
             <div
               className="bg-gray-50 border-2 border-dashed border-gray-300 p-4 rounded-xl min-h-[120px]"
               key={group.title}
@@ -225,31 +241,3 @@ function SortItems() {
 }
 
 export default SortItems;
-
-
-// preview data
-
-// const dbData = {
-//   sessionID: "1",
-//   templateName: "1-SortItems-tmpl",
-//   title: "Sort Animal and Vegetable",
-//   coverImage: "1746025057700_cute-giraffe.jpg",
-//   description:  "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
-//   resultData: {
-//     Animals: [
-//       { label: "Cat", type: "text", value: "Cat" },
-//       { label: "Jiraffe", type: "image", value: "test-images/giraffe.jpg" },
-//     ],
-//     Vegetables: [
-//       { label: "Carrot", type: "text", value: "Carrot" },
-//     ],
-//     box: [
-//       { label: "Potatoe", type: "text", value: "Potatoe" },
-//     ],
-//   },
-//   gradingData: {},
-//   options: {
-//     timeLimit: 0,
-//     isGraded: false,
-//   }
-// };
