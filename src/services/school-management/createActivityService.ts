@@ -19,7 +19,7 @@ export default async function createActivityService(searchParams: any, formData:
   const existing = await prisma.activity.create({
     data: {
       title: data.title,
-      coverImageUrl: data.coverImage,
+      coverImageUrl: data.coverImageUrl,
       description: data.description,
       activityData: data.activityData,
       isGraded: data.options.isGraded,

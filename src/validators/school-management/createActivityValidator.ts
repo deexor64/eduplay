@@ -7,19 +7,15 @@ export default function createActivityValidator(searchParams: any, formData: any
   const zFormData = z.object({
     templateCode: z.string(),
     title: z.string(),
-    coverImage: z.string(),
+    coverImageUrl: z.string(),
     description: z.string(),
-    activityData: z.string().transform((val) => JSON.parse(val))
-      .refine((val) => typeof val === "object" && val !== null, {
-        message: "Must be a valid JSON object",
-      }),
+    activityData: z.string(),
     options: z.string().transform((val) => JSON.parse(val))
       .pipe(z.object({
         timeLimit: z.number().min(0),
         isGraded: z.boolean(),
       }))
-  })
-    .strict()
+  }).strict()
   
   const zSearchParams = z.object({
     userType: z.enum(["TEACHER"]),
