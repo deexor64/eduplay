@@ -5,7 +5,7 @@ export default function CoverImage(props: any) {
     
     <section className="mb-6">
       <img
-        src={props.coverImage}
+        src={props.coverImageUrl}
         alt="Cover"
         className="w-full h-[2in] object-contain rounded-xl shadow-md border"
       />

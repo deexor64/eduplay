@@ -1,8 +1,8 @@
 "use client"
 
+import CreateLayout from "@/components/templates/create-layout/CreateLayout";
 import { useState } from "react";
 import { generateHash } from "@/lib/utils/generateRandomString";
-import CreateLayout from "@/components/templates/create-layout/CreateLayout";
 
 export default function SortItems() {
   
@@ -23,13 +23,26 @@ export default function SortItems() {
   }
   
   // common
-  function getActivityData() {
-    return {
-      activityData: baskets,
-      mediaFiles: mediaFiles
-    };
-  }
+  function finalizeActivity(mediaFileUrls: Map<string, string>) {
+    
+    // Deep copy baskets to avoid mutating state
+    const updatedBaskets: Basket[] = JSON.parse(JSON.stringify(baskets));
+  
+    // Replace file hashes with actual urls
+    for (let basket of updatedBaskets) {
+      for (let item of basket.items) {
+        if (item.type === "image" && mediaFileUrls.has(item.value)) {
+          item.value = mediaFileUrls.get(item.value)!;
+        }
+      }
+    }
+  
+    return updatedBaskets;
 
+  }
+  
+  // common
+  const [mediaFiles, setMediaFiles] = useState<Map<string, File>>(new Map());
   
   type BasketItem = {
     type: "text" | "image";
@@ -45,8 +58,6 @@ export default function SortItems() {
   const [baskets, setBaskets] = useState<Basket[]>([
     { title: "", items: [{ type: "text", value: "" }] },
   ]);
-
-  const [mediaFiles, setMediaFiles] = useState<Map<string, File>>(new Map());
 
   function addBasket() {
     const updatedBaskets = baskets.concat({
@@ -118,8 +129,8 @@ export default function SortItems() {
   
   return (
     
-  <CreateLayout templateTitle= {"Sort Items"} 
-    validateActivity={validateActivity} getActivityData={getActivityData}>
+  <CreateLayout templateTitle= {"Sort Items"} validateActivity={validateActivity} 
+    activityMediaFiles={mediaFiles} finalizeActivity={finalizeActivity}>
       
       <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Define Baskets</h2>

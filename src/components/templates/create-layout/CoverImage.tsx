@@ -16,7 +16,7 @@ export default function CoverImage(props: CoverImageProps) {
     
     props.setFormData(function (prev: any) { 
       
-      const oldFileHash = prev.coverImage;
+      const oldFileHash = prev.coverImageUrl;
       
       // delete old file hash and append new
       if (oldFileHash.length >= 0) {
@@ -28,7 +28,7 @@ export default function CoverImage(props: CoverImageProps) {
         });
       }
       
-      return { ...prev, coverImage: newFileHash } 
+      return { ...prev, coverImageUrl: newFileHash } 
       
     });
     

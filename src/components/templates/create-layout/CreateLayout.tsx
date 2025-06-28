@@ -10,15 +10,14 @@ import UploadProgressBar from "@/components/uploader/UploadProgressBar";
 import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import cleanParams from "@/lib/utils/cleanParams";
-import { useEdgeStore } from '@/lib/edgestore';
-import { abort } from "process";
-
+import useFileStoreUploader from "@/hooks/fileStoreUploader";
 
 
 type CreateLayoutProps = {
   templateTitle: string,
-  validateActivity: () => { status: boolean, message: string},
-  getActivityData: () => { activityData: any, mediaFiles: Map<string, File> },
+  validateActivity: () => { status: boolean, message: string },
+  activityMediaFiles: Map<string, File>;
+  finalizeActivity: (fileUrlMap: Map<string, string>) => any,
   children: React.ReactNode
 }
 
@@ -27,12 +26,12 @@ export default function CreateLayout(props: CreateLayoutProps) {
   const searchParams = useSearchParams();
   const templateCode = searchParams.get("templateCode") as UserType;
   
-  const edgestore = useEdgeStore();
+  const fileStoreUploader = useFileStoreUploader();
   
   // form data
   const [formData, setFormData] = useState({
     title: "",
-    coverImage: "",
+    coverImageUrl: "",
     description: "",
     activityData: {}, // from children
     options: {
@@ -51,7 +50,7 @@ export default function CreateLayout(props: CreateLayoutProps) {
     if (!formData.title) {
       return { status: false, message: "Title is required." };
     }
-    if (!formData.coverImage) {
+    if (!formData.coverImageUrl) {
       return { status: false, message: "Cover Image is required." };
     }
     if (!formData.description) {
@@ -71,38 +70,23 @@ export default function CreateLayout(props: CreateLayoutProps) {
     
   }
   
-  function finalizeForm(): {form: string, files: Map<string, File>, 
-    params: URLSearchParams} {
-    
+  function finalizeForm(mediaFileUrls: Map<string, string>,
+    activityMediaFileUrls: Map<string, string>): {form: string, params: URLSearchParams} {
+      
+    // form
+    const form = {
+      ...formData,
+      templateCode: templateCode,
+      coverImageUrl: mediaFileUrls.get(formData.coverImageUrl),
+      activityData: props.finalizeActivity(activityMediaFileUrls),
+    }
+  
     // params
     const params = cleanParams({
       userType: "TEACHER",
     });
-    
-    // form
-    const activityData = props.getActivityData();
-    
-    const form = {
-      ...formData,
-      templateCode: templateCode,
-      activityData: activityData.activityData,
-    }
-    
-    // files
-    const files = new Map<string, File>();
-  
-    for (const fileHash of mediaFiles.keys()) {
-      const file = mediaFiles.get(fileHash);
-      if (file) files.set(fileHash, file);
-    }
-    
-    for (const fileHash of activityData.mediaFiles.keys()) {
-      const file = activityData.mediaFiles.get(fileHash);
-      if (file) files.set(fileHash, file);
-    }
-    
-    return {form: JSON.stringify(form), files: files, 
-      params: new URLSearchParams(params)} 
+
+    return {form: JSON.stringify(form), params: new URLSearchParams(params)} 
     
   }
   
@@ -120,7 +104,26 @@ export default function CreateLayout(props: CreateLayoutProps) {
     if (!valid.status) return;
     
     // submit with progress
-    const form = finalizeForm();
+    setUploadProgress((prev) => ({...prev, status: "PENDING"}));
+    abortSave.current = false;
+    
+      // files
+    const mediaFileUrls = await fileStoreUploader(mediaFiles, abortSave, (progress) => {
+      setUploadProgress((prev) => ({...prev, progress}));
+    });
+    const activityMediaFileUrls = await fileStoreUploader(props.activityMediaFiles, abortSave, (progress) => {
+      setUploadProgress((prev) => ({...prev, progress}));
+    });
+    
+    if (abortSave.current === false) {
+      setUploadProgress((prev) => ({ ...prev, status: "COMPLETED" }));
+      abortSave.current = true;
+    } else {
+      setUploadProgress((prev) => ({ ...prev, status: "ABORTED" }));
+    }
+    
+      // form
+    const form = finalizeForm(mediaFileUrls, activityMediaFileUrls);
     
     const url = `/api/school-management/create-activity?${form.params}`;
     const res = await fetch(url, {
@@ -131,35 +134,7 @@ export default function CreateLayout(props: CreateLayoutProps) {
       body: form.form
     })
     
-    // edge store
-    const files = form.files;
-    const abortController = new AbortController();
-    
-    setUploadProgress((prev) => ({...prev, status: "PENDING"}));
-    abortSave.current = false;
-    
-    for (const fileHash of files.keys()) {
-      
-      const file = files.get(fileHash);
-      if (!file) continue;
-      
-      const res = await edgestore.edgestore.publicFiles.upload({
-        file,
-        onProgressChange: (progress) => {
-          if (abortSave.current === true) abortController.abort();// abort while uploading
-          setUploadProgress((prev) => ({...prev, progress: progress}));
-        },
-        signal: abortController.signal,
-      });
-      
-      console.log(res)
-      
-    }
-    
-    if (abortSave.current === false) {
-      abortSave.current = true;
-      setUploadProgress({ progress: 100, status: "COMPLETED" });
-    }
+    console.log(await res.json());
     
   };
   
