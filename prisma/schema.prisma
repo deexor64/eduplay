@@ -21,16 +21,16 @@ enum Status {
 }
 
 model User {
-  userID      String    @id @default(uuid())
-  fullName    String
-  firstName   String
-  lastName    String
-  dateOfBirth DateTime?
-  password    String
-  status      Status    @default(PENDING)
-  displayPicUrl String  @default("/images/avatar.png")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  userID        String    @id @default(uuid())
+  fullName      String
+  firstName     String
+  lastName      String
+  dateOfBirth   DateTime?
+  password      String
+  status        Status    @default(PENDING)
+  displayPicUrl String    @default("/images/avatar.png")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   admin   Admin?   @relation("admin")
   teacher Teacher? @relation("teacher")
@@ -39,20 +39,20 @@ model User {
 }
 
 model Admin {
-  adminID       String @id @default(uuid())
-  indexNumber   String @unique
-  email         String @unique
-  phoneNumber   String @unique
+  adminID     String @id @default(uuid())
+  indexNumber String @unique
+  email       String @unique
+  phoneNumber String @unique
 
   userID String @unique
   user   User   @relation("admin", fields: [userID], references: [userID])
 }
 
 model Teacher {
-  teacherID     String @id @default(uuid())
-  indexNumber   String @unique
-  email         String @unique
-  phoneNumber   String @unique
+  teacherID   String @id @default(uuid())
+  indexNumber String @unique
+  email       String @unique
+  phoneNumber String @unique
 
   userID String @unique
   user   User   @relation("teacher", fields: [userID], references: [userID])
@@ -63,19 +63,19 @@ model Teacher {
 }
 
 model Parent {
-  parentID      String @id @default(uuid())
-  email         String @unique
-  phoneNumber   String @unique
+  parentID    String @id @default(uuid())
+  email       String @unique
+  phoneNumber String @unique
 
   userID String @unique
   user   User   @relation("parent", fields: [userID], references: [userID])
 }
 
 model Student {
-  studentID     String @id @default(uuid())
-  indexNumber   String @unique
-  email         String
-  phoneNumber   String
+  studentID   String @id @default(uuid())
+  indexNumber String @unique
+  email       String
+  phoneNumber String
 
   classID String?
   class   Class?  @relation("enroll", fields: [classID], references: [classID])
@@ -105,14 +105,14 @@ model Activity {
   title         String
   coverImageUrl String
   description   String
-  activityData  Json
-  isGraded      Boolean @default(false)
-  timeLimit     Int     @default(0)
+  activityData  String
+  isGraded      Boolean  @default(false)
+  timeLimit     Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  
+
   templateCode String
-  template Template @relation("activityTemplate", fields: [templateCode], references: [templateCode])
+  template     Template @relation("activityTemplate", fields: [templateCode], references: [templateCode])
 
   // createdBy String
   // teacher   Teacher @relation("activityCreator", fields: [createdBy], references: [teacherID])
@@ -125,6 +125,6 @@ model Template {
   description  String
   templateType String
   sampleLesson Json
-  
+
   activity Activity[] @relation("activityTemplate")
 }
