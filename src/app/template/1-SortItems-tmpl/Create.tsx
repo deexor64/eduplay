@@ -23,7 +23,7 @@ export default function SortItems() {
   }
   
   // common
-  function finalizeActivity(mediaFileUrls: Map<string, string>) {
+  function finalizeActivity(mediaFileUrls: Map<string, string>): string {
     
     // Deep copy baskets to avoid mutating state
     const updatedBaskets: Basket[] = JSON.parse(JSON.stringify(baskets));
@@ -37,7 +37,7 @@ export default function SortItems() {
       }
     }
   
-    return updatedBaskets;
+    return JSON.stringify(updatedBaskets);
 
   }
   

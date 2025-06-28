@@ -17,7 +17,7 @@ type CreateLayoutProps = {
   templateTitle: string,
   validateActivity: () => { status: boolean, message: string },
   activityMediaFiles: Map<string, File>;
-  finalizeActivity: (fileUrlMap: Map<string, string>) => any,
+  finalizeActivity: (fileUrlMap: Map<string, string>) => string,
   children: React.ReactNode
 }
 
@@ -78,7 +78,8 @@ export default function CreateLayout(props: CreateLayoutProps) {
       ...formData,
       templateCode: templateCode,
       coverImageUrl: mediaFileUrls.get(formData.coverImageUrl),
-      activityData: props.finalizeActivity(activityMediaFileUrls),
+      activityData: (props.finalizeActivity(activityMediaFileUrls)),
+      options: JSON.stringify(formData.options)
     }
   
     // params
