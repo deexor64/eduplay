@@ -2,7 +2,7 @@
 export type UserType = "ADMIN" | "TEACHER" | "PARENT" | "STUDENT" | "UNKNOWN";
 
 // view mode
-export type TemplateViewMode = "VIEW" | "PREVIEW" | "INSPECT" | "CREATE";
+export type TemplateViewMode = "VIEW" | "PREVIEW" | "SAMPLE" | "CREATE";
 
 // server response type
 export type ResType = {

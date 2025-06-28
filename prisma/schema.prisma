@@ -124,7 +124,7 @@ model Template {
   title        String @unique()
   description  String
   templateType String
-  sampleLesson Json
+  sampleActivity Json
 
   activity Activity[] @relation("activityTemplate")
 }

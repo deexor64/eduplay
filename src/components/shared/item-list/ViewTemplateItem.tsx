@@ -26,7 +26,7 @@ export default function ViewTemplateItem(props: ViewTemplateItemProps) {
   return (
 
     <Link
-      href={`/template?userType=${props.userType}&viewMode=INSPECT&templateCode=${props.itemData.templateCode}`}
+      href={`/template?userType=${props.userType}&viewMode=SAMPLE&templateCode=${props.itemData.templateCode}`}
       target="_blank"
       rel="noopener noreferrer"
       className="border border-blue-200 bg-white rounded-lg p-4 

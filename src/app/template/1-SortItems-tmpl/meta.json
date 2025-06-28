@@ -3,10 +3,9 @@
   "title": "Sort items",
   "description": "Move items in the box to correct baskets",
   "templateType": "Drag and Drop",
-  "sampleLesson": {
-    "templateCode": "1-SortItems-tmpl",
+  "sampleActivity": {
     "title": "Sort Animals and Vegetables",
-    "coverImageUrl": "1746025057700_cute-giraffe.jpg",
+    "coverImageUrl": "/templates/1-SortItems-tmpl/coverImage.jpg",
     "description":
       "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
     "activityData": [
@@ -14,7 +13,7 @@
         "title": "Animals",
         "items": [
           { "type": "text", "value": "Cat" },
-          { "type": "image", "value": "test-images/giraffe.jpg", "label": "Jiraffe" }
+          { "type": "image", "value": "templates/1-SortItems-tmpl/imageItem.jpg", "label": "Jiraffe" }
         ]
       },
       {

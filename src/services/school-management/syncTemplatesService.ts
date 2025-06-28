@@ -36,7 +36,7 @@ export default async function syncTemplatesService(searchParams: any): Promise<R
         title: meta.title,
         description: meta.description,
         templateType: meta.templateType,
-        sampleLesson: meta.sampleLesson,
+        sampleActivity: meta.sampleActivity,
       },
     });
     
