@@ -1,7 +1,7 @@
 import { z, ZodNumber } from "zod";
 import { ResType } from "@/lib/utils/types";
 
-export default function createActivityValidator(searchParams: any, formData: any): ResType {
+export default function createValidator(searchParams: any, formData: any): ResType {
   
   // constraints
   const zFormData = z.object({

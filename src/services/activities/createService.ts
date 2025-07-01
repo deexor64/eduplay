@@ -1,16 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
 import type { IncomingMessage } from "http";
-import createActivityValidator from '@/validators/school-management/createActivityValidator';
+import createValidator from '@/validators/activities/createValidator';
 import { generateUniqueID } from "@/lib/utils/generateRandomString";
 
 const prisma = new PrismaClient();
 
-export default async function createActivityService(searchParams: any, formData: any)
+export default async function createService(searchParams: any, formData: any)
 : Promise<ResType> {
   
   // schema valdiation
-  const valid = await createActivityValidator(searchParams, formData);
+  const valid = await createValidator(searchParams, formData);
   if (!valid.status) return valid;
   
   // query

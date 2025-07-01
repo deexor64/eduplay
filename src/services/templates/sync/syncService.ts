@@ -1,15 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
-import syncTemplatesValidator from '@/validators/school-management/syncTemplatesValidator';
+import syncValidator from '@/validators/templates/sync/syncValidator';
 import fs from "fs";
 import path from "path";
 
 const prisma = new PrismaClient();
 
-export default async function syncTemplatesService(searchParams: any): Promise<ResType> {
+export default async function syncService(searchParams: any): Promise<ResType> {
   
   // schema valdiation
-  const valid = await syncTemplatesValidator(searchParams);
+  const valid = await syncValidator(searchParams);
   if (!valid.status) return valid;
   
   // query

@@ -1,13 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
-import classListValidator from '@/validators/school-management/classListValidator';
+import classesValidator from '@/validators/classes/classesValidator';
 
 const prisma = new PrismaClient();
 
-export default async function classListService(searchParams: any): Promise<ResType> {
+export default async function classesService(searchParams: URLSearchParams): Promise<ResType> {
   
   // schema valdiation
-  const valid = await classListValidator(searchParams);
+  const valid = await classesValidator(searchParams);
   if (!valid.status) return valid;
   
   // query
@@ -50,6 +50,6 @@ export default async function classListService(searchParams: any): Promise<ResTy
     })
   }
   
-  return { status: true, resDataType: "success", data: JSON.stringify(existing) };
+  return { status: true, resDataType: "success", data: existing };
   
 }

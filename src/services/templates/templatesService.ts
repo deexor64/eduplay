@@ -1,13 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
-import templateListValidator from '@/validators/school-management/templateListValidator';
+import templatesValidator from '@/validators/templates/templatesValidator';
 
 const prisma = new PrismaClient();
 
-export default async function templateListService(searchParams: any): Promise<ResType> {
+export default async function templatesService(searchParams: URLSearchParams): Promise<ResType> {
   
   // schema valdiation
-  const valid = await templateListValidator(searchParams);
+  const valid = await templatesValidator(searchParams);
   if (!valid.status) return valid;
   
   // query
@@ -39,6 +39,6 @@ export default async function templateListService(searchParams: any): Promise<Re
     })
   }
   
-  return { status: true, resDataType: "success", data: JSON.stringify(existing) };
+  return { status: true, resDataType: "success", data: existing };
   
 }

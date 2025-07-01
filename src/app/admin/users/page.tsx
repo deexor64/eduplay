@@ -50,7 +50,6 @@ export default function Users() {
 
     // params
     const params = cleanParams({
-      userType: userType,
       userListType: userListType,
       ...filter,
       ...pagination,
@@ -65,11 +64,11 @@ export default function Users() {
     // fetch
     const params = finalizeFetchQuery();
     
-    const url = `/api/user-management/user-list?${params}`;
+    const url = `/api/users?${params}`;
     const res = await fetch(url);
     
-    console.log(res.body);
-    setDbData(JSON.parse(await res.json()));
+    const resData = await res.json();
+    setDbData(resData.data);
   
   }
   

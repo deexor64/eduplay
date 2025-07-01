@@ -45,7 +45,6 @@ export default function Classes() {
 
     // params
     const params = cleanParams({
-      userType: "ADMIN",
       ...filter,
       ...pagination,
     });
@@ -59,11 +58,11 @@ export default function Classes() {
     // fetch
     const params = finalizeFetchQuery();
     
-    const url = `/api/school-management/class-list?${params}`;
+    const url = `/api/classes?${params}`;
     const res = await fetch(url);
     
-    console.log(res.body);
-    setDbData(JSON.parse(await res.json()));
+    const resData = await res.json();
+    setDbData(resData.data);
   
   }
   

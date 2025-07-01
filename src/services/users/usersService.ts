@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
-import userListValidator from '@/validators/user-management/userListValidator';
+import usersValidator from '@/validators/users/usersValidator';
 
 const prisma = new PrismaClient();
 
@@ -16,10 +16,10 @@ function getUserHandler(userListType: any) {
   return map[userListType];
 }
 
-export default async function userListService(searchParams: any): Promise<ResType> {
+export default async function usersService(searchParams: URLSearchParams): Promise<ResType> {
   
   // schema valdiation
-  const valid = await userListValidator(searchParams);
+  const valid = await usersValidator(searchParams);
   if (!valid.status) return valid;
   
   // query
@@ -62,6 +62,6 @@ export default async function userListService(searchParams: any): Promise<ResTyp
     })
   }
   
-  return { status: true, resDataType: "success", data: JSON.stringify(existing) };
+  return { status: true, resDataType: "success", data: existing };
   
 }

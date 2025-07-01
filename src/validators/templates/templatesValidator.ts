@@ -1,11 +1,10 @@
 import { z, ZodNumber } from "zod";
 import { ResType } from "@/lib/utils/types";
 
-export default function templateListValidator(searchParams: any): ResType {
+export default function templatesValidator(searchParams: URLSearchParams): ResType {
   
   // constraints
   const zsearchParams = z.object({
-    userType: z.string(),
     templateType: z.string().optional(),
     title: z.string().optional(),
     page: z.string().transform((val) => parseInt(val)).pipe(z.number().min(1)),
