@@ -55,7 +55,6 @@ export default function TemplateList(props: TemplateListProps) {
 
     // params
     const params = cleanParams({
-      userType: props.userType,
       ...filter,
       ...pagination,
     });
@@ -69,20 +68,17 @@ export default function TemplateList(props: TemplateListProps) {
     // fetch
     const params = finalizeFetchQuery();
     
-    const url = `/api/school-management/template-list?${params}`;
+    const url = `/api/templates?${params}`;
     const res = await fetch(url);
     
     const resData = await res.json();
-    console.log(resData);
-    setDbData(JSON.parse(resData.data));
+    setDbData(resData.data);
   
   }
 
   async function syncTemplates() {
-    if (props.userType !== "ADMIN") return;
-    const url = `/api/school-management/sync-templates?userType=${props.userType}`;
-    const res = await fetch(url);
-    console.log(res.body);
+    const url = `/api/templates/sync`;
+    const res = await fetch(url, {method: "POST"});
     handleFetch();
   }
   

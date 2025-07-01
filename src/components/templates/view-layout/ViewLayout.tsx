@@ -36,8 +36,6 @@ export default function ViewLayout(props: ViewLayoutProps) {
 
     // params
     const params = cleanParams({
-      userType: userType,
-      viewMode: viewMode,
       templateCode: templateCode,
     });
 
@@ -50,7 +48,8 @@ export default function ViewLayout(props: ViewLayoutProps) {
     // fetch
     const params = finalizeFetchQuery();
     
-    const url = `/api/school-management/view-activity?${params}`;
+    const url = viewMode === "SAMPLE" ? `/api/activities/sample?${params}` 
+      : `/api/activities/${templateCode}?${params}`;
     const res = await fetch(url);
     
     const resData = await res.json();
@@ -133,8 +132,8 @@ export default function ViewLayout(props: ViewLayoutProps) {
     <div className="max-w-6xl mx-auto p-4 pb-14 bg-blue-100">
       
       {/* activity title */}
-      <ActivityTitle userType={userType} viewMode={viewMode}>
-        { dbData.title } [SAMPLE] </ActivityTitle>
+      <ActivityTitle userType={userType} viewMode={viewMode} templateCode={templateCode}>
+        { dbData.title }</ActivityTitle>
 
       {/* cover image */}
       <CoverImage coverImageUrl={ dbData.coverImageUrl } />

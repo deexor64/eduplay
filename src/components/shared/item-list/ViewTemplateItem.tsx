@@ -1,4 +1,4 @@
-// This list item is specially made for viewing lessons
+// This list item is specially made for viewing templates
 // Attributes are predefined and cannot be changed
 
 "use client";

@@ -71,7 +71,7 @@ export default function CreateLayout(props: CreateLayoutProps) {
   }
   
   function finalizeForm(mediaFileUrls: Map<string, string>,
-    activityMediaFileUrls: Map<string, string>): {form: string, params: URLSearchParams} {
+    activityMediaFileUrls: Map<string, string>): {form: string} {
       
     // form
     const form = {
@@ -82,12 +82,7 @@ export default function CreateLayout(props: CreateLayoutProps) {
       options: JSON.stringify(formData.options)
     }
   
-    // params
-    const params = cleanParams({
-      userType: "TEACHER",
-    });
-
-    return {form: JSON.stringify(form), params: new URLSearchParams(params)} 
+    return {form: JSON.stringify(form)} 
     
   }
   
@@ -126,7 +121,7 @@ export default function CreateLayout(props: CreateLayoutProps) {
       // form
     const form = finalizeForm(mediaFileUrls, activityMediaFileUrls);
     
-    const url = `/api/school-management/create-activity?${form.params}`;
+    const url = `/api/activities`;
     const res = await fetch(url, {
       method: "POST",
       headers: { 
