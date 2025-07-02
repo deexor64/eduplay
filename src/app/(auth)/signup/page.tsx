@@ -7,7 +7,6 @@ import TextInput from '@/components/shared/form/TextInput';
 import PasswordInput from '@/components/shared/form/PasswordInput';
 import SubmitButton from '@/components/shared/form/SubmitButton';
 import EmailInput from '@/components/shared/form/EmailInput';
-import Swal from 'sweetalert2';
 import NumberInput from '@/components/shared/form/NumberInput';
 import PhoneInput from '@/components/shared/form/PhoneInput';
 import DateInput from '@/components/shared/form/DateInput';
@@ -50,7 +49,7 @@ export default function Signup() {
     
     // params
     const params = cleanParams({ 
-      userType: userType 
+      userType: userType,
     })
     
     return {
@@ -71,16 +70,17 @@ export default function Signup() {
     // submit
     const form = finalizeForm();
     
-    const url = `/api/signup?${form.params}`;
+    const url = `/api/users?${form.params}`;
     const res = await fetch(url, {
       method: "POST",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
       },
       body: form.form
-    })
+    });
     
-    console.log(res.body);
+    const resData = await res.json();
+    console.log(resData);
 
   };
 
@@ -103,9 +103,7 @@ export default function Signup() {
       <TextInput label="Last Name" name="lastName" setFormData={setFormData} />
       
       { ["ADMIN", "TEACHER"].includes(userType) &&
-
-          <DateInput label="Date of Birth" name="dateOfBirth" setFormData={setFormData} />
-                  
+        <DateInput label="Date of Birth" name="dateOfBirth" setFormData={setFormData} />        
       }
       
       <EmailInput label="E-mail" name="email" setFormData={setFormData} />
