@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import signupService from '@/services/signinService';
+import signinService from '@/services/signinService';
 import { UserType } from '@/lib/utils/types';
 
 export async function POST(req: NextRequest) {
@@ -21,16 +21,33 @@ export async function POST(req: NextRequest) {
     
     // query database
     const formData = await req.json();
-    let query = await signupService(searchParams, formData);
-    if (!query.status) return NextResponse.json(
-      query,
+    const query = await signinService(searchParams, formData);
+    
+    const res = query.res;
+    if (!res.status) return NextResponse.json(
+      res,
       { status: 500 }
     );
     
-    return NextResponse.json(
-      query, 
+    // issue a Token cookie
+    const token = query.token;
+    
+    const response = NextResponse.json(
+      res, 
       { status: 200 }
     );
+    
+    response.cookies.set({
+      name: 'userInfo',
+      value: token,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 60 * 60,
+    });
+    
+    return response;
   
   } catch (err: any) {
     console.log(err);
@@ -41,29 +58,3 @@ export async function POST(req: NextRequest) {
   }
   
 }
-
-
-
-// const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey';
-
-// export default function handler(req: NextApiRequest, res: NextApiResponse) {
-//   const authHeader = req.headers.authorization;
-
-//   if (!authHeader) {
-//     return res.status(401).json({ error: 'No token provided' });
-//   }
-
-//   const token = authHeader.split(' ')[1]; // "Bearer <token>"
-
-//   try {
-//     const decoded = jwt.verify(token, JWT_SECRET);
-//     // Token is valid, proceed
-//     res.status(200).json({
-//       message: 'Authenticated! Here is your milkshake.',
-//       milkshake: { flavor: 'chocolate', size: 'large' },
-//       user: decoded,
-//     });
-//   } catch (err) {
-//     res.status(401).json({ error: 'Invalid or expired token' });
-//   }
-// }

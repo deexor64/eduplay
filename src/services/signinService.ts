@@ -3,6 +3,7 @@ import { ResType, UserType } from '@/lib/utils/types';
 import { generatePasswordHash } from '@/lib/utils/generatePasswordHash';
 import signinValidator from '@/validators/signinValidator';
 import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
@@ -18,13 +19,14 @@ function getUserHandler(userType: UserType) {
   return map[userType];
 }
 
-export default async function signupService(searchParams: any, formData: any): Promise<ResType> {
+export default async function signinService(searchParams: any, formData: any):
+Promise<{res: ResType, token:string}> {
   
   const userType = searchParams.userType;
   
   // schema valdiation
   const valid = await signinValidator(searchParams, formData);
-  if (!valid.status) return valid;
+  if (!valid.status) return {res: valid, token: ""};
   
   // query
   const data = valid.data;
@@ -41,8 +43,22 @@ export default async function signupService(searchParams: any, formData: any): P
   const passMatch = await bcrypt.compare(data.password, existing.user.password);
   
   if (!existing || !passMatch)
-  return { status: false, resDataType: "warning", data: "Email or Password number is wrong" };
+  return {res: { status: false, resDataType: "warning", data: "Email or Password is wrong" },
+    token: ""};
   
-  return { status: true, resDataType: "success", data: "Signin successfull" };
+  // issue a token
+  const JWT_SECRET = process.env.JWT_SECRET!;
+  
+  const token = jwt.sign(
+    {
+      userId: existing.id,
+      userType: userType,
+      permissionLevel: 100,
+    },
+    JWT_SECRET,
+    { expiresIn: '3h' }
+  );
+  
+  return {res: { status: true, resDataType: "success", data: "Signin successfull" }, token: token};
   
 }
