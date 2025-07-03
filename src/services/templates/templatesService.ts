@@ -1,17 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
-import templatesValidator from '@/validators/templates/templatesValidator';
 
 const prisma = new PrismaClient();
 
-export default async function templatesService(searchParams: URLSearchParams): Promise<ResType> {
-  
-  // schema valdiation
-  const valid = await templatesValidator(searchParams);
-  if (!valid.status) return valid;
-  
-  // query
-  const data = valid.data;
+export default async function templatesService(data: any): Promise<ResType> {
   
   let whereClause: any = { // undefined values are ignored in where clause
     templateType: data.templateType,

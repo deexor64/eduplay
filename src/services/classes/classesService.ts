@@ -1,17 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
-import classesValidator from '@/validators/classes/classesValidator';
 
 const prisma = new PrismaClient();
 
-export default async function classesService(searchParams: URLSearchParams): Promise<ResType> {
-  
-  // schema valdiation
-  const valid = await classesValidator(searchParams);
-  if (!valid.status) return valid;
-  
-  // query
-  const data = valid.data;
+export default async function classesService(data: any): Promise<ResType> {
   
   let whereClause: any = { // undefined values are ignored in where clause
     grade: data.grade,

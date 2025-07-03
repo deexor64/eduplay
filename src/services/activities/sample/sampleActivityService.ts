@@ -1,18 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
-import sampleValidator from '@/validators/activities/sample/sampleValidator';
 import { generateUniqueID } from "@/lib/utils/generateRandomString";
 
 const prisma = new PrismaClient();
 
-export default async function sampleService(searchParams: any): Promise<ResType> {
-  
-  // schema valdiation
-  const valid = await sampleValidator(searchParams);
-  if (!valid.status) return valid;
-  
-  // query
-  const data = valid.data;
+export default async function sampleActivityService(data: any): Promise<ResType> {
   
   const existing = await prisma.template.findUnique({
     where: {

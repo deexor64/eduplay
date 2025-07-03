@@ -1,31 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import signinService from '@/services/signinService';
+import signinValidator from '@/validators/signinValidator';
 import { UserType } from '@/lib/utils/types';
 
 export async function POST(req: NextRequest) {
   
   try {
     
-    const users: UserType[] = ["ADMIN", "TEACHER", "PARENT", "STUDENT"];
-    
     const searchParams = req.nextUrl.searchParams;
-    const userType = searchParams.get("userType") as UserType;
-    
-    // check user type
-    if (!users.includes(userType)) {
-      return NextResponse.json(
-        { status: false, responseType: "log", data: "Invalid usertype" },
-        { status: 400 }
-      );
-    }
-    
-    // query database
     const formData = await req.json();
-    const query = await signinService(searchParams, formData);
     
-    const res = query.res;
-    if (!res.status) return NextResponse.json(
-      res,
+    let parsed = await signinValidator(searchParams, formData);
+    if (!parsed.status) return NextResponse.json(
+      {status: false, responseType: "log", data: parsed.data},
+      { status: 401 }
+    );
+    
+    const query = await signinService(parsed.data);
+    if (!query.res.status) return NextResponse.json(
+      query.res,
       { status: 500 }
     );
     
@@ -33,7 +26,7 @@ export async function POST(req: NextRequest) {
     const token = query.token;
     
     const response = NextResponse.json(
-      res, 
+      query.res, 
       { status: 200 }
     );
     
@@ -50,11 +43,13 @@ export async function POST(req: NextRequest) {
     return response;
   
   } catch (err: any) {
+    
     console.log(err);
     return NextResponse.json(
       { status: false, responseType: "log", data: "Internal server error."},
       { status: 500 }
     );
+    
   }
   
 }

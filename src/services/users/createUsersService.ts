@@ -1,34 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
 import { generatePasswordHash } from '@/lib/utils/generatePasswordHash';
-import createUsersValidator from '@/validators/users/createUsersValidator';
 
 const prisma = new PrismaClient();
 
-// dynamic user handler
-function getUserHandler(userType: any) { 
-  const map: any = {
-    ADMIN: prisma.admin,
-    TEACHER: prisma.teacher,
-    PARENT: prisma.parent,
-    STUDENT: prisma.student,
-  } as const;
+export default async function createUsersService(data: any): Promise<ResType> {
 
-  return map[userType];
-}
-
-export default async function createUsersService(searchParams: any, formData: any): Promise<ResType> {
-  
-  const userType = searchParams.get("userType");
-  
-  // schema valdiation
-  const valid = await createUsersValidator(searchParams, formData);
-  if (!valid.status) return valid;
-  
-  // query
-  const data = valid.data;
-
-  if (userType === "ADMIN") {
+  if (data.userType === "ADMIN") {
       
     let existing = await prisma.admin.findFirst({
       where: {
@@ -40,8 +18,7 @@ export default async function createUsersService(searchParams: any, formData: an
       },
     });
     
-    if (existing) return { status: false, resDataType: "warning", 
-      data: "Admin already exists" };
+    if (existing) return { status: false, resDataType: "warning", data: "Admin already exists" };
     
     const newUser = await prisma.user.create({
       data: {
@@ -60,7 +37,7 @@ export default async function createUsersService(searchParams: any, formData: an
       },
     });
   
-  } else if (userType === "TEACHER") {
+  } else if (data.userType === "TEACHER") {
     
     let existing = await prisma.teacher.findFirst({
       where: {
@@ -72,8 +49,7 @@ export default async function createUsersService(searchParams: any, formData: an
       },
     });
     
-    if (existing) return { status: false, resDataType: "warning",
-      data: "Teacher already exists" };
+    if (existing) return { status: false, resDataType: "warning", data: "Teacher already exists" };
     
     // finalize and query
     const newUser = await prisma.user.create({
@@ -93,7 +69,7 @@ export default async function createUsersService(searchParams: any, formData: an
       },
     });
     
-  } else if (userType === "STUDENT") {
+  } else if (data.userType === "STUDENT") {
     
     let existing = await prisma.student.findUnique({
       where: { indexNumber: data.indexNumber },
@@ -119,7 +95,7 @@ export default async function createUsersService(searchParams: any, formData: an
       },
     });
     
-  } else if (userType === "PARENT") {
+  } else if (data.userType === "PARENT") {
     
     let existing = await prisma.parent.findFirst({
       where: {

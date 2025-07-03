@@ -1,18 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
-import syncValidator from '@/validators/templates/sync/syncValidator';
 import fs from "fs";
 import path from "path";
 
 const prisma = new PrismaClient();
 
-export default async function syncService(searchParams: any): Promise<ResType> {
+export default async function syncService(): Promise<ResType> {
   
-  // schema valdiation
-  const valid = await syncValidator(searchParams);
-  if (!valid.status) return valid;
-  
-  // query
   const templateDir = path.join(process.cwd(), "src/app/template");
   const folders = fs.readdirSync(templateDir);
   
@@ -42,6 +36,6 @@ export default async function syncService(searchParams: any): Promise<ResType> {
     
   }
   
-  return { status: true, resDataType: "success", data: "" };
+  return { status: true, resDataType: "success", data: "Successfully synced templates" };
   
 }

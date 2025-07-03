@@ -1,8 +1,19 @@
 import { z, ZodNumber } from "zod";
-import { ResType } from "@/lib/utils/types";
+import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
+import { NextResponse } from "next/server";
+import { ResType, UserPermission } from "@/lib/utils/types";
+import jwt from 'jsonwebtoken';
+import userTokenValidator from "@/validators/shared/userTokenValidator";
 
-export default function usersValidator(searchParams: any): ResType {
+export default function usersValidator(cookies: RequestCookies, searchParams: URLSearchParams): 
+{ status: boolean, data: any } {
   
+  // User token validation
+  const userToken = cookies.get("userInfo")?.value;
+  const valid = userTokenValidator(userToken, ["ADMIN", "TEACHER"], UserPermission.MAX);
+  
+  if (!valid.status) return valid;
+
   // constraints
   const zsearchParams = z.object({
     userListType: z.enum(["admin", "teacher", "student", "parent"]),
@@ -23,13 +34,9 @@ export default function usersValidator(searchParams: any): ResType {
     
   })
   
-  // parse 
-  const parsed = zsearchParams.safeParse(Object.fromEntries(searchParams.entries()));
-  
-  if (!parsed.success) {
-    return { status: false, resDataType: "log", data: parsed.error.message }
-  }
+  const parsed_s = zsearchParams.safeParse(Object.fromEntries(searchParams.entries()));
+  if (!parsed_s.success) return { status: false, data: parsed_s.error.message }
 
-  return { status: true, resDataType: "data", data: parsed.data}
+  return { status: true, data: parsed_s.data }
   
 }

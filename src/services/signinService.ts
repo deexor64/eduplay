@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { ResType, UserType } from '@/lib/utils/types';
+import { ResType, UserPermission, UserType } from '@/lib/utils/types';
 import { generatePasswordHash } from '@/lib/utils/generatePasswordHash';
-import signinValidator from '@/validators/signinValidator';
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 
@@ -19,19 +18,9 @@ function getUserHandler(userType: UserType) {
   return map[userType];
 }
 
-export default async function signinService(searchParams: any, formData: any):
-Promise<{res: ResType, token:string}> {
+export default async function signinService(data: any): Promise<{res: ResType, token:string}> {
   
-  const userType = searchParams.userType;
-  
-  // schema valdiation
-  const valid = await signinValidator(searchParams, formData);
-  if (!valid.status) return {res: valid, token: ""};
-  
-  // query
-  const data = valid.data;
-  
-  let existing = await getUserHandler(userType).findFirst({ 
+  let existing = await getUserHandler(data.userType).findFirst({ 
     where: {
       email: data.email,
     },
@@ -52,11 +41,11 @@ Promise<{res: ResType, token:string}> {
   const token = jwt.sign(
     {
       userId: existing.id,
-      userType: userType,
-      permissionLevel: 100,
+      userType: data.userType,
+      permissionLevel: UserPermission.MAX,
     },
     JWT_SECRET,
-    { expiresIn: '3h' }
+    { expiresIn: "3m" }
   );
   
   return {res: { status: true, resDataType: "success", data: "Signin successfull" }, token: token};

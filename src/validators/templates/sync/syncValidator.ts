@@ -1,7 +1,18 @@
-import { ResType } from "@/lib/utils/types";
+import { ResType, UserPermission } from "@/lib/utils/types";
+import userTokenValidator from "@/validators/shared/userTokenValidator";
+import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
 
-export default function syncValidator(searchParams: any): ResType {
+export default function syncValidator(cookies: RequestCookies):
+{ status: boolean, data: any } {
+  
+  // User token validation
+  const userToken = cookies.get("userInfo")?.value;
+  const valid = userTokenValidator(userToken, ["ADMIN", "TEACHER"], UserPermission.MAX);
+  
+  if (!valid.status) return valid;
 
-  return { status: true, resDataType: "data", data: ""}
+  return { status: true, data: null };
+  
+  // No search parameters or form data here
   
 }

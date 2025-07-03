@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
-import usersValidator from '@/validators/users/usersValidator';
 
 const prisma = new PrismaClient();
 
@@ -16,15 +15,10 @@ function getUserHandler(userListType: any) {
   return map[userListType];
 }
 
-export default async function usersService(searchParams: URLSearchParams): Promise<ResType> {
-  
-  // schema valdiation
-  const valid = await usersValidator(searchParams);
-  if (!valid.status) return valid;
+export default async function usersService(data: any):
+Promise<ResType> {
   
   // query
-  const data = valid.data;
-  
   let whereClause: any = { // undefined values are ignored in where clause
     indexNumber: data.indexNumber,
     email: data.email,
