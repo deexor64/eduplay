@@ -10,3 +10,9 @@ export type ResType = {
   resDataType: "message" | "data" | "log" | "error" | "warning" | "success",
   data: any
 }
+
+export enum UserPermission {
+  DEFAULT = 0,
+  CREATE_USER = 1,
+  MAX  = 100,
+}

@@ -1,4 +1,4 @@
-export async function generateHash(input: string) {
+export default async function generateHash(input: string) {
   
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const encoder = new TextEncoder();
@@ -10,9 +10,4 @@ export async function generateHash(input: string) {
 
   return hashHex; // 64 character hex string
   
-}
-
-export function generateUniqueID() {
-  const randHex = crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
-  return randHex // 1 - 8 character hex string
 }
