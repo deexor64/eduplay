@@ -1,5 +1,5 @@
-import TemplateList from "@/app/template/TemplateList";
+import TemplateList from "@/app/_shared/TemplateList";
 
 export default function Create() {
-  return <TemplateList userType="TEACHER"/>
+  return <TemplateList />
 }

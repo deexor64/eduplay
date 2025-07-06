@@ -9,10 +9,14 @@ import Paginator from "@/components/shared/pagination/Paginator";
 import ItemListWrapper from "@/components/shared/item-list/ItemListWrapper";
 import ViewClassItem from "@/components/shared/item-list/ViewClassItem";
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from 'next/navigation';
 import cleanParams from "@/lib/utils/cleanParams";
+import useAuth from "@/hooks/useAuth";
+import QuickActionButton from "@/components/shared/ActionButton";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
 
-export default function Classes() {
+export default function ClassList() {
+  
+  const { userType, permissionLevel } = useAuth();
  
   const [dbData, setDbData] = useState<{
     classes: Array<{
@@ -80,7 +84,12 @@ export default function Classes() {
     <>
       
       {/* Title */}
-      <Title title="Manage Classes" />
+      {userType === "ADMIN" &&
+        <Title title="Manage Classes" >
+          <QuickActionButton href="/admin/classes/create" icon={faPen} label="create class" />
+        </Title>}
+      
+      {(userType === "TEACHER" || userType === "STUDENT") && <Title title="Select your Class" />}
 
       {/* Filters */}
       <FilterWrapper>

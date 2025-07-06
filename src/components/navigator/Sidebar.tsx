@@ -50,7 +50,7 @@ export default function Sidebar(props: SidebarProps) {
         <ul className={`space-y-2 mt-16 bg-blue-100 ${isOpen ? "" : "overflow-hidden"}`}>
           {
             userType == "TEACHER" && Object.entries({
-              "My Class": "/teacher/myclass",
+              "Classes": "/teacher/classes",
               "Create Activity": "/teacher/activity/create",
               "Manage Activity": "/teacher/activity/manage",
               "Profile": "/teacher/profile",

@@ -10,14 +10,12 @@ import ItemListWrapper from "@/components/shared/item-list/ItemListWrapper";
 import ViewUserItem from "@/components/shared/item-list/ViewUserItem";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
-import { generateUniqueID } from "@/lib/utils/generateRandomString";
 import cleanParams from "@/lib/utils/cleanParams";
 
-export default function Users() {
+export default function UserList() {
   
   const searchParams = useSearchParams();
   const userListType = searchParams.get("userListType");
-  const userType = searchParams.get("userType");
  
   const [dbData, setDbData] = useState<{
     users: Array<{
