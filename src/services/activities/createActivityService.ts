@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
 import type { IncomingMessage } from "http";
-import { generateUniqueID } from "@/lib/utils/generateRandomString";
 import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
 
 const prisma = new PrismaClient();

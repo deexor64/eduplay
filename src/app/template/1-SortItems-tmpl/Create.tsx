@@ -2,7 +2,7 @@
 
 import CreateLayout from "@/components/templates/create-layout/CreateLayout";
 import { useState } from "react";
-import { generateHash } from "@/lib/utils/generateRandomString";
+import generateHash  from "@/lib/utils/generateHash";
 
 export default function SortItems() {
   

@@ -12,10 +12,13 @@ export default function userTokenValidator(userToken: string | undefined,
   try { 
     
     const JWT_SECRET = process.env.JWT_SECRET!;
-    const payload = jwt.verify(userToken, JWT_SECRET) as JwtPayload;
+    
+    // token validation
+    // this will throw an error
+    const payload = jwt.verify(userToken, JWT_SECRET) as JwtPayload; 
     
     // Check userInfo
-    if (userType.includes(payload.userType) && payload.permission >= permission) {
+    if (!userType.includes(payload.userType) || payload.permission < permission) {
       return { status: false, data: payload };
     }
     

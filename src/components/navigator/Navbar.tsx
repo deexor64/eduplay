@@ -1,13 +1,13 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import getUserType from '@/hooks/useUserType';
+import useAuth from "@/hooks/useAuth";
 import { faBell, faLongArrowRight, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function Navbar(props: any) {
 
-  const userType = getUserType();
+  const { userType, permissionLevel } = useAuth();
   
   // route back to dashboard
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function Navbar(props: any) {
       p-4 shadow-md sticky top-0 z-20 ">
       <div
         className="text-white font-bold cursor-pointer"
-        onClick={routeBackToDashboard}>
+        onClick={ routeBackToDashboard}>
         <span className="text-xl">EduSoft</span>
       </div>
       <div className="flex items-center space-x-4">

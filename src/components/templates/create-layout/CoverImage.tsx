@@ -1,4 +1,4 @@
-import { generateHash } from "@/lib/utils/generateRandomString";
+import generateHash from "@/lib/utils/generateHash";
 import { useState } from "react";
 
 interface CoverImageProps {

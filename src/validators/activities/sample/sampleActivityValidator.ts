@@ -8,7 +8,7 @@ export default function sampleActivityValidator(cookies: RequestCookies, searchP
   
   // User token validation
   const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenValidator(userToken, ["TEACHER"], UserPermission.MAX);
+  const valid = userTokenValidator(userToken, ["ADMIN", "TEACHER"], UserPermission.MAX);
   
   if (!valid.status) return valid;
   

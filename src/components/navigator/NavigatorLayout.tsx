@@ -1,25 +1,13 @@
-'use client';
+"use client"
 
+import { useState } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-import { useEffect, useState } from "react";
-import useAuth  from "@/hooks/useAuth";
-import { useParams } from "next/navigation";
-import useUserType from "@/hooks/useUserType";
+
 
 export default function NavigatorLayout(props: any) {
   
-  // user type
-  // setting user type here can use the value by any child component
-  const { userType, setUserType } = useAuth();
-  
-  const uType = useUserType();
-  
-  useEffect(() => {
-    setUserType(uType);
-  }, []);
-
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
   
   return (
     <div className="flex flex-col h-full">
@@ -28,11 +16,10 @@ export default function NavigatorLayout(props: any) {
       {/* main content */}
       <div className="flex flex-grow" >
         {/* Sidebar with passed toggle function */}
-        <Sidebar toggleSidebar={function() { setIsSidebarOpen(!isSidebarOpen) }} />
+        <Sidebar isOpen={isOpen } setIsOpen={setIsOpen}/>
         {/* layout content */}
-        <section className="flex-grow transition-all duration-300 bg-yellow-100
-          w-full h-lvh mx-auto p-6"
-          style={{ marginLeft: isSidebarOpen ? "12rem" : "4rem" }} >
+        <section className={`flex-grow transition-all duration-300 bg-yellow-100
+          w-full h-full p-6  ${isOpen ? "ml-50" : "ml-18"}`}>
           {props.children}
         </section>
       </div>

@@ -45,7 +45,7 @@ export default async function signinService(data: any): Promise<{res: ResType, t
       permissionLevel: UserPermission.MAX,
     },
     JWT_SECRET,
-    { expiresIn: "3m" }
+    { expiresIn: "30d" }
   );
   
   return {res: { status: true, resDataType: "success", data: "Signin successfull" }, token: token};
