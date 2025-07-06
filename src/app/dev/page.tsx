@@ -3,16 +3,17 @@
 import { useState } from 'react'
 
 export default function DevSettingsPage() {
+  
+  // token
   const [userType, setUserType] = useState('ADMIN')
-  const [permission, setPermission] = useState(50)
+  const [permission, setPermission] = useState(100)
   const [status, setStatus] = useState('')
 
   async function handleSetToken() {
-    const res = await fetch('/api/dev', {
-      method: 'POST',
-      body: JSON.stringify({ userType, permission }),
-      headers: { 'Content-Type': 'application/json' },
-    })
+    
+    setStatus('Setting token...')
+    
+    const res = await fetch(`/api/dev/user-type?userType=${userType}&permissionLevel=${permission}`)
   
     if (res.ok) {
       setStatus('✅ Token issued and saved by server')
@@ -20,15 +21,17 @@ export default function DevSettingsPage() {
       setStatus('❌ Failed to set token')
     }
   }
+  
+  // routes
 
 
   return (
-    <div className="p-6 space-y-8">
-      <h1 className="text-2xl font-bold">🛠 Developer Settings</h1>
-      
+    <>
+        
       {/* change user token */}
-      <section className="border border-gray-300 p-4 rounded-xl shadow-sm">
-        <h2 className="text-lg font-semibold mb-2">🔐 Manual Token Setter</h2>
+      <section className="border border-gray-300 p-4 rounded-xl shadow-sm w-200">
+        
+        <h2 className="text-lg font-semibold mb-2">🔐 Change User Type</h2>
 
         <div className="space-y-3">
           <div>
@@ -68,8 +71,17 @@ export default function DevSettingsPage() {
         </div>
       </section>
       
+      {/* routes */}
+      <section className="border border-gray-300 p-4 rounded-xl shadow-sm w-200">
+        
+        <h2 className="text-lg font-semibold mb-2">🔐 Routes</h2>
+
+        <div className="space-y-3">
+          sdfhgsd
+        </div>
+        
+      </section>
       
-      
-    </div>
+    </>
   )
 }
