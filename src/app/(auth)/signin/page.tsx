@@ -79,7 +79,6 @@ export default function Signup() {
     <form onSubmit={handleSubmit}>
 
       <Title> Sign In <br/> as 
-        {(userType == "ADMIN") &&  " Admin"}
         {(userType == "TEACHER") &&  " Teacher"}
         {(userType == "PARENT") &&  " Parent"} </Title>
 
