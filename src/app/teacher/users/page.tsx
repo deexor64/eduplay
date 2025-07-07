@@ -84,7 +84,6 @@ export default function UserList() {
     <>
       
       {/* Title */}
-      {(userListType === "admin") && <Title title="Manage Admins" />}
       {(userListType === "teacher") && <Title title="Manage Teachers" />}
       {(userListType === "student") && <Title title="Manage Students" />}
       {(userListType === "parent") && <Title title="Manage Parents" />}

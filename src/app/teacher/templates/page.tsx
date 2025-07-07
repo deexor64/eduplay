@@ -10,7 +10,7 @@ import ItemListWrapper from "@/components/shared/item-list/ItemListWrapper";
 import ViewTemplateItem from "@/components/shared/item-list/ViewTemplateItem";
 import SyncTemplateButton from "@/components/templates/SyncTemplatesButton";
 import React, { useEffect, useState } from "react";
-import { UserType } from "@/lib/utils/types";
+import { UserPermission, UserType } from "@/lib/utils/types";
 import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
 
@@ -103,7 +103,7 @@ export default function TemplateList() {
         </div>
         {/* sync button. shown only to admins */}
         {
-          userType === "ADMIN" && (
+          permissionLevel === UserPermission.MAX && (
             <SyncTemplateButton syncTemplates={syncTemplates} />
           )
         }
@@ -113,7 +113,7 @@ export default function TemplateList() {
       <ItemListWrapper>
         {
           dbData.templates.map(function (item) {
-            return <ViewTemplateItem userType={userType} itemData={item} key={item.templateCode}/>;
+            return <ViewTemplateItem itemData={item} key={item.templateCode}/>;
           })
         }
       </ItemListWrapper>

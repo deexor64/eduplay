@@ -50,11 +50,13 @@ export default function Sidebar(props: SidebarProps) {
         <ul className={`space-y-2 mt-16 bg-blue-100 ${isOpen ? "" : "overflow-hidden"}`}>
           {
             userType == "TEACHER" && Object.entries({
-              "Classes": "/teacher/classes",
-              "Create Activity": "/teacher/activity/create",
-              "Manage Activity": "/teacher/activity/manage",
+              "Students": "/teacher/users?userListType=student",
+              "Teachers": "/teacher/users?userListType=teacher",
+              "Parents": "/teacher/users?userListType=parent",
+              "Templates": "/teacher/templates",
+              "Activities": "/teacher/activity/manage",
               "Profile": "/teacher/profile",
-              "Settings": "/teacher/settings",
+              "System Settings": "/teacher/system-settings",
               }).map(function ([label, href]) {
                 return <SideBarLink link={href} key={href}>{label}</SideBarLink>
               })
@@ -65,21 +67,6 @@ export default function Sidebar(props: SidebarProps) {
               "Contact School": "/parent/contactschool",
               "Profile": "/parent/profile",
               "Settings": "/parent/settings",
-            }).map(function ([label, href]) {
-                return <SideBarLink link={href } key={href}>{label}</SideBarLink>
-              })
-          }
-          {
-            userType == "ADMIN" && Object.entries({
-              "Students": "/admin/users?userListType=student",
-              "Teachers": "/admin/users?userListType=teacher",
-              "Parents": "/admin/users?userListType=parent",
-              "Admins": "/admin/users?userListType=admin",
-              "Classes": "/admin/classes",
-              "Lessons": "/admin/lessons",
-              "Templates": "/admin/templates",
-              "Admin profile": "/admin/profile",
-              "System Settings": "/admin/system-settings",
             }).map(function ([label, href]) {
                 return <SideBarLink link={href } key={href}>{label}</SideBarLink>
               })

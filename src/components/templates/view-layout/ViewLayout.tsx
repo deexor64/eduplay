@@ -132,7 +132,7 @@ export default function ViewLayout(props: ViewLayoutProps) {
     <div className="max-w-6xl mx-auto p-4 pb-14 bg-blue-100">
       
       {/* activity title */}
-      <ActivityTitle userType={userType} viewMode={viewMode} templateCode={templateCode}>
+      <ActivityTitle viewMode={viewMode} templateCode={templateCode}>
         { dbData.title }</ActivityTitle>
 
       {/* cover image */}
@@ -145,8 +145,7 @@ export default function ViewLayout(props: ViewLayoutProps) {
       {props.children}
       
       {/* footer */}
-      <Footer userType={userType} viewMode={viewMode}
-      validateTemplate={props.validateResult}/>
+      <Footer viewMode={viewMode} validateTemplate={props.validateResult}/>
       
     </div>
   );

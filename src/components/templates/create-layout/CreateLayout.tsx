@@ -10,7 +10,7 @@ import UploadProgressBar from "@/components/uploader/UploadProgressBar";
 import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import cleanParams from "@/lib/utils/cleanParams";
-import useFileStoreUploader from "@/hooks/fileStoreUploader";
+import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 
 
 type CreateLayoutProps = {

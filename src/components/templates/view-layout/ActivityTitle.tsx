@@ -2,7 +2,6 @@ import { TemplateViewMode, UserType } from "@/lib/utils/types";
 import Link from "next/link";
 
 interface ActivityTitleProps {
-  userType: UserType,
   viewMode: TemplateViewMode,
   templateCode: string,
   children: React.ReactNode
@@ -19,7 +18,7 @@ export default function ActivityTitle(props: any) {
         ( `${props.children}` ) : ( `${props.children} - [${props.viewMode}]` )}
       </h1>
       
-      { (props.userType === "TEACHER" && props.viewMode === "SAMPLE") && (
+      { (props.viewMode === "SAMPLE") && (
       <Link href={`/template?userType=${props.userType}&viewMode=CREATE&templateCode=${props.templateCode}`} 
         className="ml-auto"
         target="_parent"

@@ -8,7 +8,7 @@ export default function classesValidator(cookies: RequestCookies, searchParams: 
   
   // User token validation
   const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenValidator(userToken, ["ADMIN", "TEACHER", "STUDENT"], UserPermission.MAX);
+  const valid = userTokenValidator(userToken, ["TEACHER", "STUDENT"], UserPermission.MAX);
   
   if (!valid.status) return valid;
   

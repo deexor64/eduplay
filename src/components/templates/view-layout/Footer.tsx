@@ -2,7 +2,6 @@ import { TemplateViewMode, UserType } from "@/lib/utils/types";
 import Swal from "sweetalert2";
 
 type FooterProps = {
-  userType: UserType,
   viewMode: TemplateViewMode,
   validateTemplate: Function,
 }

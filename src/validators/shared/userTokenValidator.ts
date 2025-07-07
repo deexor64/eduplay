@@ -18,7 +18,7 @@ export default function userTokenValidator(userToken: string | undefined,
     const payload = jwt.verify(userToken, JWT_SECRET) as JwtPayload; 
     
     // Check userInfo
-    if (!userType.includes(payload.userType) || payload.permission < permission) {
+    if (!userType.includes(payload.userType) || payload.permissionLevel < permission) {
       return { status: false, data: payload };
     }
     

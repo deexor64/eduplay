@@ -13,7 +13,6 @@ function loadComponent(templateCode: string, viewMode: TemplateViewMode) {
 export default function Templates(props: any) {
   
   const searchParams = useSearchParams();
-  const userType = searchParams.get("userType") as UserType;
   const viewMode = searchParams.get("viewMode") as TemplateViewMode;
   const templateCode = searchParams.get("templateCode") as string;
   

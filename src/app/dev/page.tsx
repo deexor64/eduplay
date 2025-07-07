@@ -1,5 +1,6 @@
 'use client'
 
+import { UserPermission, userTypes } from '@/lib/utils/types'
 import { useState } from 'react'
 
 export default function DevSettingsPage() {
@@ -32,32 +33,39 @@ export default function DevSettingsPage() {
       <section className="border border-gray-300 p-4 rounded-xl shadow-sm w-200">
         
         <h2 className="text-lg font-semibold mb-2">🔐 Change User Type</h2>
-
+        
         <div className="space-y-3">
           <div>
-            <label className="block font-medium mb-1">User Type:</label>
+            <label className="block font-medium mb-1">Users and Permissions</label>
             <select
               value={userType}
               onChange={(e) => setUserType(e.target.value)}
               className="border p-2 rounded w-full"
             >
-              <option value="ADMIN">ADMIN</option>
-              <option value="STUDENT">STUDENT</option>
-              <option value="TEACHER">TEACHER</option>
-              <option value="PARENT">PARENT</option>
+              {userTypes
+                .map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
             </select>
           </div>
-
+        
           <div>
-            <label className="block font-medium mb-1">Permission (0 - 100):</label>
-            <input
-              type="number"
-              min={0}
-              max={100}
+            <label className="block font-medium mb-1">Permission:</label>
+            <select
               value={permission}
               onChange={(e) => setPermission(parseInt(e.target.value))}
               className="border p-2 rounded w-full"
-            />
+            >
+              {Object.entries(UserPermission)
+                .filter(([key, value]) => typeof value === "number")
+                .map(([key, value]) => (
+                  <option key={value} value={value}>
+                    {key}
+                  </option>
+                ))}
+            </select>
           </div>
 
           <button
