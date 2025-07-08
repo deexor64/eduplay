@@ -18,13 +18,14 @@ enum Status {
   ACTIVE
   INACTIVE
   SUSPENDED
+  DELETED
 }
 
 model User {
   userID        String    @id @default(uuid())
-  fullName      String
   firstName     String
   lastName      String
+  phoneNumber   String
   dateOfBirth   DateTime?
   password      String
   status        Status    @default(PENDING)
@@ -32,90 +33,80 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  admin   Admin?   @relation("admin")
   teacher Teacher? @relation("teacher")
   parent  Parent?  @relation("parent")
   student Student? @relation("student")
 }
 
-model Admin {
-  adminID     String @id @default(uuid())
-  indexNumber String @unique
-  email       String @unique
-  phoneNumber String @unique
-
-  userID String @unique
-  user   User   @relation("admin", fields: [userID], references: [userID])
+enum TeacherRole {
+  MASTER
+  ADMIN
+  TEACHER
 }
 
 model Teacher {
   teacherID   String @id @default(uuid())
   indexNumber String @unique
   email       String @unique
-  phoneNumber String @unique
+  role        TeacherRole @default(TEACHER)
 
   userID String @unique
   user   User   @relation("teacher", fields: [userID], references: [userID])
 
-  classes Class[] @relation("manageClass")
-
-  // activity Activity[] @relation("activityCreator")
+  activity Activity[] @relation("activityCreator")
 }
 
-model Parent {
-  parentID    String @id @default(uuid())
-  email       String @unique
-  phoneNumber String @unique
-
-  userID String @unique
-  user   User   @relation("parent", fields: [userID], references: [userID])
+enum StudentRole {
+  DEMONSTRATOR
+  STUDENT
 }
 
 model Student {
   studentID   String @id @default(uuid())
   indexNumber String @unique
   email       String
-  phoneNumber String
-
-  classID String?
-  class   Class?  @relation("enroll", fields: [classID], references: [classID])
+  role        StudentRole @default(STUDENT)
+  grade       Int
+  class       String
 
   userID String @unique
   user   User   @relation("student", fields: [userID], references: [userID])
+  
+  myParent String @unique
+  parent   Parent   @relation("parent", fields: [myParent], references: [parentID])
+  
+  progress Progress[] @relation("progress")
 }
 
-model Class {
-  classID     String   @id @default(uuid())
-  name        String?
-  grade       Int
-  classLetter String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  managedBy String
-  teacher   Teacher @relation("manageClass", fields: [managedBy], references: [teacherID])
-
-  students Student[] @relation("enroll")
-
-  @@unique([grade, classLetter])
+model Parent {
+  parentID    String @id @default(uuid())
+  email       String @unique
+  
+  userID String @unique
+  user   User   @relation("parent", fields: [userID], references: [userID])
+  
+  myChildren Student[] @relation("parent")
 }
+
 
 model Activity {
   activityID    String   @id @default(uuid())
   title         String
   coverImageUrl String
-  description   String
+  instructions  String
   activityData  String
-  isGraded      Boolean  @default(false)
-  timeLimit     Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  isGraded      Boolean  @default(false)
+  timeLimit     Int      @default(0)
+  grade         Int
+  difficulty    Int
 
   templateCode String
   template     Template @relation("activityTemplate", fields: [templateCode], references: [templateCode])
 
-  // createdBy String
-  // teacher   Teacher @relation("activityCreator", fields: [createdBy], references: [teacherID])
+  createdBy String
+  teacher   Teacher @relation("activityCreator", fields: [createdBy], references: [teacherID])
 }
 
 model Template {
@@ -127,4 +118,11 @@ model Template {
   sampleActivity Json
 
   activity Activity[] @relation("activityTemplate")
+}
+
+model Progress {
+  progressID String @id @default(uuid())
+  
+  progressFor String
+  student   Student @relation("progress", fields: [progressFor], references: [studentID])
 }
