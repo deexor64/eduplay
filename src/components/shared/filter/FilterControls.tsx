@@ -23,11 +23,12 @@ export default function FilterButtons(props: FilterButtonsProps) {
   }
 
   function handleClear() {
-    setFilter({
-      indexNumber: undefined,
-      name: undefined,
-      email: undefined,
-      status: undefined,
+    setFilter((prev: any) => {
+      const cleared = { ...prev };
+      Object.keys(cleared).forEach(key => {
+        cleared[key] = undefined;
+      });
+      return cleared;
     });
     setTriggerFilter(true);
   }
@@ -36,7 +37,7 @@ export default function FilterButtons(props: FilterButtonsProps) {
     <div className="flex">
       <button
         onClick={handleApply}
-        className="p-2 rounded-tl-md rounded-bl-md bg-blue-500 hover:bg-blue-600 text-white"
+        className="p-2 rounded-l-lg bg-blue-600 hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-400 shadow transition-all duration-150 text-white text-lg"
         title="Apply Filters"
       >
         <FontAwesomeIcon icon={faFilter} />
@@ -44,7 +45,7 @@ export default function FilterButtons(props: FilterButtonsProps) {
 
       <button
         onClick={handleClear}
-        className="p-2 rounded-tr-md rounded-br-md bg-gray-400 hover:bg-gray-500 text-white"
+        className="p-2 rounded-r-lg bg-gray-300 hover:bg-red-500 focus-visible:ring-2 focus-visible:ring-red-300 shadow transition-all duration-150 text-gray-800 hover:text-white text-lg"
         title="Clear Filters"
       >
         <FontAwesomeIcon icon={faTimesCircle} />

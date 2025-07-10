@@ -20,15 +20,16 @@ export default function InputFilter(props: InputFilterProps) {
   };
 
   return (
-    <div>
-      <label htmlFor={filterKey} className="font-medium text-blue-800 mr-1.5">
+    <div className="flex flex-col gap-1 min-w-[160px]">
+      <label htmlFor={filterKey} className="font-semibold text-blue-900 mb-0.5">
         {props.children}
       </label>
       <input
         id={filterKey}
         type="text"
-        className="border rounded px-3 py-1 bg-white text-purple-700 w-38"
+        className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-purple-800 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-150 outline-none placeholder:text-gray-400"
         onChange={handleInputChange}
+        placeholder="Type to filter..."
       />
     </div>
   );
