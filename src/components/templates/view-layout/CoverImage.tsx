@@ -8,20 +8,18 @@ type CoverImageProps = {
 }
 
 export default function CoverImage(props: CoverImageProps) {
-  
   return (
-    
-    props.coverImageUrl && 
-    <div className="max-w-6xl mx-auto sticky top-2">
+    props.coverImageUrl &&
+    <div className="max-w-6xl mx-auto sticky top-0">
       <section
-        className="mb-6 w-full overflow-hidden rounded-xl bg-cover bg-center 
-        relative aspect-[11/3]"
-        style={{ backgroundImage: "url('/templates/1-SortItems-tmpl/coverImage.jpg')"}}>
-        <div className="relative z-10  p-4 ">
+        className="mb-6 w-full overflow-hidden rounded-xl bg-cover bg-center relative transition-all duration-300"
+        style={{ backgroundImage: "url('/templates/1-SortItems-tmpl/coverImage.jpeg')" }}>
+        {/* Overlay for darkening the image for better text contrast */}
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="relative z-10 p-4 flex flex-col gap-2">
           {props.children}
         </div>
       </section>
     </div>
-
   )
 }

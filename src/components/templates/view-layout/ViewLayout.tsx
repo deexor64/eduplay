@@ -133,7 +133,9 @@ export default function ViewLayout(props: ViewLayoutProps) {
       className="fixed inset-0 bg-cover bg-center"
       style={{ backgroundImage: "url('/images/activity-background.jpg')", 
         backgroundAttachment: "fixed"}} >
-      <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-14 backdrop-blur-xs 
+      {/* Narrator overlay placeholder */}
+      <div id="narrator-overlay" className="absolute inset-0 w-full h-full pointer-events-none z-10" />
+      <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-4 backdrop-blur-xs 
         bg-transparent">
         
         
