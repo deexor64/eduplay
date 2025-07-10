@@ -1,91 +1,123 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import Link from 'next/link';
 import useAuth from "@/hooks/useAuth";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faUsers, 
+  faUser, 
+  faUserFriends, 
+  faFileAlt, 
+  faBox, 
+  faCog, 
+  faEnvelope 
+} from '@fortawesome/free-solid-svg-icons';
 
-interface sideBarLinkProps {
+interface SideBarLinkProps {
   link: string,
-  children: ReactNode
+  children: ReactNode,
+  icon?: any,
+  isOpen: boolean
 }
 
-function SideBarLink (props: sideBarLinkProps) { 
+function SideBarLink({ link, children, icon, isOpen }: SideBarLinkProps) { 
   return (
     <li>
-      <Link href={props.link}>
-        <div className="cursor-pointer hover:bg-blue-100 p-2 rounded" key={props.link}>
-          {props.children}
+      <Link href={link}>
+        <div className={`flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-all duration-300 group cursor-pointer ${!isOpen ? 'justify-center' : ''}`}>
+          {icon && (
+            <div className="w-5 h-5 text-gray-500 group-hover:text-blue-600 transition-colors duration-200 flex-shrink-0 flex items-center justify-center">
+              <FontAwesomeIcon icon={icon} className="w-4 h-4" />
+            </div>
+          )}
+          <span className={`font-medium transition-all duration-300 whitespace-nowrap ${!isOpen ? 'opacity-0 max-w-0' : 'opacity-100 max-w-xs'}`}>
+            {children}
+          </span>
         </div>
       </Link>
     </li>
   )
 }
 
-// interface sideBarProps {
-//   toggleSidebar: Function
-// }
-
 type SidebarProps = {
   isOpen: boolean,
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function Sidebar(props: SidebarProps) {
-  
-  // Side bar links are rendered according to the userType
-  // Permission level is not used here
-  const { userType, permissionLevel } = useAuth();
-  
-  // side bar
-  const { isOpen, setIsOpen } = props;
+export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
+  const { userType } = useAuth();
+
+  const teacherLinks = {
+    "Students": "/teacher/users?userListType=student",
+    "Teachers": "/teacher/users?userListType=teacher", 
+    "Parents": "/teacher/users?userListType=parent",
+    "Templates": "/teacher/templates",
+    "Activities": "/teacher/activity/manage",
+    "Profile": "/teacher/profile",
+    "System Settings": "/teacher/system-settings",
+  };
+
+  const parentLinks = {
+    "My Child": "/parent/mychild",
+    "Contact School": "/parent/contactschool", 
+    "Profile": "/parent/profile",
+    "Settings": "/parent/settings",
+  };
+
+  const icons = {
+    "Students": faUsers,
+    "Teachers": faUser,
+    "Parents": faUserFriends,
+    "Templates": faFileAlt,
+    "Activities": faBox,
+    "Profile": faUser,
+    "System Settings": faCog,
+    "My Child": faUser,
+    "Contact School": faEnvelope,
+    "Settings": faCog,
+  };
+
+  const links = userType === "TEACHER" ? teacherLinks : userType === "PARENT" ? parentLinks : {};
 
   return (
-    
     <div className="w-50 fixed">
-
       {/* Sidebar */}
-      <div className={`h-full bg-gray-100 pl-4 shadow-md transition-all 
-        duration-300 ${isOpen ? "w-50 pr-2" : "w-0 pr-0"}`}>
-            
-        <ul className={`space-y-2 mt-16 bg-blue-100 ${isOpen ? "" : "overflow-hidden"}`}>
-          {
-            userType == "TEACHER" && Object.entries({
-              "Students": "/teacher/users?userListType=student",
-              "Teachers": "/teacher/users?userListType=teacher",
-              "Parents": "/teacher/users?userListType=parent",
-              "Templates": "/teacher/templates",
-              "Activities": "/teacher/activity/manage",
-              "Profile": "/teacher/profile",
-              "System Settings": "/teacher/system-settings",
-              }).map(function ([label, href]) {
-                return <SideBarLink link={href} key={href}>{label}</SideBarLink>
-              })
-          }
-          {
-            userType == "PARENT" && Object.entries({
-              "My Child": "/parent/mychild",
-              "Contact School": "/parent/contactschool",
-              "Profile": "/parent/profile",
-              "Settings": "/parent/settings",
-            }).map(function ([label, href]) {
-                return <SideBarLink link={href } key={href}>{label}</SideBarLink>
-              })
-          }
+      <div className={`h-full bg-white border-r border-gray-200 pl-4 shadow-sm transition-all duration-300 ${isOpen ? "w-50 pr-2" : "w-16 pr-0"}`}>
+        <ul className="space-y-2 mt-20">
+          {Object.entries(links).map(([label, href]) => (
+            <SideBarLink 
+              key={href as string} 
+              link={href as string} 
+              icon={icons[label as keyof typeof icons]} 
+              isOpen={isOpen}
+            >
+              {label}
+            </SideBarLink>
+          ))}
         </ul>
       </div>
 
-      {/* Arrow Button (outside of the sidebar container) */}
-      <div
-        className="w-10 h-10 flex items-center justify-center bg-blue-500 text-white
-        rounded-full cursor-pointer absolute top-4 left-4 z-20 transform transition-transform
-        duration-300" onClick={() => {setIsOpen(!isOpen)}}>
-        <span
-          className={`transform transition-transform duration-300
-          ${isOpen ? "rotate-180" : "rotate-0"}`}>
-          &#8594;
-        </span>
-      </div>
-      
+      {/* Smaller Toggle Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-10 h-10 flex flex-col items-center justify-center bg-blue-600 text-white rounded-lg cursor-pointer absolute top-4 left-4 z-20 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+      >
+        <div className="flex flex-col items-center justify-center w-5 h-5">
+          <span 
+            className={`block w-4 h-0.5 bg-white rounded-full transition-all duration-300 transform origin-center
+            ${isOpen ? 'rotate-45 translate-y-1' : 'rotate-0 translate-y-0'}`}
+          />
+          <span 
+            className={`block w-4 h-0.5 bg-white rounded-full transition-all duration-300 my-0.5
+            ${isOpen ? 'opacity-0' : 'opacity-100'}`}
+          />
+          <span 
+            className={`block w-4 h-0.5 bg-white rounded-full transition-all duration-300 transform origin-center
+            ${isOpen ? '-rotate-45 -translate-y-1' : 'rotate-0 translate-y-0'}`}
+          />
+        </div>
+      </button>
     </div>
   );
 }
