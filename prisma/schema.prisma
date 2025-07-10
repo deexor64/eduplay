@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Status {
+enum UserStatus {
   PENDING
   ACTIVE
   INACTIVE
@@ -28,7 +28,7 @@ model User {
   phoneNumber   String
   dateOfBirth   DateTime?
   password      String
-  status        Status    @default(PENDING)
+  status        UserStatus    @default(PENDING)
   displayPicUrl String    @default("/images/avatar.png")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -42,6 +42,7 @@ enum TeacherRole {
   MASTER
   ADMIN
   TEACHER
+  DEMONSTRATOR
 }
 
 model Teacher {
@@ -56,16 +57,11 @@ model Teacher {
   activity Activity[] @relation("activityCreator")
 }
 
-enum StudentRole {
-  DEMONSTRATOR
-  STUDENT
-}
 
 model Student {
   studentID   String @id @default(uuid())
   indexNumber String @unique
   email       String
-  role        StudentRole @default(STUDENT)
   grade       Int
   class       String
 

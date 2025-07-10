@@ -1,25 +1,20 @@
 import { PrismaClient } from "@prisma/client";
-import { ResType, UserPermission, UserType } from '@/lib/utils/types';
-import { generatePasswordHash } from '@/lib/utils/generatePasswordHash';
+import { ResType, TeacherRoleEnum, UserType } from '@/lib/utils/types';
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
 // dynamic user handler
-function getUserHandler(userType: UserType) { 
-  const map: any = {
-    TEACHER: prisma.teacher,
-    PARENT: prisma.parent,
-    STUDENT: prisma.student,
-  } as const;
-
-  return map[userType];
-}
+const usersHandler: any = {
+  TEACHER: prisma.teacher,
+  PARENT: prisma.parent,
+  STUDENT: prisma.student,
+} as const;
 
 export default async function signinService(data: any): Promise<{res: ResType, token:string}> {
   
-  let existing = await getUserHandler(data.userType).findFirst({ 
+  let existing = await usersHandler[data.userType].findFirst({ 
     where: {
       email: data.email,
     },
@@ -41,12 +36,13 @@ export default async function signinService(data: any): Promise<{res: ResType, t
     {
       userId: existing.id,
       userType: data.userType,
-      permissionLevel: UserPermission.MAX,
+      teacherRole: data.userType === "TEACHER" ? existing.role : undefined,
     },
     JWT_SECRET,
     { expiresIn: "30d" }
   );
   
-  return {res: { status: true, resDataType: "success", data: "Signin successfull" }, token: token};
+  return {res: { status: true, resDataType: "success", data: "Signin successfull" },
+   token: token};
   
 }
