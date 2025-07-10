@@ -1,6 +1,6 @@
 'use client'
 
-import { UserPermission, userTypes } from '@/lib/utils/types'
+import { UserPermission, UserTypeEnum } from '@/lib/utils/types'
 import { useState } from 'react'
 
 export default function DevSettingsPage() {
@@ -15,7 +15,7 @@ export default function DevSettingsPage() {
     
     setStatus('Setting token...')
     
-    const res = await fetch(`/api/dev/user-type?userType=${userType}&permissionLevel=${permission}`)
+    const res = await fetch(`/api/dev/user?userType=${userType}&permissionLevel=${permission}`)
   
     if (res.ok) {
       setStatus('✅ Token issued and saved by server')
@@ -23,14 +23,12 @@ export default function DevSettingsPage() {
       setStatus('❌ Failed to set token')
     }
   }
-  
+
 
   return (
     <div className="space-y-8">
         
-      {/* ========================================
-          USER TYPE & PERMISSION SECTION
-          ======================================== */}
+      {/* Usertype and permissions */}
       <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 p-8 rounded-2xl shadow-xl shadow-gray-900/5 hover:shadow-2xl transition-all duration-300">
         
         {/* Header with Icon */}
@@ -53,18 +51,18 @@ export default function DevSettingsPage() {
               User Type
             </label>
             <div className="relative">
-              <select
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)}
+            <select
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white/50 backdrop-blur-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer"
-              >
-                {userTypes
-                  .map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-              </select>
+            >
+              {Object.values(UserTypeEnum)
+                .map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+            </select>
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -79,19 +77,19 @@ export default function DevSettingsPage() {
               Permission Level
             </label>
             <div className="relative">
-              <select
-                value={permission}
-                onChange={(e) => setPermission(parseInt(e.target.value))}
+            <select
+              value={permission}
+              onChange={(e) => setPermission(parseInt(e.target.value))}
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white/50 backdrop-blur-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer"
-              >
-                {Object.entries(UserPermission)
-                  .filter(([key, value]) => typeof value === "number")
-                  .map(([key, value]) => (
-                    <option key={value} value={value}>
-                      {key}
-                    </option>
-                  ))}
-              </select>
+            >
+              {Object.entries(UserPermission)
+                .filter(([key, value]) => typeof value === "number")
+                .map(([key, value]) => (
+                  <option key={key} value={value}>
+                    {key}
+                  </option>
+                ))}
+            </select>
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -123,9 +121,7 @@ export default function DevSettingsPage() {
         </div>
       </div>
       
-      {/* ========================================
-          ROUTES OVERVIEW SECTION
-          ======================================== */}
+      {/* Routes Overview */}
       <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 p-8 rounded-2xl shadow-xl shadow-gray-900/5 hover:shadow-2xl transition-all duration-300">
         
         {/* Header with Icon */}
