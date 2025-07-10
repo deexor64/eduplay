@@ -1,13 +1,13 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import useAuth from "@/hooks/useAuth";
-import { faBell, faLongArrowRight, faSignOut } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export default function Navbar(props: any) {
+export default function Navbar() {
 
-  const { userType, permissionLevel } = useAuth();
+  const { userType, teacherRole } = useAuth();
   
   // route back to dashboard
   const router = useRouter();

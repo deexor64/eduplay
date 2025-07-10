@@ -22,12 +22,13 @@ interface SideBarLinkProps {
 }
 
 function SideBarLink({ link, children, icon, isOpen }: SideBarLinkProps) { 
+
   return (
     <li>
       <Link href={link}>
-        <div className={`flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-all duration-300 group cursor-pointer ${!isOpen ? 'justify-center' : ''}`}>
+        <div className={`flex items-center gap-3 px-4 py-3 'text-gray-100' hover:bg-gray-800/50 hover:text-blue-300 rounded-lg transition-all duration-300 group cursor-pointer ${!isOpen ? 'justify-center' : ''}`}>
           {icon && (
-            <div className="w-5 h-5 text-gray-500 group-hover:text-blue-600 transition-colors duration-200 flex-shrink-0 flex items-center justify-center">
+            <div className={`w-5 h-5 text-gray-300' group-hover:text-blue-400 transition-colors duration-200 flex-shrink-0 flex items-center justify-center`}>
               <FontAwesomeIcon icon={icon} className="w-4 h-4" />
             </div>
           )}
@@ -46,6 +47,7 @@ type SidebarProps = {
 }
 
 export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
+  
   const { userType } = useAuth();
 
   const teacherLinks = {
@@ -83,8 +85,9 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   return (
     <div className="w-50 fixed">
       {/* Sidebar */}
-      <div className={`h-full bg-white border-r border-gray-200 pl-4 shadow-sm transition-all duration-300 ${isOpen ? "w-50 pr-2" : "w-16 pr-0"}`}>
-        <ul className="space-y-2 mt-20">
+      <div className={`h-full bg-gray-600/50 backdrop-blur-lg border-r border-gray-800/50 shadow-sm transition-all duration-300
+          pl-2 pr-2 py-1 ${isOpen ? "w-50" : "w-16"}`}>
+        <ul className="space-y-2 mt-20 ">
           {Object.entries(links).map(([label, href]) => (
             <SideBarLink 
               key={href as string} 

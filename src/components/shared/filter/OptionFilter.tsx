@@ -21,13 +21,13 @@ export default function OptionFilter(props: OptionFilterProps) {
   };
 
   return (
-    <div className="flex flex-col gap-1 min-w-[160px]">
-      <label htmlFor={filterKey} className="font-semibold text-blue-900 mb-0.5">
+    <div className="flex flex-col gap-1 min-w-[120px]">
+      <label htmlFor={filterKey} className="font-semibold text-blue-900 mb-0.5 text-sm">
         {props.children}
       </label>
       <select
         id={filterKey}
-        className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-purple-800 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-150 outline-none"
+        className="border border-gray-300 rounded-lg px-2 py-1 bg-white text-purple-800 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-150 outline-none text-sm"
         onChange={handleFilterChange}
       >
         <option value="All">All</option>
