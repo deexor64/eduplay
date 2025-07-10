@@ -1,5 +1,5 @@
 import AuthProvider from "@/contexts/AuthProvider";
-import { UserType } from "@/lib/utils/types";
+import { UserType, TeacherRole } from "@/lib/utils/types";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { redirect } from "next/navigation";
@@ -29,7 +29,7 @@ export default async function AuthWrapper({ children, allowedUserTypes }: AuthWr
   if (!token) redirect("/"); // redirect to site home if no token
 
   let userType: UserType = "UNKNOWN";
-  let permissionLevel = 0;
+  let teacherRole: TeacherRole = "UNKNOWN";
 
   try {
     
@@ -38,11 +38,11 @@ export default async function AuthWrapper({ children, allowedUserTypes }: AuthWr
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
       userId: string,
       userType: UserType;
-      permissionLevel: number;
+      teacherRole: TeacherRole;
     };
 
     userType = decoded.userType;
-    permissionLevel = decoded.permissionLevel;
+    teacherRole = decoded.teacherRole;
     
     // user not allowed
     if (!allowedUserTypes.includes(userType)) redirect("/unauthorized");
@@ -56,7 +56,7 @@ export default async function AuthWrapper({ children, allowedUserTypes }: AuthWr
   }
 
   return (
-    <AuthProvider userType={userType} permissionLevel={permissionLevel}>
+    <AuthProvider userType={userType} teacherRole={teacherRole}>
       {children}
     </AuthProvider>
   );

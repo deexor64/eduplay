@@ -1,9 +1,8 @@
-import { NextResponse } from "next/server";
-import { ResType, UserPermission, UserType } from "@/lib/utils/types";
+import { TeacherRole, UserType } from "@/lib/utils/types";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 export default function userTokenValidator(userToken: string | undefined,
-  userType: Array<UserType>, permission: UserPermission):
+  userType: Array<UserType>, teacherRole: Array<TeacherRole>):
 { status: boolean, data: string | JwtPayload } {
   
   // Token doesn't exists
@@ -18,7 +17,11 @@ export default function userTokenValidator(userToken: string | undefined,
     const payload = jwt.verify(userToken, JWT_SECRET) as JwtPayload; 
     
     // Check userInfo
-    if (!userType.includes(payload.userType) || payload.permissionLevel < permission) {
+    if (!userType.includes(payload.userType)) {
+      return { status: false, data: payload };
+    }
+
+    if (userType.includes(payload.userType) && !teacherRole.includes(payload.teacherRole)) {
       return { status: false, data: payload };
     }
     

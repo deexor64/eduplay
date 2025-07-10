@@ -3,29 +3,29 @@
 // Use authWrapper 
 
 import { createContext } from "react";
-import { UserType } from "@/lib/utils/types";
+import { TeacherRole, UserType } from "@/lib/utils/types";
 
 type AuthContextType = {
   userType: UserType;
-  permissionLevel: number;
+  teacherRole: TeacherRole;
 };
 
 export const AuthContext = createContext<AuthContextType>({
   userType: "UNKNOWN",
-  permissionLevel: 0,
+  teacherRole: "UNKNOWN",
 });
 
 export default function AuthProvider({
   children,
   userType,
-  permissionLevel,
+  teacherRole,
 }: {
   children: React.ReactNode;
   userType: UserType;
-  permissionLevel: number;
+  teacherRole: TeacherRole;
 }) {
   return (
-    <AuthContext.Provider value={{ userType: userType, permissionLevel: permissionLevel }}>
+    <AuthContext.Provider value={{ userType: userType, teacherRole: teacherRole }}>
       {children}
     </AuthContext.Provider>
   );

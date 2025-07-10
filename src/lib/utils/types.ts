@@ -19,15 +19,14 @@ export enum UserStatusEnum {
   DELETED = "DELETED",
 }
 
-// user permission
-export enum UserPermission {
-  DEFAULT = 0,
-  PARENT = 25,
-  STUDENT = 50,
-  TEACHER = 75,
-  APPROVE_USER = 76,
-  REMOVE_USER = 77,
-  MAX  = 100,
+// teacher role
+export type TeacherRole = "MASTER" | "ADMIN" | "TEACHER" | "DEMONSTRATOR" | "UNKNOWN";
+
+export enum TeacherRoleEnum {
+  MASTER = "MASTER",
+  ADMIN = "ADMIN",
+  TEACHER = "TEACHER",
+  DEMONSTRATOR = "DEMONSTRATOR",
 }
 
 // template view mode
@@ -39,4 +38,3 @@ export type ResType = {
   resDataType: "message" | "data" | "log" | "error" | "warning" | "success",
   data: any
 }
-
