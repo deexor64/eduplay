@@ -42,7 +42,7 @@ export default function UserList() {
   
   const [triggerFilter, setTriggerFilter] = useState(false);
   
-  function finalizeFetchQuery(): URLSearchParams {
+  function usersQuery(): URLSearchParams {
 
     // params
     const params = cleanParams({
@@ -55,10 +55,10 @@ export default function UserList() {
     
   }
 
-  async function handleFetch () {
+  async function fetchUsers () {
 
     // fetch
-    const params = finalizeFetchQuery();
+    const params = usersQuery();
     
     const url = `/api/users?${params}`;
     const res = await fetch(url);
@@ -71,11 +71,11 @@ export default function UserList() {
   useEffect(() => {
     if (!triggerFilter) return;
     setTriggerFilter(false);
-    handleFetch();
+    fetchUsers();
   }, [triggerFilter]);
   
   useEffect(() => { 
-    handleFetch();
+    fetchUsers();
   }, [userListType, pagination]);
   
   return (

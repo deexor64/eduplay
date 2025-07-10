@@ -1,13 +1,13 @@
 'use client'
 
-import { UserPermission, UserTypeEnum } from '@/lib/utils/types'
+import { TeacherRoleEnum, UserTypeEnum } from '@/lib/utils/types'
 import { useState } from 'react'
 
 export default function DevSettingsPage() {
   
 
-  const [userType, setUserType] = useState('ADMIN')
-  const [permission, setPermission] = useState(100)
+  const [userType, setUserType] = useState(UserTypeEnum.TEACHER)
+  const [teacherRole, setTeacherRole] = useState(TeacherRoleEnum.ADMIN)
   const [status, setStatus] = useState('')
 
 
@@ -15,7 +15,7 @@ export default function DevSettingsPage() {
     
     setStatus('Setting token...')
     
-    const res = await fetch(`/api/dev/user?userType=${userType}&permissionLevel=${permission}`)
+    const res = await fetch(`/api/dev/user?userType=${userType}&teacherRole=${teacherRole}`)
   
     if (res.ok) {
       setStatus('✅ Token issued and saved by server')
@@ -53,7 +53,7 @@ export default function DevSettingsPage() {
             <div className="relative">
             <select
               value={userType}
-              onChange={(e) => setUserType(e.target.value)}
+              onChange={(e) => setUserType(e.target.value as UserTypeEnum)}
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white/50 backdrop-blur-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer"
             >
               {Object.values(UserTypeEnum)
@@ -71,32 +71,33 @@ export default function DevSettingsPage() {
             </div>
           </div>
         
-          {/* Permission Level Dropdown */}
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Permission Level
-            </label>
-            <div className="relative">
-            <select
-              value={permission}
-              onChange={(e) => setPermission(parseInt(e.target.value))}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white/50 backdrop-blur-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer"
-            >
-              {Object.entries(UserPermission)
-                .filter(([key, value]) => typeof value === "number")
-                .map(([key, value]) => (
-                  <option key={key} value={value}>
-                    {key}
-                  </option>
-                ))}
-            </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+          {/* Teacher permission Level Dropdown */}
+          { userType === "TEACHER" && (
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Teacher Role
+              </label>
+              <div className="relative">
+              <select
+                value={teacherRole}
+                onChange={(e) => setTeacherRole(e.target.value as TeacherRoleEnum)}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white/50 backdrop-blur-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer"
+              >
+                {Object.entries(TeacherRoleEnum)
+                  .map(([key, value]) => (
+                    <option key={key} value={value}>
+                      {key}
+                    </option>
+                  ))}
+              </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Submit Button */}
           <button

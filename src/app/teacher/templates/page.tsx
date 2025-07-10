@@ -9,13 +9,13 @@ import Paginator from "@/components/shared/pagination/Paginator";
 import ViewTemplateItem from "@/components/templates/ViewTemplateItem";
 import SyncTemplateButton from "@/components/templates/SyncTemplatesButton";
 import React, { useEffect, useState } from "react";
-import { UserPermission, UserType } from "@/lib/utils/types";
+import { TeacherRoleEnum } from "@/lib/utils/types";
 import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
 
 export default function TemplateList() {
   
-  const { userType, permissionLevel } = useAuth();
+  const { userType, teacherRole } = useAuth();
   
   const [dbData, setDbData] = useState<{
     templates: Array<{
@@ -39,17 +39,7 @@ export default function TemplateList() {
   
   const [triggerFilter, setTriggerFilter] = useState(false);
   
-  useEffect(() => {
-    if (!triggerFilter) return;
-    setTriggerFilter(false);
-    handleFetch();
-  }, [triggerFilter]);
-  
-  useEffect(() => { 
-    handleFetch();
-  }, [pagination]);
-  
-  function finalizeFetchQuery(): URLSearchParams {
+  function templatesQuery(): URLSearchParams {
 
     // params
     const params = cleanParams({
@@ -61,10 +51,10 @@ export default function TemplateList() {
     
   }
   
-  async function handleFetch () {
+  async function fetchTemplates() {
 
     // fetch
-    const params = finalizeFetchQuery();
+    const params = templatesQuery();
     
     const url = `/api/templates?${params}`;
     const res = await fetch(url);
@@ -77,8 +67,18 @@ export default function TemplateList() {
   async function syncTemplates() {
     const url = `/api/templates/sync`;
     const res = await fetch(url, {method: "POST"});
-    handleFetch();
+    fetchTemplates();
   }
+
+  useEffect(() => {
+    if (!triggerFilter) return;
+    setTriggerFilter(false);
+    fetchTemplates();
+  }, [triggerFilter]);
+  
+  useEffect(() => { 
+    fetchTemplates();
+  }, [pagination]);
   
   return (
     <>
@@ -102,7 +102,7 @@ export default function TemplateList() {
         </div>
         {/* sync button. shown only to admins */}
         {
-          permissionLevel === UserPermission.MAX && (
+          teacherRole === TeacherRoleEnum.ADMIN && (
             <SyncTemplateButton syncTemplates={syncTemplates} />
           )
         }

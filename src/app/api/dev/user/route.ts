@@ -1,28 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { UserPermission, UserType } from '@/lib/utils/types';
-import { cookies } from 'next/headers';
+import { TeacherRole, UserType } from '@/lib/utils/types';
 import jwt from 'jsonwebtoken';
 import { prisma } from '@/lib/prisma';
+
 
 export async function GET(req: NextRequest) {
   
   const searchParams = req.nextUrl.searchParams;
   
-  let userId: string | null = null;
+  const userId = (await prisma.user.findFirst())?.userID;
   const userType = searchParams.get("userType") as UserType;
-  const permissionLevel = Number.parseInt(searchParams.get("permissionLevel") + "") as UserPermission;
-
-  // Fetch the first user depending on the type
-  if (userType === "TEACHER") {
-    const user = await prisma.teacher.findFirst({ include: { user: true } });
-    userId = user?.user.userID || null;
-  } else if (userType === "PARENT") {
-    const user = await prisma.parent.findFirst({ include: { user: true } });
-    userId = user?.user.userID || null;
-  } else if (userType === "STUDENT") {
-    const user = await prisma.student.findFirst({ include: { user: true } });
-    userId = user?.user.userID || null;
-  }
+  const teacherRole = searchParams.get("teacherRole")  as TeacherRole;
+  
 
   if (!userId) {
     return NextResponse.json(
@@ -34,8 +23,8 @@ export async function GET(req: NextRequest) {
   // Create JWT payload
   const payload = {
     userId: userId,
-    userType,
-    permissionLevel
+    userType: userType,
+    teacherRole: teacherRole
   };
   
   console.log(payload);
