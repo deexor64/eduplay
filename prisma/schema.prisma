@@ -25,7 +25,7 @@ model User {
   userID        String    @id @default(uuid())
   firstName     String
   lastName      String
-  phoneNumber   String
+  phoneNumber   String?
   dateOfBirth   DateTime?
   password      String
   status        UserStatus    @default(PENDING)
