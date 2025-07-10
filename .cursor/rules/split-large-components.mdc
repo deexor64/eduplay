@@ -1,0 +1,19 @@
+---
+description: All page components should be broken down into subcomponents by UI/logic responsibility.
+alwaysApply: false
+---
+When generating or editing a page component, follow these rules:
+
+- Identify distinct **sections** of the UI (e.g. header, sidebar, main content, forms) and extract each into its own subcomponent.
+- Place subcomponents **inside the same file** if they are tightly coupled and small.
+- If a subcomponent is reusable or long, **move it to the `components/` folder** with its own file.
+- Subcomponents should follow this naming pattern: `ComponentNameSectionName`, e.g. `DashboardHeader`, `UserCardForm`.
+- Avoid putting business logic, side effects, and rendering logic in the same function — separate concerns where possible.
+- A page should only contain:
+  - Data fetching
+  - High-level layout
+  - Subcomponent composition
+
+Make sure no single component exceeds **100 lines**, unless absolutely necessary.
+
+The goal is to make each component easier to read, reuse, and maintain.

@@ -1,0 +1,23 @@
+---
+description: Prefer simple, easy-to-understand TypeScript and JavaScript. Use advanced features only if absolutely needed for large or complex code.
+globs:
+  - app/**/*.tsx
+  - components/**/*.tsx
+  - lib/**/*.ts
+alwaysApply: true
+---
+
+When writing or refactoring code, follow these guidelines:
+
+- Avoid using advanced TypeScript features such as:
+  - Generics
+  - Utility types (e.g. `Partial`, `Pick`, `Exclude`)
+  - Conditional types
+  - Complex mapped types
+- Avoid advanced JavaScript features such as:
+  - Optional chaining (`?.`)
+- Prefer simple function declarations, explicit type annotations, and straightforward control flow.
+- Only introduce advanced features if the simpler code becomes significantly larger or harder to maintain.
+- Always prioritize readability and ease of understanding for developers with basic JavaScript/TypeScript knowledge.
+
+The goal is to keep code accessible and maintainable, avoiding unnecessary complexity.
