@@ -4,7 +4,7 @@ import { UserType } from '@/lib/utils/types';
 
 export default function Root() {
   
-  const users: UserType[] = ["ADMIN", "TEACHER", "STUDENT", "PARENT"];
+  const users: UserType[] = ["TEACHER", "STUDENT", "PARENT"];
 
   function getDisplayText(role: string): string {
     return role.charAt(0).toUpperCase() + role.slice(1) + " Login";

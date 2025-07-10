@@ -13,10 +13,7 @@ export async function GET(req: NextRequest) {
   const permissionLevel = Number.parseInt(searchParams.get("permissionLevel") + "") as UserPermission;
 
   // Fetch the first user depending on the type
-  if (userType === "ADMIN") {
-    const user = await prisma.admin.findFirst({ include: { user: true } });
-    userId = user?.user.userID || null;
-  } else if (userType === "TEACHER") {
+  if (userType === "TEACHER") {
     const user = await prisma.teacher.findFirst({ include: { user: true } });
     userId = user?.user.userID || null;
   } else if (userType === "PARENT") {

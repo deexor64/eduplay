@@ -1,39 +1,35 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '@/lib/prisma';
 import { ResType, UserType } from '@/lib/utils/types';
-
-const prisma = new PrismaClient();
-
-// dynamic user handler
-function getUserHandler(userListType: any) { 
-  const map: any = {
-    admin: prisma.admin,
-    teacher: prisma.teacher,
-    parent: prisma.parent,
-    student: prisma.student,
-  } as const;
-
-  return map[userListType];
-}
 
 export default async function usersService(data: any):
 Promise<ResType> {
   
   // query
+  const userListHandler: any = {
+    teacher: prisma.teacher,
+    parent: prisma.parent,
+    student: prisma.student,
+  } as const;
+  
   let whereClause: any = { // undefined values are ignored in where clause
     indexNumber: data.indexNumber,
-    email: data.email,
+    grade: data.grade,
+    class: data.class,
     user: {
-      fullName: data.fullName,
+      firstName: (data.fullName ? data.fullName.split(" ")[0] : undefined),
+      lastName: (data.fullName ? data.fullName.split(" ")[1] : undefined),
       status: data.status,
     }
   };
   
   let selectClause: any = {
     indexNumber: true,
-    email: true,
+    grade: true,
+    class: true,
     user: {
       select: {
-        fullName: true,
+        firstName: true,
+        lastName: true,
         displayPicUrl: true,
         status: true
       },
@@ -42,16 +38,21 @@ Promise<ResType> {
   
   if (data.userListType === "parent") {
     delete selectClause.indexNumber;
+    delete selectClause.grade;
+    delete selectClause.class;
+  } else if (data.userListType === "teacher") {
+    delete selectClause.grade;
+    delete selectClause.class;
   }
 
   const existing = {
-    users: await getUserHandler(data.userListType).findMany({
+    users: await userListHandler[data.userListType].findMany({
       where: whereClause,
       select: selectClause,
       skip: (data.page - 1) * data.limit,
       take: data.limit,
     }),
-    total: await getUserHandler(data.userListType).count({
+    total: await userListHandler[data.userListType].count({
       where: whereClause,
     })
   }

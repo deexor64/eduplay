@@ -17,9 +17,11 @@ import {
 interface ViewUserItemProps {
   itemData: {
     indexNumber?: string;
-    email: string;
+    grade?: number,
+    class?: string,
     user: {
-      fullName: string;
+      firstName: string;
+      lastName: string;
       status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED" | string;
       displayPicUrl: string;
     }
@@ -31,9 +33,9 @@ export default function ViewUserItem(props: ViewUserItemProps) {
 
   const handleAction = useCallback(
     (action: string) => {
-      alert(`Action "${action}" clicked for user ${itemData.user.fullName}`);
+      alert(`Action "${action}" clicked for user ${itemData.user.firstName}`);
     },
-    [itemData.user.fullName]
+    [itemData.user.firstName]
   );
 
   return (
@@ -56,11 +58,14 @@ export default function ViewUserItem(props: ViewUserItemProps) {
           className="rounded border border-gray-300 bg-white"
         />
         <div>
-          <div className="text-lg font-semibold text-purple-800">{itemData.user.fullName}</div>
-          <div className="text-sm text-yellow-600">
-            {`Grade ${"temporary"} • Index ${itemData.indexNumber}`}
+          <div className="text-lg font-semibold text-purple-800">
+            {`${itemData.user.firstName} ${itemData.user.lastName}`}
           </div>
-          <div className="text-xs text-gray-600">{itemData.email}</div>
+          {
+            props.itemData.grade && <div className="text-sm text-yellow-600">
+            {`${"Index No " + itemData.indexNumber + "    "}Grade ${props.itemData.grade} - ${props.itemData.class}`}
+          </div>
+          }
         </div>
       </div>
 
@@ -77,23 +82,24 @@ function StatusBadge({ status }: { status: string }) {
     PENDING: "bg-yellow-400",
     ACTIVE: "bg-green-500",
     INACTIVE: "bg-gray-400",
+    DELETED: "bg-red-100",
     SUSPENDED: "bg-red-500",
   };
   return (
     <div className="flex items-center gap-2 mt-1">
+      <span className="text-xs font-semibold uppercase text-gray-700">{status}</span>
       <span
         className={`inline-block w-3 h-3 rounded-full ${statusColors[status] || "bg-gray-300"}`}
         aria-label={`Status: ${status}`}
         title={`Status: ${status}`}
       />
-      <span className="text-xs font-semibold uppercase text-gray-700">{status}</span>
     </div>
   );
 }
 
 
 function ActionButtons({ status, onAction }: {
-  status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED";
+  status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED" | "DELETED";
   onAction: (action: string) => void;
 }) {
   const actionsMap: Record<string, { label: string; icon: any }[]> = {
@@ -112,6 +118,9 @@ function ActionButtons({ status, onAction }: {
     SUSPENDED: [
       { label: "Activate", icon: faCheck },
       { label: "Delete", icon: faTimes },
+    ],
+    DELETED: [
+      { label: "Activate", icon: faCheck }
     ],
   };
 

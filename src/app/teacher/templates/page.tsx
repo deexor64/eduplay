@@ -1,13 +1,12 @@
 "use client";
 
-import Title from "@/components/Title";
+import Title from "@/components/shared/headings/Title";
 import FilterWrapper from "@/components/shared/filter/FilterWrapper";
 import InputFilter from "@/components/shared/filter/InputFilter";
 import OptionFilter from "@/components/shared/filter/OptionFilter";
 import FilterControls from "@/components/shared/filter/FilterControls";
 import Paginator from "@/components/shared/pagination/Paginator";
-import ItemListWrapper from "@/components/shared/item-list/ItemListWrapper";
-import ViewTemplateItem from "@/components/shared/item-list/ViewTemplateItem";
+import ViewTemplateItem from "@/components/templates/ViewTemplateItem";
 import SyncTemplateButton from "@/components/templates/SyncTemplatesButton";
 import React, { useEffect, useState } from "react";
 import { UserPermission, UserType } from "@/lib/utils/types";
@@ -110,13 +109,13 @@ export default function TemplateList() {
       </FilterWrapper>
       
       {/* Info */}
-      <ItemListWrapper>
+      <div className="w-full table-auto text-left">
         {
           dbData.templates.map(function (item) {
             return <ViewTemplateItem itemData={item} key={item.templateCode}/>;
           })
         }
-      </ItemListWrapper>
+      </div>
   
       {/* paginator */}
       <Paginator totalItems={dbData.total} pagination={pagination} setPagination={setPagination}/>

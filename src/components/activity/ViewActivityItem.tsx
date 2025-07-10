@@ -4,11 +4,11 @@
 "use client";
 
 import Image from "next/image";
-import ImagePreview from "@/components/popups/ImagePreview";
+import ImagePreview from "@/components/shared/popups/ImagePreview";
 import { useState } from "react";
 import Link from "next/link";
 
-interface ViewLessonItemProps {
+interface ViewActivityItemProps {
   itemData: {
     sctivityId: string,
     name: string,
@@ -22,7 +22,7 @@ interface ViewLessonItemProps {
   }
 }
 
-export function CreateLessonItem(props: ViewLessonItemProps) {
+export function ViewActivityItem(props: ViewActivityItemProps) {
   
   const [showPreview, setShowPreview] = useState(false);
   

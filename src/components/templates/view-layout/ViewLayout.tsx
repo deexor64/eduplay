@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { dmmfToRuntimeDataModel } from "@prisma/client/runtime/library";
 import cleanParams from "@/lib/utils/cleanParams";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
+import useAuth from "@/hooks/useAuth";
 
 type ViewLayoutProps = {
   setActivityData: React.Dispatch<React.SetStateAction<any>>,
@@ -19,8 +20,9 @@ type ViewLayoutProps = {
 
 export default function ViewLayout(props: ViewLayoutProps) {
   
+  const { userType, permissionLevel } = useAuth();
+  
   const searchParams = useSearchParams();
-  const userType = searchParams.get("userType") as UserType;
   const viewMode = searchParams.get("viewMode") as TemplateViewMode;
   const templateCode = searchParams.get("templateCode") as string;
   
@@ -49,7 +51,7 @@ export default function ViewLayout(props: ViewLayoutProps) {
     const params = finalizeFetchQuery();
     
     const url = viewMode === "SAMPLE" ? `/api/activities/sample?${params}` 
-      : `/api/activities/${templateCode}?${params}`;
+      : `/api/activities/${templateCode}`;
     const res = await fetch(url);
     
     const resData = await res.json();
@@ -129,24 +131,35 @@ export default function ViewLayout(props: ViewLayoutProps) {
   
   return (
     
-    <div className="max-w-6xl mx-auto p-4 pb-14 bg-blue-100">
-      
-      {/* activity title */}
-      <ActivityTitle viewMode={viewMode} templateCode={templateCode}>
-        { dbData.title }</ActivityTitle>
-
-      {/* cover image */}
-      <CoverImage coverImageUrl={ dbData.coverImageUrl } />
-
-      {/* description */}
-      <Description>{ dbData.description }</Description>
-
-      {/* activity content */}
-      {props.children}
-      
-      {/* footer */}
-      <Footer viewMode={viewMode} validateTemplate={props.validateResult}/>
-      
+    <div
+      className="fixed inset-0 bg-cover bg-center"
+      style={{ backgroundImage: "url('/images/activity-background.jpg')", 
+        backgroundAttachment: "fixed"}} >
+      <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-14 backdrop-blur-xs 
+        bg-transparent">
+        
+        
+        {/* cover image */}
+        <CoverImage coverImageUrl={ dbData.coverImageUrl } >
+          
+          {/* activity title */}
+          <ActivityTitle viewMode={viewMode} templateCode={templateCode}>
+            { dbData.title }</ActivityTitle>
+          
+          {/* description */}
+          <Description>{ dbData.description }</Description>
+          
+        </CoverImage>
+  
+        
+  
+        {/* activity content */}
+        {props.children}
+        
+        {/* footer */}
+        <Footer viewMode={viewMode} validateTemplate={props.validateResult}/>
+        
+      </div>
     </div>
   );
 }

@@ -10,8 +10,7 @@ interface ActivityTitleProps {
 export default function ActivityTitle(props: any) {
   
   return (
-    <header className="mb-6 bg-white p-4 rounded-xl shadow-sm sticky 
-      top-2 flex items-center">
+    <header className="mb-6 bg-white p-4 rounded-xl shadow-sm flex items-center">
       
       <h1 className="text-xl font-bold text-gray-800">
       {props.viewMode === "VIEW" ? 

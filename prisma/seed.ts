@@ -22,7 +22,6 @@ async function main() {
         dateOfBirth: faker.date.birthdate(),
         password: faker.internet.password(),
         status: status,
-        displayPicUrl: faker.image.avatar(),
       }
     });
     users.push(user);

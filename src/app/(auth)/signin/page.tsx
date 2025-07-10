@@ -16,7 +16,7 @@ import { useSearchParams } from 'next/navigation';
 import { UserType } from '@/lib/utils/types';
 import cleanParams from '@/lib/utils/cleanParams';
 
-export default function Signup() {
+export default function Signin() {
   
   const searchParams = useSearchParams();
   const userType = searchParams.get("userType") as UserType;

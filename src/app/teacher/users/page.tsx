@@ -1,13 +1,12 @@
 "use client";
 
-import Title from "@/components/Title";
+import Title from "@/components/shared/headings/Title";
 import FilterWrapper from "@/components/shared/filter/FilterWrapper";
 import InputFilter from "@/components/shared/filter/InputFilter";
 import OptionFilter from "@/components/shared/filter/OptionFilter";
 import FilterControls from "@/components/shared/filter/FilterControls";
 import Paginator from "@/components/shared/pagination/Paginator";
-import ItemListWrapper from "@/components/shared/item-list/ItemListWrapper";
-import ViewUserItem from "@/components/shared/item-list/ViewUserItem";
+import ViewUserItem from "@/components/users/ViewUserItem";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 import cleanParams from "@/lib/utils/cleanParams";
@@ -20,9 +19,9 @@ export default function UserList() {
   const [dbData, setDbData] = useState<{
     users: Array<{
       indexNumber?: string,
-      email: string,
       user: {
-        fullName: string,
+        firstName: string,
+        lastName: string,
         displayPicUrl: string,
         status: string
       }
@@ -33,7 +32,6 @@ export default function UserList() {
   const [filter, setFilter] = useState({
     indexNumber: undefined,
     fullName: undefined,
-    email: undefined,
     status: undefined
   });
   
@@ -116,13 +114,13 @@ export default function UserList() {
       </FilterWrapper>
       
       {/* Info */}
-      <ItemListWrapper>
+      <div className="w-full table-auto text-left">
         {
           dbData.users.map(function (item) {
-            return <ViewUserItem itemData={item} key={item.indexNumber + item.email}/>;
+            return <ViewUserItem itemData={item} key={item.indexNumber + item.user.firstName}/>;
           })
         } 
-      </ItemListWrapper>
+      </div>
   
       {/* paginator */}
       <Paginator totalItems={dbData.total} pagination={pagination} setPagination={setPagination}/>

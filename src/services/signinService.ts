@@ -9,7 +9,6 @@ const prisma = new PrismaClient();
 // dynamic user handler
 function getUserHandler(userType: UserType) { 
   const map: any = {
-    ADMIN: prisma.admin,
     TEACHER: prisma.teacher,
     PARENT: prisma.parent,
     STUDENT: prisma.student,
