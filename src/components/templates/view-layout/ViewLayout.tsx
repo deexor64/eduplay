@@ -2,12 +2,10 @@ import ActivityTitle from "./ActivityTitle";
 import CoverImage from "./CoverImage";
 import Footer from "./Footer";
 import Description from "./Description";
-import { TemplateViewMode, UserType } from "@/lib/utils/types";
-import { useEffect, useRef, useState } from "react";
+import { TemplateViewMode } from "@/lib/utils/types";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { dmmfToRuntimeDataModel } from "@prisma/client/runtime/library";
 import cleanParams from "@/lib/utils/cleanParams";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
 import useAuth from "@/hooks/useAuth";
 
 type ViewLayoutProps = {
@@ -20,7 +18,7 @@ type ViewLayoutProps = {
 
 export default function ViewLayout(props: ViewLayoutProps) {
   
-  const { userType, permissionLevel } = useAuth();
+  const { userType, teacherRole } = useAuth();
   
   const searchParams = useSearchParams();
   const viewMode = searchParams.get("viewMode") as TemplateViewMode;
@@ -29,10 +27,10 @@ export default function ViewLayout(props: ViewLayoutProps) {
   // data recieved from server
   const [dbData, setDbData] = useState<{
     title: string,
-    description: string,
+    instructions: string,
     coverImageUrl: string,
     activityData: any,
-  }>({title: "", description: "", coverImageUrl: "", activityData: {}});
+  }>({title: "", instructions: "", coverImageUrl: "", activityData: {}});
   
   function finalizeFetchQuery(): URLSearchParams {
 
@@ -147,7 +145,7 @@ export default function ViewLayout(props: ViewLayoutProps) {
             { dbData.title }</ActivityTitle>
           
           {/* description */}
-          <Description>{ dbData.description }</Description>
+          <Description>{ dbData.instructions }</Description>
           
         </CoverImage>
   
