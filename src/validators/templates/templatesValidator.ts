@@ -1,14 +1,15 @@
-import { z, ZodNumber } from "zod";
-import { ResType, UserPermission } from "@/lib/utils/types";
+import { z } from "zod";
+import { TeacherRoleEnum } from "@/lib/utils/types";
 import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import userTokenValidator from "../shared/userTokenValidator";
+import userTokenChecker from "../../lib/utils/userTokenChecker";
 
 export default function templatesValidator(cookies: RequestCookies, searchParams: URLSearchParams):
 { status: boolean, data: any }  {
   
   // User token validation
   const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenValidator(userToken, ["TEACHER"], UserPermission.MAX);
+  const valid = userTokenChecker(userToken, ["TEACHER"],
+    [TeacherRoleEnum.MASTER, TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER]);
   
   if (!valid.status) return valid;
   

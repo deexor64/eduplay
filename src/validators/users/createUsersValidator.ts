@@ -1,7 +1,4 @@
 import { z } from "zod";
-import { ResType, UserPermission, UserType } from "@/lib/utils/types";
-import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import userTokenValidator from "../shared/userTokenValidator";
 
 export default function createUsersValidator(searchParams:URLSearchParams, formData: any):
 { status: boolean, data: any } {
@@ -11,7 +8,7 @@ export default function createUsersValidator(searchParams:URLSearchParams, formD
   
   // constraints
   let zSearchParams = z.object({
-    userType: z.enum(["ADMIN", "TEACHER", "PARENT", "STUDENT"]),
+    userType: z.enum(["TEACHER", "PARENT", "STUDENT"]),
   });
   
   const parsed_s = zSearchParams.safeParse(Object.fromEntries(searchParams.entries()));

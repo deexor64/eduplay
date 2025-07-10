@@ -1,16 +1,15 @@
-import { z, ZodNumber } from "zod";
+import { z } from "zod";
 import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import { NextResponse } from "next/server";
-import { ResType, UserPermission } from "@/lib/utils/types";
-import jwt from 'jsonwebtoken';
-import userTokenValidator from "@/validators/shared/userTokenValidator";
+import { TeacherRoleEnum } from "@/lib/utils/types";
+import userTokenChecker from "@/lib/utils/userTokenChecker";
 
 export default function usersValidator(cookies: RequestCookies, searchParams: URLSearchParams): 
 { status: boolean, data: any } {
   
   // User token validation
   const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenValidator(userToken, ["TEACHER"], UserPermission.MAX);
+  const valid = userTokenChecker(userToken, ["TEACHER"], 
+    [TeacherRoleEnum.MASTER, TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER]);
   
   if (!valid.status) return valid;
 

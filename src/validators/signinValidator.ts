@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { ResType, UserType } from "@/lib/utils/types";
 
 export default function signinValidator(searchParams: URLSearchParams, formData: any): 
 { status: boolean, data: any } {
@@ -9,7 +8,7 @@ export default function signinValidator(searchParams: URLSearchParams, formData:
   
   // constraints
   const zsearchParams = z.object({
-    userType: z.enum(["ADMIN", "STUDENT", "TEACHER", "PARENT"]),
+    userType: z.enum(["STUDENT", "TEACHER", "PARENT"]),
   })
   .strict();
   

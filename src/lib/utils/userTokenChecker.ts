@@ -1,8 +1,8 @@
 import { TeacherRole, UserType } from "@/lib/utils/types";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-export default function userTokenValidator(userToken: string | undefined,
-  userType: Array<UserType>, teacherRole: Array<TeacherRole>):
+export default function userTokenChecker(userToken: string | undefined,
+  userType: Array<UserType>, teacherRole?: Array<TeacherRole>):
 { status: boolean, data: string | JwtPayload } {
   
   // Token doesn't exists
@@ -21,7 +21,7 @@ export default function userTokenValidator(userToken: string | undefined,
       return { status: false, data: payload };
     }
 
-    if (userType.includes(payload.userType) && !teacherRole.includes(payload.teacherRole)) {
+    if (payload.userType === "TEACHER" && teacherRole && !teacherRole.includes(payload.teacherRole)) {
       return { status: false, data: payload };
     }
     

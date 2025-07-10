@@ -1,5 +1,5 @@
-import { ResType, UserPermission } from "@/lib/utils/types";
-import userTokenValidator from "@/validators/shared/userTokenValidator";
+import { TeacherRoleEnum } from "@/lib/utils/types";
+import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
 
 export default function syncValidator(cookies: RequestCookies):
@@ -7,7 +7,8 @@ export default function syncValidator(cookies: RequestCookies):
   
   // User token validation
   const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenValidator(userToken, ["TEACHER"], UserPermission.MAX);
+  const valid = userTokenChecker(userToken, ["TEACHER"],
+    [TeacherRoleEnum.ADMIN, TeacherRoleEnum.MASTER]);
   
   if (!valid.status) return valid;
 
