@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-kit/core";
-import ViewLayout from "@/components/templates/view-layout/ViewLayout";
+import ViewLayout from "@/components/templates/ViewLayout";
 import { dmmfToRuntimeDataModel } from "@prisma/client/runtime/library";
 
 type BasketItem = {

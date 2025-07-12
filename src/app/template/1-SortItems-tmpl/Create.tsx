@@ -1,6 +1,6 @@
 "use client"
 
-import CreateLayout from "@/components/templates/create-layout/CreateLayout";
+import CreateLayout from "@/components/templates/CreateLayout";
 import { useState } from "react";
 import generateHash  from "@/lib/utils/generateHash";
 
