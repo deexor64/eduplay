@@ -1,9 +1,8 @@
 "use client";
 
+import { ViewActivityProps } from "@/lib/utils/types";
 import { useEffect, useState } from "react";
 import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-kit/core";
-import ViewLayout from "@/components/templates/ViewLayout";
-import { dmmfToRuntimeDataModel } from "@prisma/client/runtime/library";
 
 type BasketItem = {
   type: "text" | "image";
@@ -73,99 +72,106 @@ function DroppableZone(props: { id: string; children: any }) {
 }
 
 
-function SortItems() {
-  
-  // common
-  const [activityData, setActivityData] = useState<Basket[]>([]);
-  
-  // common
-  function buildActivity() {
+function SortItems(props: ViewActivityProps) {
 
+  const { activityData, setResultValidator, setResultGrader, setResultData } = props;
+
+  const [items, setItems] = useState<{
+    [location: string]: { label: string; type: string; value: string }[];
+  }>({ box: [] })
+
+  // Build structure from activityData or reconstruct from resultData
+  useEffect(() => {
+    if (activityData && Array.isArray(activityData)) {
+      buildStructure(activityData);
+    }
+  }, [activityData]);
+
+  function buildStructure(data: any) {
     const initialItems: {
       [location: string]: { label: string; type: string; value: string }[];
     } = { box: [] };
 
-    if (activityData) {
-      activityData.forEach((group: any) => {
-        const basketId = group.title;
-        initialItems[basketId] = [];
+    // Build structure from activityData format
+    data.forEach((group: any) => {
+      const basketId = group.title;
+      initialItems[basketId] = [];
 
-        group.items.forEach((item: any) => {
-          const label = item.label || item.value;
-          initialItems.box.push({
-            label: label,
-            type: item.type,
-            value: item.value,
-          });
+      group.items.forEach((item: any) => {
+        const label = item.label || item.value;
+        initialItems.box.push({
+          label: label,
+          type: item.type,
+          value: item.value,
         });
       });
-    }
-
-    setItems(initialItems);
-    
-  }
-  
-  // common
-  useEffect(() => {
-    buildActivity();
-  }, [activityData]);
-  
-  // common
-  function getResultData() {
-    // under development
-    const workedData: {
-      [key: string]: { label: string; type: string; value: string }[];
-    } = {};
-
-    for (let key in items) {
-      workedData[key] = items[key].map((item) => ({
-        label: item.label,
-        type: item.type,
-        value: item.value,
-      }));
-    }
-    return workedData;
-  }
-  
-  // common
-  function validateResult(): { status: boolean, message: string } {
-    // under development
-    return { status: true, message: "" }
-  }
-  
-  // common
-  function gradeResult() {
-    
-    // under development
-    
-    const workedData = getResultData();
-    let correctCount = 0;
-    let totalGroups = activityData.length;
-
-    activityData.forEach((group: any) => {
-      const correctLabels = group.items.map((item: any) => item.label || item.value);
-      const userLabels = (workedData[group.title] || []).map((i) => i.label);
-
-      const sortedCorrect = [...correctLabels].sort();
-      const sortedUser = [...userLabels].sort();
-
-      if (JSON.stringify(sortedCorrect) === JSON.stringify(sortedUser)) {
-        correctCount += 1;
-      }
     });
-
-    const passed = correctCount === totalGroups;
-    const message = `${passed ? "🎉 Great job! Everything is sorted correctly.\n" :
-      ""}✅ You got ${correctCount} out of ${totalGroups} baskets correct.`;
-
-    return { grading: {},
-      examinerDialog: message };
     
+    setItems(initialItems);
   }
-  
-  const [items, setItems] = useState<{
-    [location: string]: { label: string; type: string; value: string }[];
-  }>({ box: [] })
+
+  // Return resultData in same format as activityData
+  useEffect(() => {
+    setResultData(() => {
+      const resultData: any[] = [];
+      
+      // Convert current items state back to activityData format
+      for (let key in items) {
+        if (key !== 'box') {
+          resultData.push({
+            title: key,
+            items: items[key].map((item) => ({
+              label: item.label,
+              type: item.type,
+              value: item.value,
+            }))
+          });
+        }
+      }
+      
+      return resultData;
+    });
+  }, [items, setResultData]);
+
+  useEffect(() => {
+    setResultValidator(() => {
+      // under development
+      return { status: true, message: "" }
+    });
+  }, [setResultValidator]);
+
+  useEffect(() => {
+    setResultGrader((workedData: any) => {
+      
+      // under development
+    
+      let correctCount = 0;
+      let totalGroups = activityData && Array.isArray(activityData) ? activityData.length : 0;
+
+      if (activityData && Array.isArray(activityData)) {
+        activityData.forEach((group: any) => {
+          const correctLabels = group.items.map((item: any) => item.label || item.value);
+          const userLabels = (workedData[group.title] || []).map((i: any) => i.label);
+
+          const sortedCorrect = [...correctLabels].sort();
+          const sortedUser = [...userLabels].sort();
+
+          if (JSON.stringify(sortedCorrect) === JSON.stringify(sortedUser)) {
+            correctCount += 1;
+          }
+        });
+      }
+
+      const passed = correctCount === totalGroups;
+      const message = `${passed ? "🎉 Great job! Everything is sorted correctly.\n" :
+        ""}✅ You got ${correctCount} out of ${totalGroups} baskets correct.`;
+
+      return { grading: {},
+        examinerDialog: message,
+        impression: passed ? "GOOD" as const : "OKAY" as const };
+      
+    });
+  }, [activityData, setResultGrader]);
 
   function findContainer(label: string): string | null {
     for (let key in items) {
@@ -194,15 +200,35 @@ function SortItems() {
   }
 
   return (
-    <ViewLayout setActivityData={setActivityData} getResultData={getResultData} 
-      validateResult={validateResult} gradeResult={gradeResult}>
-      <DndContext collisionDetection={rectIntersection} onDragEnd={handleDragEnd}>
-        <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Items to Sort</h2>
-          <DroppableZone id="box">
-            <div className="flex flex-wrap gap-4">
-              {items.box &&
-                items.box.map((item) => (
+  
+    <DndContext collisionDetection={rectIntersection} onDragEnd={handleDragEnd}>
+      <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
+        <h2 className="text-xl font-semibold mb-4">Items to Sort</h2>
+        <DroppableZone id="box">
+          <div className="flex flex-wrap gap-4">
+            {items.box &&
+              items.box.map((item) => (
+                <DraggableItem
+                  key={item.label}
+                  id={item.label}
+                  type={item.type}
+                  value={item.value}
+                />
+              ))}
+          </div>
+        </DroppableZone>
+      </section>
+
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        {activityData && Array.isArray(activityData) && activityData.map((group: any) => (
+          <div
+            className="bg-gray-50 border-2 border-dashed border-gray-300 p-4 rounded-xl min-h-[120px]"
+            key={group.title}
+          >
+            <h3 className="text-lg font-semibold mb-2 text-gray-900">{group.title}</h3>
+            <DroppableZone id={group.title}>
+              {items[group.title] &&
+                items[group.title].map((item) => (
                   <DraggableItem
                     key={item.label}
                     id={item.label}
@@ -210,33 +236,12 @@ function SortItems() {
                     value={item.value}
                   />
                 ))}
-            </div>
-          </DroppableZone>
-        </section>
+            </DroppableZone>
+          </div>
+        ))}
+      </section>
+    </DndContext>
 
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-          {activityData.map((group: any) => (
-            <div
-              className="bg-gray-50 border-2 border-dashed border-gray-300 p-4 rounded-xl min-h-[120px]"
-              key={group.title}
-            >
-              <h3 className="text-lg font-semibold mb-2 text-gray-900">{group.title}</h3>
-              <DroppableZone id={group.title}>
-                {items[group.title] &&
-                  items[group.title].map((item) => (
-                    <DraggableItem
-                      key={item.label}
-                      id={item.label}
-                      type={item.type}
-                      value={item.value}
-                    />
-                  ))}
-              </DroppableZone>
-            </div>
-          ))}
-        </section>
-      </DndContext>
-    </ViewLayout>
   );
 }
 

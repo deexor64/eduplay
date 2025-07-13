@@ -1,19 +1,19 @@
+"use client";
+
 import ActivityTitle from "./view-layout/ActivityTitle";
 import CoverImage from "./view-layout/CoverImage";
 import Footer from "./view-layout/Footer";
 import Description from "./view-layout/Description";
+import Narrator from "./view-layout/Narrator";
 import { TemplateViewMode } from "@/lib/utils/types";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
 
+
 type ViewLayoutProps = {
-  setActivityData: React.Dispatch<React.SetStateAction<any>>,
-  getResultData: () => any,
-  validateResult: () => { status: boolean, message: string},
-  gradeResult: () => { grading: {}, examinerDialog: string },
-  children: React.ReactNode
+  viewActivityComponent: React.LazyExoticComponent<React.ComponentType<any>>;
 }
 
 export default function ViewLayout(props: ViewLayoutProps) {
@@ -23,8 +23,10 @@ export default function ViewLayout(props: ViewLayoutProps) {
   const searchParams = useSearchParams();
   const viewMode = searchParams.get("viewMode") as TemplateViewMode;
   const templateCode = searchParams.get("templateCode") as string;
+  const activityCode = searchParams.get("activityCode") as string;
   
-  // data recieved from server
+  // Data recieved from server
+  // This object is used by subcomponents to display the data
   const [dbData, setDbData] = useState<{
     title: string,
     instructions: string,
@@ -49,32 +51,50 @@ export default function ViewLayout(props: ViewLayoutProps) {
     const params = activityQuery();
     
     const url = viewMode === "SAMPLE" ? `/api/activities/sample?${params}` 
-      : `/api/activities/${templateCode}`;
+      : `/api/activities/${activityCode}`;
     const res = await fetch(url);
     
     const resData = await res.json();
     setDbData(resData.data.sampleActivity);
-    props.setActivityData(resData.data.sampleActivity.activityData);
-    
+
   }
-  
+
   useEffect(() => {
     fetchActivity();
   }, []);
+  
+  
+  // For activity -----------------------------------
+
+  const [activityData, setActivityData] = useState<any>();
+  const [resultValidator, setResultValidator] = useState<Function>(
+    () => {return {status: false, message: ""}}
+  );
+  const [resultGrader, setResultGrader] = useState<Function>(
+    () => {return {grading: {}, examinerDialog: "", impression: "HELP"}}
+  );
+  const [resultData, setResultData] = useState<any>();
+
+  useEffect(() => {
+    setActivityData(dbData.activityData);
+  }, [dbData]);
+
+  // ------------------------------------------------
 
   // data sent to server
   const [formData, setFormData] = useState({
     resultData: {}, // from children
     gradingData: {},
   });
+
   
-  function validateForm(): { status: boolean, message: string } {
+  function validateResultForm(): { status: boolean, message: string } {
     
     // under devlopment
   
     // no validations for common template
     // validate lesson template
-    let validT = props.validateResult();
+    let validT = resultValidator();
     if (!validT.status) {
       return validT;
     }
@@ -83,7 +103,7 @@ export default function ViewLayout(props: ViewLayoutProps) {
     
   }
   
-  function finalizeForm(): {form: string, params: URLSearchParams} {
+  function resultForm(): {form: string, params: URLSearchParams} {
     // under devlopment
     
     // form
@@ -107,11 +127,11 @@ export default function ViewLayout(props: ViewLayoutProps) {
     // under devlopment
   
     // validate
-    const valid = validateForm();
+    const valid = validateResultForm();
     console.log(valid);
     
     // submit
-    const form = finalizeForm();
+    const form = resultForm();
     
     const url = `/api/signin?${form.params}`;
     const res = await fetch(url, {
@@ -125,6 +145,10 @@ export default function ViewLayout(props: ViewLayoutProps) {
     const resData = await res.json();
     
   };
+
+
+  // narrator
+  const [showNarrator, setShowNarrator] = useState(false);
   
   
   return (
@@ -133,8 +157,12 @@ export default function ViewLayout(props: ViewLayoutProps) {
       className="fixed inset-0 bg-cover bg-center"
       style={{ backgroundImage: "url('/images/activity-background.jpg')", 
         backgroundAttachment: "fixed"}} >
-      {/* Narrator overlay placeholder */}
-      <div id="narrator-overlay" className="absolute inset-0 w-full h-full pointer-events-none z-10" />
+      
+      {/* Narrator overlay */}
+      <Narrator isVisible={showNarrator} zIndex={50}>
+        {/* Narrator content will go here */}
+      </Narrator>
+      
       <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-4 backdrop-blur-xs 
         bg-transparent">
         
@@ -152,12 +180,21 @@ export default function ViewLayout(props: ViewLayoutProps) {
         </CoverImage>
   
         
-  
         {/* activity content */}
-        {props.children}
+        {activityData ? <props.viewActivityComponent 
+          activityData={activityData} 
+          setResultValidator={setResultValidator} 
+          setResultGrader={setResultGrader} 
+          setResultData={setResultData} /> 
+          : (
+            <div className="flex items-center justify-center p-8">
+              <div className="text-lg text-gray-600">Loading activity data...</div>
+            </div>
+          )
+        }
         
         {/* footer */}
-        <Footer viewMode={viewMode} validateTemplate={props.validateResult}/>
+        <Footer viewMode={viewMode} validateTemplate={resultValidator}/>
         
       </div>
     </div>
