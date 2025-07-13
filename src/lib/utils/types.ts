@@ -51,5 +51,5 @@ export interface ViewActivityProps {
 export interface CreateActivityProps {
   setActivityValidator: React.Dispatch<React.SetStateAction<(() => { status: boolean, message: string})>>,
   setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
-  setActivityFinerlizer: React.Dispatch<React.SetStateAction<((fileUrlMap: Map<string, string> | false) => any)>>,
+  setActivityFinerlizer: React.Dispatch<React.SetStateAction<((fileUrlMap: Map<string, string> | false) => string)>>,
 }

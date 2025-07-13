@@ -36,11 +36,11 @@ export default function CreateLayout(props: CreateLayoutProps) {
   // But only the template knows how to replace the file hashes with the actual urls
   // So we need to upload files first and then pass the media files urls 
   // back to the template and let it replace the file hashes with the actual urls
-  // Then it sends the valid activity info as any data structure(depends on 
+  // Then it sends the valid activity info as json string (json structure depends on 
   // implementation of individual template)
   // If set false activity data is output without replacing filehashes
   const [activityFinerlizer, setActivityFinerlizer] = useState<Function>(
-    (fileUrlMap: Map<string, File> | false): any => {}
+    (fileUrlMap: Map<string, File> | false): string => {return ""}
   );
 
   // ------------------------------------------------
@@ -56,10 +56,12 @@ export default function CreateLayout(props: CreateLayoutProps) {
     templateCode: templateCode,
     title: "",
     instructions: "",
-    activityData: undefined,
+    activityData: "",
     options: {
       timeLimit: 0,
-      isGraded: false
+      isGraded: false,
+      grade: 1,
+      difficulty: 1,
     }
   });
   

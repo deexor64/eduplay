@@ -2,6 +2,7 @@ import { z } from "zod";
 import { TeacherRoleEnum } from "@/lib/utils/types";
 import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
 import userTokenChecker from "@/lib/utils/userTokenChecker";
+import { JwtPayload } from "jsonwebtoken";
 
 export default function createActivityValidator(cookies: RequestCookies, formData: any): 
 { status: boolean, data: any } {
@@ -12,19 +13,22 @@ export default function createActivityValidator(cookies: RequestCookies, formDat
     [TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER]);
   
   if (!valid.status) return valid;
+
+  // get userID from token
+  const userID = (valid.data as JwtPayload).userID as string;
   
   // constraints
   const zFormData = z.object({
     templateCode: z.string(),
     title: z.string(),
-    coverImageUrl: z.string(),
-    description: z.string(),
+    instructions: z.string(),
     activityData: z.string(),
-    options: z.string().transform((val) => JSON.parse(val))
-      .pipe(z.object({
+    options: z.object({
         timeLimit: z.number().min(0),
         isGraded: z.boolean(),
-      }))
+        grade: z.number().min(1).max(5).optional(),
+        difficulty: z.number().min(0).max(10).optional(),
+      })
   }).strict()
   
   const parsed_f = zFormData.safeParse(formData);
@@ -33,6 +37,6 @@ export default function createActivityValidator(cookies: RequestCookies, formDat
     return { status: false, data: parsed_f.error.message }
   }
 
-  return { status: true, data: parsed_f.data}
+  return { status: true, data: { ...parsed_f.data, userID: userID }}
   
 }

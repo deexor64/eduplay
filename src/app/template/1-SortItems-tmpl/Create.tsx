@@ -45,12 +45,12 @@ export default function SortItems(props: CreateActivityProps) {
   // common
   useEffect(() => {
     setActivityFinerlizer(() => {
-      return (mediaFileUrls: Map<string, string> | false): any => {
+      return (mediaFileUrls: Map<string, string> | false): string => {
     
         // Deep copy baskets to avoid mutating state
         const updatedBaskets: Basket[] = JSON.parse(JSON.stringify(baskets));
     
-        if (!mediaFileUrls) return updatedBaskets;
+        if (!mediaFileUrls) return JSON.stringify(updatedBaskets);
       
         // Replace file hashes with actual urls
         for (let basket of updatedBaskets) {
@@ -61,7 +61,7 @@ export default function SortItems(props: CreateActivityProps) {
           }
         }
       
-        return updatedBaskets;
+        return JSON.stringify(updatedBaskets);
     
       }
     });

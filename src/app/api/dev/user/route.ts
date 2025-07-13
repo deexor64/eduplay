@@ -3,17 +3,26 @@ import { TeacherRole, UserType } from '@/lib/utils/types';
 import jwt from 'jsonwebtoken';
 import { prisma } from '@/lib/prisma';
 
+const usersHandler: any = {
+  TEACHER: prisma.teacher,
+  PARENT: prisma.parent,
+  STUDENT: prisma.student,
+} as const;
 
 export async function GET(req: NextRequest) {
   
   const searchParams = req.nextUrl.searchParams;
   
-  const userId = (await prisma.user.findFirst())?.userID;
   const userType = searchParams.get("userType") as UserType;
+  const userID = (await usersHandler[userType].findFirst({
+    select: {
+      userID: true,
+    }
+  }))?.userID as string;
   const teacherRole = searchParams.get("teacherRole")  as TeacherRole;
   
 
-  if (!userId) {
+  if (!userID) {
     return NextResponse.json(
       { status: false, resType: "log", data: "No user found" },
       { status: 404 }
@@ -22,7 +31,7 @@ export async function GET(req: NextRequest) {
 
   // Create JWT payload
   const payload = {
-    userId: userId,
+    userID: userID,
     userType: userType,
     teacherRole: teacherRole
   };

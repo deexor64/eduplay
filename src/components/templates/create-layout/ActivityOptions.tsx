@@ -44,6 +44,36 @@ export default function ActivityOptions(props: ActivityOptionsProps) {
           }}
         />
       </div>
+
+      {/* grade */}
+      <div className="flex flex-row justify-between items-center gap-4">
+        <label className="block font-semibold text-gray-700">Recommended grade</label>
+        <input
+          type="number"
+          min={1}
+          max={5}
+          className="flex-1 p-3 border border-gray-300 rounded-lg bg-white/80 backdrop-blur transition-all duration-300 focus:border-blue-500 focus:outline-none focus:bg-white focus:shadow-md"
+          placeholder="Grade 1, 2, 3, 4, 5"
+          onChange={function (e) { 
+            setOptions("grade", Number.parseInt(e.target.value));
+          }}
+        />
+      </div>
+
+      {/* difficulty */}
+      <div className="flex flex-row justify-between items-center gap-4">
+        <label className="block font-semibold text-gray-700">Difficulty</label>
+        <input
+          type="number"
+          min={0}
+          max={10}
+          className="flex-1 p-3 border border-gray-300 rounded-lg bg-white/80 backdrop-blur transition-all duration-300 focus:border-blue-500 focus:outline-none focus:bg-white focus:shadow-md"
+          placeholder="Difficulty 0 - 10"
+          onChange={function (e) { 
+            setOptions("difficulty", Number.parseInt(e.target.value));
+          }}
+        />
+      </div>
       
     </section>
   )

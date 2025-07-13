@@ -88,15 +88,14 @@ model Parent {
 model Activity {
   activityID    String   @id @default(uuid())
   title         String
-  coverImageUrl String
   instructions  String
   activityData  String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   isGraded      Boolean  @default(false)
   timeLimit     Int      @default(0)
-  grade         Int
-  difficulty    Int
+  grade         Int      @default(1)
+  difficulty    Int      @default(1)
 
   templateCode String
   template     Template @relation("activityTemplate", fields: [templateCode], references: [templateCode])

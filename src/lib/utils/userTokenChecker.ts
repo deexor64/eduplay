@@ -21,11 +21,11 @@ export default function userTokenChecker(userToken: string | undefined,
       return { status: false, data: payload };
     }
 
-    if (payload.userType === "TEACHER" && teacherRole && !teacherRole.includes(payload.teacherRole)) {
+    if (payload.userType === "TEACHER" && (!teacherRole || !teacherRole.includes(payload.teacherRole))) {
       return { status: false, data: payload };
     }
     
-    return { status: true, data: "Unauthorized" };
+    return { status: true, data: payload };
     
   } catch (err) {
     
