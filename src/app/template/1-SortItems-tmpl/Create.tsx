@@ -1,14 +1,20 @@
 "use client"
 
-import CreateLayout from "@/components/templates/CreateLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import generateHash  from "@/lib/utils/generateHash";
+import { CreateActivityProps } from "@/lib/utils/types";
 
-export default function SortItems() {
-  
+export default function SortItems(props: CreateActivityProps) {
+
+  const { setActivityValidator, setMediaFiles, setActivityFinerlizer } = props;
+
+  const [baskets, setBaskets] = useState<Basket[]>([
+    { title: "", items: [{ type: "text", value: "" }] },
+  ]);
+
   // common
-  function validateActivity() {
-    
+  useEffect(() => {
+    setActivityValidator(() => {
     for (let basket of baskets) {
       if (!basket.title.trim()) {
         return { status: false, message: "Each basket must have a title." };
@@ -20,10 +26,12 @@ export default function SortItems() {
       }
     }
     return { status: true, message: "" };
-  }
+  });
+  }, [baskets]);
   
   // common
-  function finalizeActivity(mediaFileUrls: Map<string, string>): string {
+  useEffect(() => {
+    setActivityFinerlizer((mediaFileUrls: Map<string, string>): any => {
     
     // Deep copy baskets to avoid mutating state
     const updatedBaskets: Basket[] = JSON.parse(JSON.stringify(baskets));
@@ -37,13 +45,12 @@ export default function SortItems() {
       }
     }
   
-    return JSON.stringify(updatedBaskets);
+    return updatedBaskets;
 
-  }
+  });
+  }, [baskets]);
   
-  // common
-  const [mediaFiles, setMediaFiles] = useState<Map<string, File>>(new Map());
-  
+
   type BasketItem = {
     type: "text" | "image";
     value: string;
@@ -55,9 +62,8 @@ export default function SortItems() {
     items: BasketItem[];
   };
 
-  const [baskets, setBaskets] = useState<Basket[]>([
-    { title: "", items: [{ type: "text", value: "" }] },
-  ]);
+
+  const [itemImages, setItemImages] = useState<Map<string, File>>(new Map());
 
   function addBasket() {
     const updatedBaskets = baskets.concat({
@@ -119,7 +125,16 @@ export default function SortItems() {
   async function handleFileChange(basketIndex: number, itemIndex: number, file: File | null): Promise<void> {
     if (file) {
       const fileHash = await generateHash(file.name);
-      setMediaFiles(new Map(mediaFiles.set(fileHash, file)));
+      setMediaFiles((prev) => {
+        const newMap = new Map(prev);
+        newMap.set(fileHash, file);
+        return newMap;
+      });
+      setItemImages((prev) => {
+        const newMap = new Map(prev);
+        newMap.set(fileHash, file);
+        return newMap;
+      });
       const updated = baskets.slice();
       updated[basketIndex].items[itemIndex].value = fileHash;
       setBaskets(updated);
@@ -128,134 +143,128 @@ export default function SortItems() {
   
   
   return (
-    
-  <CreateLayout templateTitle= {"Sort Items"} validateActivity={validateActivity} 
-    activityMediaFiles={mediaFiles} finalizeActivity={finalizeActivity}>
-      
-      <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">
-        <h2 className="text-lg font-semibold mb-4">Define Baskets</h2>
+     
+    <section className="mb-6 bg-white p-4 rounded-xl shadow-sm">
+      <h2 className="text-lg font-semibold mb-4">Define Baskets</h2>
 
-        <div className="flex flex-col gap-6">
-          {baskets.map(function (basket: Basket, index: number) {
-            return (
-              <div key={index} className="bg-slate-100 p-4 rounded-xl border border-slate-300">
-                <div className="flex justify-between items-center gap-2 mb-2">
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white mb-4 text-lg"
-                    placeholder={"Basket " + (index + 1) + " Title "}
-                    value={basket.title}
-                    required
-                    onChange={function (e) {
-                      handleTitleChange(index, e.target.value);
-                    }}
-                  />
-                  <button
-                    className="bg-transparent border-none text-red-500 text-2xl cursor-pointer hover:text-red-600"
-                    onClick={function () {
-                      deleteBasket(index);
-                    }}
+      <div className="flex flex-col gap-6">
+        {baskets.map(function (basket: Basket, index: number) {
+          return (
+            <div key={index} className="bg-slate-100 p-4 rounded-xl border border-slate-300">
+              <div className="flex justify-between items-center gap-2 mb-2">
+                <input
+                  type="text"
+                  className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white mb-4 text-lg"
+                  placeholder={"Basket " + (index + 1) + " Title "}
+                  value={basket.title}
+                  required
+                  onChange={function (e) {
+                    handleTitleChange(index, e.target.value);
+                  }}
+                />
+                <button
+                  className="bg-transparent border-none text-red-500 text-2xl cursor-pointer hover:text-red-600"
+                  onClick={function () {
+                    deleteBasket(index);
+                  }}
+                >
+                  🗑️
+                </button>
+              </div>
+
+              {basket.items.map(function (item: BasketItem, itemIdx: number) {
+                return (
+                  <div
+                    key={itemIdx}
+                    className="flex items-start justify-between gap-2 mb-4"
                   >
-                    🗑️
-                  </button>
-                </div>
-
-                {basket.items.map(function (item: BasketItem, itemIdx: number) {
-                  return (
-                    <div
-                      key={itemIdx}
-                      className="flex items-start justify-between gap-2 mb-4"
-                    >
-                      {item.type === "text" ? (
+                    {item.type === "text" ? (
+                      <input
+                        type="text"
+                        className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white"
+                        placeholder={"Item " + (itemIdx + 1) + " Text"}
+                        value={item.value}
+                        required
+                        onChange={function (e) {
+                          handleItemChange(index, itemIdx, e.target.value);
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full">
                         <input
                           type="text"
-                          className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white"
-                          placeholder={"Item " + (itemIdx + 1) + " Text"}
-                          value={item.value}
+                          className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white mb-2"
+                          placeholder={"Item " + (itemIdx + 1) + " Image Label"}
+                          value={item.label || ""}
                           required
                           onChange={function (e) {
-                            handleItemChange(index, itemIdx, e.target.value);
+                            handleLabelChange(index, itemIdx, e.target.value);
                           }}
                         />
-                      ) : (
-                        <div className="w-full">
+
+                        {!item.value && (
                           <input
-                            type="text"
+                            type="file"
+                            accept="image/*"
                             className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white mb-2"
-                            placeholder={"Item " + (itemIdx + 1) + " Image Label"}
-                            value={item.label || ""}
                             required
                             onChange={function (e) {
-                              handleLabelChange(index, itemIdx, e.target.value);
+                              const file = e.target.files ? e.target.files[0] : null;
+                              handleFileChange(index, itemIdx, file);
                             }}
                           />
+                        )}
 
-                          {!item.value && (
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white mb-2"
-                              required
-                              onChange={function (e) {
-                                const file = e.target.files ? e.target.files[0] : null;
-                                handleFileChange(index, itemIdx, file);
-                              }}
+                        {item.value && (
+                          <div className="mt-2">
+                            <img
+                              src={URL.createObjectURL(itemImages.get(item.value)!)}
+                              alt={item.label || "Item " + (itemIdx + 1)}
+                              className="h-[1in] object-contain rounded-md shadow border"
                             />
-                          )}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
-                          {item.value && (
-                            <div className="mt-2">
-                              <img
-                                src={URL.createObjectURL(mediaFiles.get(item.value)!)}
-                                alt={item.label || "Item " + (itemIdx + 1)}
-                                className="h-[1in] object-contain rounded-md shadow border"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      )}
+                    <button
+                      className="bg-transparent border-none text-red-500 text-2xl cursor-pointer hover:text-red-600 mt-1"
+                      onClick={function () {
+                        deleteItem(index, itemIdx);
+                      }}
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                );
+              })}
 
-                      <button
-                        className="bg-transparent border-none text-red-500 text-2xl cursor-pointer hover:text-red-600 mt-1"
-                        onClick={function () {
-                          deleteItem(index, itemIdx);
-                        }}
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  );
-                })}
-
-                <div className="flex gap-2 mt-2">
-                  <button
-                    className="font-semibold py-2 px-6 rounded-lg transition bg-blue-500 text-white hover:bg-blue-600"
-                    onClick={function () {
-                      addItemToBasket(index, "text");
-                    }}
-                  >
-                    + Add Text
-                  </button>
-                  <button
-                    className="font-semibold py-2 px-6 rounded-lg transition bg-blue-500 text-white hover:bg-blue-600"
-                    onClick={function () {
-                      addItemToBasket(index, "image");
-                    }}
-                  >
-                    + Add Image
-                  </button>
-                </div>
+              <div className="flex gap-2 mt-2">
+                <button
+                  className="font-semibold py-2 px-6 rounded-lg transition bg-blue-500 text-white hover:bg-blue-600"
+                  onClick={function () {
+                    addItemToBasket(index, "text");
+                  }}
+                >
+                  + Add Text
+                </button>
+                <button
+                  className="font-semibold py-2 px-6 rounded-lg transition bg-blue-500 text-white hover:bg-blue-600"
+                  onClick={function () {
+                    addItemToBasket(index, "image");
+                  }}
+                >
+                  + Add Image
+                </button>
               </div>
-            );
-          })}
-        </div>
-
-        <button className="font-semibold py-2 px-6 rounded-lg transition bg-green-500 text-white hover:bg-green-600 mt-4" onClick={addBasket}>
-          + Add Basket
-        </button>
-      </section>
-      
-    </CreateLayout>
+            </div>
+          );
+        })}
+      </div>
+      <button className="font-semibold py-2 px-6 rounded-lg transition bg-green-500 text-white hover:bg-green-600 mt-4" onClick={addBasket}>
+        + Add Basket
+      </button>
+    </section>
     
   );
 }

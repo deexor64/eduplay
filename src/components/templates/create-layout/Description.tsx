@@ -8,7 +8,7 @@ export default function Description(props: DescriptionProps) {
     props.setFormData(function (prev: any) { 
       return { 
         ...prev, 
-        description: description.trim() 
+        instructions: description.trim() 
       } 
     });
   }

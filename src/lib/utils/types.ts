@@ -38,3 +38,18 @@ export type ResType = {
   resDataType: "message" | "data" | "log" | "error" | "warning" | "success",
   data: any
 }
+
+// templates props
+export interface ViewActivityProps {
+  activityData: any;
+  setResultValidator: React.Dispatch<React.SetStateAction<(() => { status: boolean, message: string})>>,
+  setResultData: React.Dispatch<React.SetStateAction<() => any>>,
+  setResultGrader: React.Dispatch<React.SetStateAction<((workedData: any) => 
+    { grading: any, examinerDialog: string, impression: "HELP" | "OKAY" | "GOOD"})>>,
+}
+
+export interface CreateActivityProps {
+  setActivityValidator: React.Dispatch<React.SetStateAction<(() => { status: boolean, message: string})>>,
+  setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
+  setActivityFinerlizer: React.Dispatch<React.SetStateAction<((fileUrlMap: Map<string, string>) => any)>>,
+}

@@ -1,6 +1,5 @@
 import TemplateTitle from "./create-layout/TemplateTitle";
 import ActivityTitle from "./create-layout/ActivityTitle";
-import CoverImage from "./create-layout/CoverImage";
 import Description from "./create-layout/Description";
 import ActivityOptions from "./create-layout/ActivityOptions";
 import Footer from "./create-layout/Footer";
@@ -10,114 +9,126 @@ import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 
-
 type CreateLayoutProps = {
-  templateTitle: string,
-  validateActivity: () => { status: boolean, message: string },
-  activityMediaFiles: Map<string, File>;
-  finalizeActivity: (fileUrlMap: Map<string, string>) => string,
-  children: React.ReactNode
+  createActivityComponent: React.LazyExoticComponent<React.ComponentType<any>>;
 }
 
 export default function CreateLayout(props: CreateLayoutProps) {
 
   const searchParams = useSearchParams();
+  const viewMode = searchParams.get("viewMode") as UserType;
   const templateCode = searchParams.get("templateCode") as UserType;
+
+
+  // For template -----------------------------------
+
+  // Only the particular template knows how to validate the activity
+  // template should validate the activity as it wish and just return the status
+  const [activityValidator, setActivityValidator] = useState<Function>(
+    () => { return {status: false, message: ""} }
+  );
+
+  // As we are using edge store, the template cannot get a valid url while
+  // editing the template. Urls are only generated after submitting the files
+  // So the template just save their files temporaly in the state
+  const [mediaFiles, setMediaFiles] = useState<Map<string, File>>(new Map());
+
+  // But only the template knows how to replace the file hashes with the actual urls
+  // So we need to upload files first and then pass the media files urls 
+  // back to the template and let it replace the file hashes with the actual urls
+  // Then it sends the valid activity info as any data structure(depends on 
+  // implementation of individual template)
+  const [activityFinerlizer, setActivityFinerlizer] = useState<Function>(
+    (fileUrlMap: Map<string, File>): any => {}
+  );
+
+  // ------------------------------------------------
   
+  // fileStore handler
   const fileStoreUploader = useFileStoreUploader();
   
-  // form data
+  // Activity is stored in this format.
+  // Options have default values unless changed by the user 
+  // and they get flattend to the top level at the server
+  // This object is used by subcomponents to add their values
   const [formData, setFormData] = useState({
     title: "",
-    coverImageUrl: "",
-    description: "",
-    activityData: {}, // from children
+    instructions: "",
+    activityData: undefined,
     options: {
       timeLimit: 0,
       isGraded: false
     }
   });
   
-  // media files
-  const [mediaFiles, setMediaFiles] = useState<Map<string, File>>(new Map());
   
-  // validate
-  function validateForm(): { status: boolean, message: string } {
+  // Common fields like title, instructions are validated as well as 
+  // the activity specific fields
+  function validateActivityForm(): { status: boolean, message: string } {
   
-    // validate common form
+    // validate common fields
     if (!formData.title) {
       return { status: false, message: "Title is required." };
     }
-    if (!formData.coverImageUrl) {
-      return { status: false, message: "Cover Image is required." };
-    }
-    if (!formData.description) {
-      return { status: false, message: "Description is required." };
-    } 
-    if (!formData.options) {
-      return { status: false, message: "Options are required." };
+    if (!formData.instructions) {
+      return { status: false, message: "Instructions are required." };
     }
     
-    // validate activity form
-    let validT = props.validateActivity();
-    if (!validT.status) {
-      return { status: false, message: validT.message };
-    }
-
-    return { status: true, message: "Success" };
+    // validate activity
+    return activityValidator();
     
-  }
+  } // from children
   
-  function finalizeForm(mediaFileUrls: Map<string, string>,
-    activityMediaFileUrls: Map<string, string>): {form: string} {
+  // Create the final form combining the common and activity specific fields
+  // Then return the combined form as a json string
+  function activityForm(mediaFileUrls: Map<string, string>): string {
       
     // form
     const form = {
       ...formData,
       templateCode: templateCode,
-      coverImageUrl: mediaFileUrls.get(formData.coverImageUrl),
-      activityData: (props.finalizeActivity(activityMediaFileUrls)),
-      options: JSON.stringify(formData.options)
+      activityData: activityFinerlizer(mediaFileUrls),
     }
   
-    return {form: JSON.stringify(form)} 
+    return JSON.stringify(form);
     
   }
   
+  // Needed by the uploader component
   const [uploadProgress, setUploadProgress] = useState({
     progress: 0,
     status: "NONE",
   });
   const abortSave = useRef(true);
   
+
+  // Validations are called inside
+  // If validations fails user is notified and the form is not submitted
   async function handleSubmit () {
     
     // validate
-    const valid = validateForm();
+    const valid = validateActivityForm();
     console.log(valid);
-    if (!valid.status) return;
+    if (!valid.status) return; // display message
     
-    // submit with progress
+    // set progress to pending
     setUploadProgress((prev) => ({...prev, status: "PENDING"}));
     abortSave.current = false;
     
-      // files
+    // send any media files from the state to the edge store
+    // then take their urls and pass it to the activityFinerlizer
     const mediaFileUrls = await fileStoreUploader(mediaFiles, abortSave, (progress) => {
       setUploadProgress((prev) => ({...prev, progress}));
     });
-    const activityMediaFileUrls = await fileStoreUploader(props.activityMediaFiles, abortSave, (progress) => {
-      setUploadProgress((prev) => ({...prev, progress}));
-    });
     
-    if (abortSave.current === false) {
-      setUploadProgress((prev) => ({ ...prev, status: "COMPLETED" }));
-      abortSave.current = true;
-    } else {
+    // Detect if upload was finished by completion or abort
+    if (abortSave.current) {
       setUploadProgress((prev) => ({ ...prev, status: "ABORTED" }));
+      return;
     }
     
-      // form
-    const form = finalizeForm(mediaFileUrls, activityMediaFileUrls);
+    // send the form data
+    const form = activityForm(mediaFileUrls);
     
     const url = `/api/activities`;
     const res = await fetch(url, {
@@ -125,10 +136,14 @@ export default function CreateLayout(props: CreateLayoutProps) {
       headers: { 
         "Content-Type": "application/json",
       },
-      body: form.form
+      body: form
     })
     
-    console.log(await res.json());
+    const resData = await res.json();
+    console.log(resData) // display message
+
+    setUploadProgress((prev) => ({ ...prev, status: "COMPLETED" }));
+    abortSave.current = true;
     
   };
   
@@ -137,19 +152,20 @@ export default function CreateLayout(props: CreateLayoutProps) {
     <div className="max-w-6xl mx-auto p-4 pb-14 bg-blue-100">
       
       {/* template title */}
-      <TemplateTitle>{props.templateTitle}</TemplateTitle>
+      <TemplateTitle templateCode={templateCode} >{templateCode}</TemplateTitle>
       
       {/* activity title */}
       <ActivityTitle setFormData={setFormData} />
-      
-      {/* cover image */}
-      <CoverImage setFormData={setFormData} setMediaFiles={setMediaFiles} />
       
       {/* description */}
       <Description setFormData={setFormData} />
       
       {/* template content */}
-      {props.children}
+      {<props.createActivityComponent
+        setActivityValidator={setActivityValidator}
+        setMediaFiles={setMediaFiles}
+        setActivityFinerlizer={setActivityFinerlizer}
+      />}
 
       {/* activity options */}
       <ActivityOptions setFormData={setFormData} />
