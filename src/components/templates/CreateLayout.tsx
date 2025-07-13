@@ -1,10 +1,10 @@
 import TemplateTitle from "./create-layout/TemplateTitle";
 import ActivityTitle from "./create-layout/ActivityTitle";
-import Description from "./create-layout/Description";
+import Instructions from "./create-layout/Instructions";
 import ActivityOptions from "./create-layout/ActivityOptions";
 import Footer from "./create-layout/Footer";
+import ActivityUploadProgress from "./ActivityUploadProgress";
 import { UserType } from "@/lib/utils/types";
-import UploadProgressBar from "@/components/uploader/UploadProgressBar";
 import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
@@ -38,8 +38,9 @@ export default function CreateLayout(props: CreateLayoutProps) {
   // back to the template and let it replace the file hashes with the actual urls
   // Then it sends the valid activity info as any data structure(depends on 
   // implementation of individual template)
+  // If set false activity data is output without replacing filehashes
   const [activityFinerlizer, setActivityFinerlizer] = useState<Function>(
-    (fileUrlMap: Map<string, File>): any => {}
+    (fileUrlMap: Map<string, File> | false): any => {}
   );
 
   // ------------------------------------------------
@@ -52,6 +53,7 @@ export default function CreateLayout(props: CreateLayoutProps) {
   // and they get flattend to the top level at the server
   // This object is used by subcomponents to add their values
   const [formData, setFormData] = useState({
+    templateCode: templateCode,
     title: "",
     instructions: "",
     activityData: undefined,
@@ -77,7 +79,7 @@ export default function CreateLayout(props: CreateLayoutProps) {
     // validate activity
     return activityValidator();
     
-  } // from children
+  }
   
   // Create the final form combining the common and activity specific fields
   // Then return the combined form as a json string
@@ -86,7 +88,6 @@ export default function CreateLayout(props: CreateLayoutProps) {
     // form
     const form = {
       ...formData,
-      templateCode: templateCode,
       activityData: activityFinerlizer(mediaFileUrls),
     }
   
@@ -112,7 +113,7 @@ export default function CreateLayout(props: CreateLayoutProps) {
     if (!valid.status) return; // display message
     
     // set progress to pending
-    setUploadProgress((prev) => ({...prev, status: "PENDING"}));
+    setUploadProgress({ progress: 0, status: "PENDING"});
     abortSave.current = false;
     
     // send any media files from the state to the edge store
@@ -142,39 +143,48 @@ export default function CreateLayout(props: CreateLayoutProps) {
     const resData = await res.json();
     console.log(resData) // display message
 
-    setUploadProgress((prev) => ({ ...prev, status: "COMPLETED" }));
+    // if not okay setUploadProgress({ ...prev, status: "ERROR" });
+
+    setUploadProgress({ progress: 100, status: "COMPLETED" });
     abortSave.current = true;
     
   };
   
   return (
   
-    <div className="max-w-6xl mx-auto p-4 pb-14 bg-blue-100">
+    <div className="fixed inset-0 bg-cover bg-center overflow-y-auto"
+      style={{ backgroundImage: "url('/images/activity-background.jpg')", 
+        backgroundAttachment: "fixed"}} >
       
-      {/* template title */}
-      <TemplateTitle templateCode={templateCode} >{templateCode}</TemplateTitle>
-      
-      {/* activity title */}
-      <ActivityTitle setFormData={setFormData} />
-      
-      {/* description */}
-      <Description setFormData={setFormData} />
-      
-      {/* template content */}
-      {<props.createActivityComponent
-        setActivityValidator={setActivityValidator}
-        setMediaFiles={setMediaFiles}
-        setActivityFinerlizer={setActivityFinerlizer}
-      />}
+      <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-4 backdrop-blur-xs 
+        bg-transparent">
+        
+        {/* template title */}
+        <TemplateTitle templateCode={templateCode}>{templateCode}</TemplateTitle>
+        
+        {/* activity title */}
+        <ActivityTitle setFormData={setFormData} />
+        
+        {/* instructions */}
+        <Instructions setFormData={setFormData} />
+        
+        {/* template content */}
+        {<props.createActivityComponent
+          setActivityValidator={setActivityValidator}
+          setMediaFiles={setMediaFiles}
+          setActivityFinerlizer={setActivityFinerlizer}
+        />}
 
-      {/* activity options */}
-      <ActivityOptions setFormData={setFormData} />
-      
-      {/* footer */}
-      <Footer handleSubmit={handleSubmit}></Footer>
+        {/* activity options */}
+        <ActivityOptions setFormData={setFormData} />
+        
+        {/* footer */}
+        <Footer handleSubmit={handleSubmit}></Footer>
+        
+      </div>
       
       {/* upload progress */}
-      <UploadProgressBar uploadProgress={uploadProgress} setUploadProgress={setUploadProgress}
+      <ActivityUploadProgress uploadProgress={uploadProgress} setUploadProgress={setUploadProgress}
       abortSave={abortSave}/>
       
     </div>

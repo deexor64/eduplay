@@ -14,17 +14,17 @@ export default function ActivityOptions(props: ActivityOptionsProps) {
   }
   
   return (
-    <section className="mb-4 bg-white p-4 rounded-xl shadow-sm">
+    <section className="mb-6 bg-white/40 backdrop-blur p-6 rounded-xl shadow-md">
       
-      <h2 className="text-lg font-semibold mb-4">Activity Options</h2>
+      <h2 className="text-lg font-semibold mb-6 text-gray-800">Activity Options</h2>
       
       {/* time limit */}
-      <div className="flex flex-row justify-between items-center text-nowrap gap-4 mt-4">
-        <label className="block font-semibold mb-2">Time Limit</label>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+        <label className="block font-semibold text-gray-700 min-w-[120px]">Time Limit</label>
         <input
           type="number"
           min={0}
-          className="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:bg-white"
+          className="flex-1 p-3 border border-gray-300 rounded-lg bg-white/80 backdrop-blur transition-all duration-300 focus:border-blue-500 focus:outline-none focus:bg-white focus:shadow-md"
           placeholder="Time in minutes"
           onChange={function (e) { 
             setOptions("timeLimit", Number.parseInt(e.target.value));
@@ -33,11 +33,12 @@ export default function ActivityOptions(props: ActivityOptionsProps) {
       </div>
       
       {/* is graded */}
-      <div className="flex flex-row justify-between items-center text-nowrap gap-4 mt-4">
-        <label className="block font-semibold mb-2">Is graded</label>
+      <div className="flex flex-row justify-between items-center gap-4">
+        <label className="block font-semibold text-gray-700">Is graded</label>
         <input
           type="checkbox"
           value="true"
+          className="w-5 h-5 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
           onChange={function (e) {
             setOptions("isGraded", e.target.value);
           }}

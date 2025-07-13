@@ -30,7 +30,7 @@ export enum TeacherRoleEnum {
 }
 
 // template view mode
-export type TemplateViewMode = "VIEW" | "PREVIEW" | "SAMPLE" | "CREATE";
+export type TemplateViewMode = "VIEW" | "SAMPLE" | "PROGRESS" | "CREATE";
 
 // api response type
 export type ResType = {
@@ -51,5 +51,5 @@ export interface ViewActivityProps {
 export interface CreateActivityProps {
   setActivityValidator: React.Dispatch<React.SetStateAction<(() => { status: boolean, message: string})>>,
   setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
-  setActivityFinerlizer: React.Dispatch<React.SetStateAction<((fileUrlMap: Map<string, string>) => any)>>,
+  setActivityFinerlizer: React.Dispatch<React.SetStateAction<((fileUrlMap: Map<string, string> | false) => any)>>,
 }

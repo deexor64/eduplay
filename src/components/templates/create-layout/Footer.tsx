@@ -7,19 +7,18 @@ interface FooterProps {
 export default function Footer(props: FooterProps) {
   
   return (
-    <footer className="sticky bottom-0 left-0 w-full flex justify-center gap-4 p-4 
-      bg-red-200 shadow rounded-lg">
+    <footer className="sticky bottom-4 left-0 w-full flex justify-center gap-4 p-4 
+      bg-white/40 backdrop-blur shadow-lg rounded-xl">
         <button
-          className="font-semibold py-2 px-6 rounded-lg transition bg-green-500 
-          text-white hover:bg-green-600"
+          className="flex items-center gap-2 font-semibold py-3 px-8 rounded-full transition-all duration-300 bg-green-600 
+          text-white hover:bg-green-700 hover:shadow-lg shadow-md"
           onClick={props.handleSubmit}
         >
-          Save
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          Save Activity
         </button>
-        <Link href={`view?viewMode=PREVIEW`} className="font-semibold py-2 px-6 rounded-lg transition bg-green-500 
-        text-white hover:bg-green-600">
-        Preview
-      </Link>
     </footer>
   )
 }

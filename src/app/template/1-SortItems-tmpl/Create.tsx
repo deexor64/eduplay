@@ -4,6 +4,17 @@ import { useEffect, useState } from "react";
 import generateHash  from "@/lib/utils/generateHash";
 import { CreateActivityProps } from "@/lib/utils/types";
 
+type BasketItem = {
+  type: "text" | "image";
+  value: string;
+  label?: string;
+};
+
+type Basket = {
+  title: string;
+  items: BasketItem[];
+};
+
 export default function SortItems(props: CreateActivityProps) {
 
   const { setActivityValidator, setMediaFiles, setActivityFinerlizer } = props;
@@ -15,39 +26,45 @@ export default function SortItems(props: CreateActivityProps) {
   // common
   useEffect(() => {
     setActivityValidator(() => {
-    for (let basket of baskets) {
-      if (!basket.title.trim()) {
-        return { status: false, message: "Each basket must have a title." };
-      }
-      for (let item of basket.items) {
-        if (!item.value.trim()) {
-          return { status: false, message: "Each item must have a value." };
+      return () =>{
+        for (let basket of baskets) {
+          if (!basket.title.trim()) {
+            return { status: false, message: "Each basket must have a title." };
+          }
+          for (let item of basket.items) {
+            if (!item.value.trim()) {
+              return { status: false, message: "Each item must have a value." };
+            }
+          }
         }
+        return { status: true, message: "" };
       }
-    }
-    return { status: true, message: "" };
-  });
+    });
   }, [baskets]);
   
   // common
   useEffect(() => {
-    setActivityFinerlizer((mediaFileUrls: Map<string, string>): any => {
+    setActivityFinerlizer(() => {
+      return (mediaFileUrls: Map<string, string> | false): any => {
     
-    // Deep copy baskets to avoid mutating state
-    const updatedBaskets: Basket[] = JSON.parse(JSON.stringify(baskets));
-  
-    // Replace file hashes with actual urls
-    for (let basket of updatedBaskets) {
-      for (let item of basket.items) {
-        if (item.type === "image" && mediaFileUrls.has(item.value)) {
-          item.value = mediaFileUrls.get(item.value)!;
+        // Deep copy baskets to avoid mutating state
+        const updatedBaskets: Basket[] = JSON.parse(JSON.stringify(baskets));
+    
+        if (!mediaFileUrls) return updatedBaskets;
+      
+        // Replace file hashes with actual urls
+        for (let basket of updatedBaskets) {
+          for (let item of basket.items) {
+            if (item.type === "image" && mediaFileUrls.has(item.value)) {
+              item.value = mediaFileUrls.get(item.value)!;
+            }
+          }
         }
+      
+        return updatedBaskets;
+    
       }
-    }
-  
-    return updatedBaskets;
-
-  });
+    });
   }, [baskets]);
   
 
