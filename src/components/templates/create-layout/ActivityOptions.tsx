@@ -26,12 +26,10 @@ export default function ActivityOptions(props: ActivityOptionsProps) {
         <label className="block font-semibold text-gray-700 min-w-[140px]">Is graded</label>
         <input
           type="checkbox"
-          value="true"
           className="w-5 h-5 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
           onChange={function (e) {
-            setOptions("isGraded", e.target.value);
-          }}
-        />
+            setOptions("isGraded", e.target.checked === true);
+          }} />
       </div>
 
       {/* grade */}

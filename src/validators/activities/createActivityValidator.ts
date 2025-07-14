@@ -10,7 +10,7 @@ export default function createActivityValidator(cookies: RequestCookies, formDat
   // User token validation
   const userToken = cookies.get("userInfo")?.value;
   const valid = userTokenChecker(userToken, ["TEACHER"], 
-    [TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER]);
+    [TeacherRoleEnum.ADMIN, TeacherRoleEnum.MASTER, TeacherRoleEnum.TEACHER]);
   
   if (!valid.status) return valid;
 

@@ -55,7 +55,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     "Teachers": "/teacher/users?userListType=teacher", 
     "Parents": "/teacher/users?userListType=parent",
     "Templates": "/teacher/templates",
-    "Activities": "/teacher/activity/manage",
+    "Activities": "/teacher/activities",
     "Profile": "/teacher/profile",
     "System Settings": "/teacher/system-settings",
   };
