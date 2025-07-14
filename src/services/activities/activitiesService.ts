@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '@/lib/prisma';
 import { ResType } from '@/lib/utils/types';
-
-const prisma = new PrismaClient();
 
 export default async function activitiesService(data: any): Promise<ResType> {
   

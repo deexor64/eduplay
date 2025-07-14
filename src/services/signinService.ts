@@ -2,8 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { ResType, TeacherRoleEnum, UserType } from '@/lib/utils/types';
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 // dynamic user handler
 const usersHandler: any = {
