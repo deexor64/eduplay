@@ -31,10 +31,16 @@ export default function ViewLayout(props: ViewLayoutProps) {
     title: string,
     instructions: string,
     activityData: any,
-  }>({title: "", instructions: "", activityData: {}});
+    timeLimit: number,
+    difficulty: string,
+    subject: string,
+    grade: number,
+    isGraded: boolean,
+    status: string,
+  }>({title: "", instructions: "", activityData: {}, timeLimit: 0, difficulty: "", subject: "", grade: 0, isGraded: false, status: ""});
   
-  // Either templateCode or activityId is present
-  // depending on the view mode
+
+  // Only used for fetching a sample activity
   function activityQuery(): URLSearchParams {
 
     // params
@@ -66,10 +72,11 @@ export default function ViewLayout(props: ViewLayoutProps) {
     } 
     // view mode is "VIEW"
     else if (viewMode === "VIEW") {
-      const url = `/api/activities/${params}`;
+      const url = `/api/activities/${activityID}`;
       const res = await fetch(url);
       const resData = await res.json();
-      setDbData(resData.data);
+      setDbData({...resData.data, 
+        activityData: JSON.parse(resData.data.activityData)});
     }
     // view mode is "PROGRESS"
     else {

@@ -24,6 +24,7 @@ export default function Activities() {
       timeLimit: number,
       isGraded: boolean,
       difficulty: string
+      templateCode: string,
     }>,
     total: number;
   }>({ activities: [], total: 0 });

@@ -22,6 +22,7 @@ export default async function activitiesService(data: any): Promise<ResType> {
     difficulty: true,
     timeLimit: true,
     isGraded: true,
+    templateCode: true,
   }
 
   const existing = {

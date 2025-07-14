@@ -23,7 +23,7 @@ function TextItem(props: { id: string }) {
 // image component
 function ImageItem(props: { src: string; alt: string }) {
   return (
-    <img src={`/${props.src}`} alt={props.alt}
+    <img src={`${props.src}`} alt={props.alt} referrerPolicy="no-referrer"
       className="h-20 w-fit object-contain" />
   );
 }

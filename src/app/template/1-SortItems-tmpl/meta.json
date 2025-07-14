@@ -5,7 +5,6 @@
   "templateType": "Drag and Drop",
   "sampleActivity": {
     "title": "Sort Animals and Vegetables",
-    "coverImageUrl": "/templates/1-SortItems-tmpl/coverImage.jpg",
     "instructions":
       "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
     "activityData": [
@@ -23,6 +22,12 @@
           { "type": "text", "value": "Potatoe" }
         ]
       }
-    ]
+    ],
+    "timeLimit": 0,
+    "difficulty": "EASY",
+    "subject": "COMMON",
+    "grade": 0,
+    "isGraded": false,
+    "status": "PUBLISHED"
   }
 }

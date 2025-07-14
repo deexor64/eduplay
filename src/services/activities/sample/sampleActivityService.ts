@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { ResType, UserType } from '@/lib/utils/types';
-import { generateUniqueID } from "@/lib/utils/generateRandomString";
 
 const prisma = new PrismaClient();
 
