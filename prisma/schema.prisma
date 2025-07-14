@@ -13,6 +13,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Subject {
+  MATHEMATICS
+  SCIENCE
+  ENGLISH
+  COMMON
+}
+
 enum UserStatus {
   PENDING
   ACTIVE
@@ -22,16 +29,16 @@ enum UserStatus {
 }
 
 model User {
-  userID        String    @id @default(uuid())
+  userID        String     @id @default(uuid())
   firstName     String
   lastName      String
   phoneNumber   String?
   dateOfBirth   DateTime?
   password      String
-  status        UserStatus    @default(PENDING)
-  displayPicUrl String    @default("/images/avatar.png")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  status        UserStatus @default(PENDING)
+  displayPicUrl String     @default("/images/avatar.png")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   teacher Teacher? @relation("teacher")
   parent  Parent?  @relation("parent")
@@ -46,17 +53,17 @@ enum TeacherRole {
 }
 
 model Teacher {
-  teacherID   String @id @default(uuid())
-  indexNumber String @unique
-  email       String @unique
+  teacherID   String      @id @default(uuid())
+  indexNumber String      @unique
+  email       String      @unique
   role        TeacherRole @default(TEACHER)
+  subject     Subject     @default(COMMON)
 
   userID String @unique
   user   User   @relation("teacher", fields: [userID], references: [userID])
 
   activity Activity[] @relation("activityCreator")
 }
-
 
 model Student {
   studentID   String @id @default(uuid())
@@ -67,35 +74,48 @@ model Student {
 
   userID String @unique
   user   User   @relation("student", fields: [userID], references: [userID])
-  
+
   myParent String @unique
-  parent   Parent   @relation("parent", fields: [myParent], references: [parentID])
-  
+  parent   Parent @relation("parent", fields: [myParent], references: [parentID])
+
   progress Progress[] @relation("progress")
 }
 
 model Parent {
-  parentID    String @id @default(uuid())
-  email       String @unique
-  
+  parentID String @id @default(uuid())
+  email    String @unique
+
   userID String @unique
   user   User   @relation("parent", fields: [userID], references: [userID])
-  
+
   myChildren Student[] @relation("parent")
 }
 
+enum ActivityDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum ActivityStatus {
+  UNPUBLISHED
+  PUBLISHED
+  DELETED
+}
 
 model Activity {
-  activityID    String   @id @default(uuid())
-  title         String
-  instructions  String
-  activityData  String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  isGraded      Boolean  @default(false)
-  timeLimit     Int      @default(0)
-  grade         Int      @default(1)
-  difficulty    Int      @default(1)
+  activityID   String             @id @default(uuid())
+  title        String
+  instructions String
+  activityData String
+  status       ActivityStatus     @default(UNPUBLISHED)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  subject      Subject            @default(COMMON)
+  grade        Int                @default(0)
+  timeLimit    Int                @default(0)
+  isGraded     Boolean            @default(false)
+  difficulty   ActivityDifficulty @default(EASY)
 
   templateCode String
   template     Template @relation("activityTemplate", fields: [templateCode], references: [templateCode])
@@ -105,11 +125,11 @@ model Activity {
 }
 
 model Template {
-  templateID   String @id @default(uuid())
-  templateCode String @unique()
-  title        String @unique()
-  description  String
-  templateType String
+  templateID     String @id @default(uuid())
+  templateCode   String @unique()
+  title          String @unique()
+  description    String
+  templateType   String
   sampleActivity Json
 
   activity Activity[] @relation("activityTemplate")
@@ -117,7 +137,7 @@ model Template {
 
 model Progress {
   progressID String @id @default(uuid())
-  
+
   progressFor String
-  student   Student @relation("progress", fields: [progressFor], references: [studentID])
+  student     Student @relation("progress", fields: [progressFor], references: [studentID])
 }
