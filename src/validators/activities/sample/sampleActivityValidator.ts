@@ -8,9 +8,9 @@ export default function sampleActivityValidator(cookies: RequestCookies, searchP
   
   // User token validation
   const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenChecker(userToken, ["TEACHER"],
-     [TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER]);
-  
+  const valid = userTokenChecker(userToken, ["TEACHER"],[TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER,
+    TeacherRoleEnum.DEMONSTRATOR, TeacherRoleEnum.MASTER
+  ]);
   if (!valid.status) return valid;
   
   // constraints

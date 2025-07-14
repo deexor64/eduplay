@@ -1,156 +1,136 @@
+// This component is used only for displaying user info
+
 "use client";
 
-// This component should be used solely for displaying user info
-// Displayed info is predefined inside the component and cannot be modified
-
-import Image from "next/image";
 import Link from "next/link";
-import { useCallback } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheck,
-  faTimes,
-  faPause,
-} from "@fortawesome/free-solid-svg-icons";
+import InfoBadge from "@/components/shared/badges/InfoBadge";
+import ViewItemActionButton from "@/components/shared/buttons/ViewItemActionButton";
 
 interface ViewUserItemProps {
   itemData: {
-    indexNumber?: string;
-    grade?: number,
-    class?: string,
+    indexNumber?: string; // teacher, student
+    subject?: string, // teacher
+    role?: string; // teacher
+    grade?: number, // student
+    class?: string, // student
     user: {
-      firstName: string;
-      lastName: string;
-      status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED" | string;
-      displayPicUrl: string;
+      firstName: string; // teacher, student, parent
+      lastName: string; // teacher, student, parent
+      status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED" | string; // teacher, student, parent
+      displayPicUrl: string; // teacher, student, parent
     }
   };
 }
 
-export default function ViewUserItem(props: ViewUserItemProps) {
-  
-  const itemData  = props.itemData;
 
-  const handleAction = useCallback(
-    (action: string) => {
-      alert(`Action "${action}" clicked for user ${itemData.user.firstName}`);
-    },
-    [itemData.user.firstName]
-  );
+export default function ViewUserItem(props: ViewUserItemProps) {
+
+  const itemData = props.itemData;
+
+  function handleAction() {
+    alert("Action clicked");
+  }
 
   return (
-    <div
-      className="border border-blue-200 bg-white rounded-xl p-4 flex items-center shadow hover:shadow-lg transition hover:bg-blue-50 justify-between relative mb-0.5 mt-2 min-h-[96px]"
-      key={itemData.indexNumber}
-    >
-      {/* Avatar and user info */}
-      <div className="flex items-center gap-4 min-w-0">
-        <Image
-          src={itemData.user.displayPicUrl}
-          alt="Profile Picture"
-          width={64}
-          height={64}
-          className="rounded-full border border-gray-200 bg-white shadow-sm object-cover w-16 h-16"
-        />
+    <div className="border border-blue-200 bg-white rounded-xl p-4 flex items-center shadow hover:shadow-lg transition 
+    hover:bg-blue-50 justify-between relative mb-0.5 mt-2 min-h-[96px]">
+
+      {/* Item info */}
         <div className="min-w-0">
+
+          {/* Clickable link */}
           <div className="flex items-center gap-2">
             <Link
-              href={""}
+              href={`/${itemData.user.firstName}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-lg font-semibold text-purple-800 truncate focus:outline-none focus:ring-2 focus:ring-blue-200 cursor-pointer no-underline hover:text-purple-900"
+              className="text-lg font-semibold text-pink-700 truncate focus:outline-none focus:ring-2 
+              focus:ring-blue-200 cursor-pointer no-underline hover:text-pink-900"
               style={{ textDecoration: 'none' }}
-              onClick={(e) => { e.preventDefault(); alert("opened"); }}
             >
               {`${itemData.user.firstName} ${itemData.user.lastName}`}
             </Link>
-            {itemData.indexNumber && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full border text-xs font-mono font-semibold bg-gray-100 text-gray-700 border-gray-300 shadow-sm" title="Index Number">{itemData.indexNumber}</span>
-            )}
+            {
+              itemData.indexNumber && (
+                <InfoBadge text={itemData.indexNumber} colorTheme="default" />
+              )
+            }
           </div>
-          {props.itemData.grade && (
-            <div className="text-xs text-yellow-600 mt-1 truncate">
-              {`Grade ${props.itemData.grade} - ${props.itemData.class}`}
-            </div>
-          )}
+
+          {/* Badge and description */}
+          <div className="flex items-center gap-2 mt-1 text-xs">
+            {
+              itemData.role && (
+                <InfoBadge text={itemData.role} colorTheme="purple" />
+              )
+            }
+            {
+              itemData.subject && (
+                <InfoBadge text={itemData.subject} colorTheme="green" />
+              )
+            }
+            {
+              itemData.grade && itemData.class && (
+                <InfoBadge text={`Grade ${itemData.grade} ${itemData.class}`} colorTheme="indigo" />
+              )
+            }
+          </div>
         </div>
+     
+      {/* Action buttons */}
+      <div className="flex flex-row items-end gap-2  ml-4">
+        {
+          itemData.user.status === "PENDING" && (
+            <>
+              <ViewItemActionButton text="Accept" colorTheme="green"
+                onAction={() => handleAction()} />
+              <ViewItemActionButton text="Reject" colorTheme="red"
+                onAction={() => handleAction()} />
+            </>
+          )
+        }
+        {
+          itemData.user.status === "ACTIVE" && (
+            <>
+              <ViewItemActionButton text="Suspend" colorTheme="yellow"
+                onAction={() => handleAction()} />
+              <ViewItemActionButton text="Delete" colorTheme="red"
+                onAction={() => handleAction()} />
+            </>
+          )
+        }
+        {
+          itemData.user.status === "INACTIVE" && (
+            <>
+              <ViewItemActionButton text="Suspend" colorTheme="yellow"
+                onAction={() => handleAction()} />
+              <ViewItemActionButton text="Delete" colorTheme="red"
+                onAction={() => handleAction()} />
+            </>
+          )
+        }
+        {
+          itemData.user.status === "SUSPENDED" && (
+            <>
+              <ViewItemActionButton text="Activate" colorTheme="green"
+                onAction={() => handleAction()} />
+              <ViewItemActionButton text="Delete" colorTheme="red"
+                onAction={() => handleAction()} />
+            </>
+          )
+        }
+        {
+          itemData.user.status === "DELETED" && (
+            <>
+              <ViewItemActionButton text="Activate" colorTheme="green"
+                onAction={() => handleAction()} />
+              <ViewItemActionButton text="Delete" colorTheme="red"
+                onAction={() => handleAction()} />
+            </>
+          )
+        }
       </div>
-      {/* Status and actions */}
-      <div className="flex flex-col items-end gap-2 min-w-[120px] ml-4">
-        <StatusBadge status={itemData.user.status} />
-        <ActionButtons status={itemData.user.status as any} onAction={handleAction} />
-      </div>
+
     </div>
   );
 }
-
-function StatusBadge({ status }: { status: string }) {
-  const statusStyles: Record<string, string> = {
-    PENDING: "bg-yellow-100 text-yellow-800 border-yellow-300",
-    ACTIVE: "bg-green-100 text-green-800 border-green-300",
-    INACTIVE: "bg-gray-100 text-gray-600 border-gray-300",
-    DELETED: "bg-red-100 text-red-700 border-red-300",
-    SUSPENDED: "bg-red-200 text-red-800 border-red-400",
-  };
-  return (
-    <span
-      className={`inline-flex items-center px-3 py-1 rounded-full border text-xs font-semibold uppercase shadow-sm ${statusStyles[status] || "bg-gray-100 text-gray-500 border-gray-200"}`}
-      aria-label={`Status: ${status}`}
-      title={`Status: ${status}`}
-    >
-      {status}
-    </span>
-  );
-}
-
-function ActionButtons({ status, onAction }: {
-  status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED" | "DELETED";
-  onAction: (action: string) => void;
-}) {
-  const actionsMap: Record<string, { label: string; icon: any; color: string }[]> = {
-    PENDING: [
-      { label: "Accept", icon: faCheck, color: "bg-green-500 hover:bg-green-600" },
-      { label: "Reject", icon: faTimes, color: "bg-red-500 hover:bg-red-600" },
-    ],
-    ACTIVE: [
-      { label: "Suspend", icon: faPause, color: "bg-yellow-500 hover:bg-yellow-600" },
-      { label: "Delete", icon: faTimes, color: "bg-red-500 hover:bg-red-600" },
-    ],
-    INACTIVE: [
-      { label: "Suspend", icon: faPause, color: "bg-yellow-500 hover:bg-yellow-600" },
-      { label: "Delete", icon: faTimes, color: "bg-red-500 hover:bg-red-600" },
-    ],
-    SUSPENDED: [
-      { label: "Activate", icon: faCheck, color: "bg-green-500 hover:bg-green-600" },
-      { label: "Delete", icon: faTimes, color: "bg-red-500 hover:bg-red-600" },
-    ],
-    DELETED: [
-      { label: "Activate", icon: faCheck, color: "bg-green-500 hover:bg-green-600" }
-    ],
-  };
-
-  const actions = actionsMap[status] || [];
-
-  return (
-    <div className="flex gap-2">
-      {actions.map(({ label, icon, color }) => (
-        <button
-          key={label}
-          className={`flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-medium shadow-sm transition ${color}`}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            return onAction(label);
-          }}
-          type="button"
-          title={label}
-          aria-label={label}
-        >
-          <FontAwesomeIcon icon={icon} />
-          <span className="hidden sm:inline">{label}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
-
