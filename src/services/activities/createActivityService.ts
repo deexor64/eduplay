@@ -23,6 +23,7 @@ export default async function createActivityService(data: any): Promise<ResType>
       timeLimit: data.options.timeLimit,
       grade: data.options.grade,
       difficulty: data.options.difficulty,
+      subject: data.options.subject,
       template: {
         connect: { templateCode: data.templateCode },
       },

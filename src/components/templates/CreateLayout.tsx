@@ -60,8 +60,9 @@ export default function CreateLayout(props: CreateLayoutProps) {
     options: {
       timeLimit: 0,
       isGraded: false,
-      grade: 1,
-      difficulty: 1,
+      grade: "ALL",
+      difficulty: "EASY",
+      subject: "COMMON",
     }
   });
   

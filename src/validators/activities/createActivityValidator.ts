@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TeacherRoleEnum } from "@/lib/utils/types";
+import { ActivityDifficultyEnum, ActivityGradeEnum, SubjectEnum, TeacherRoleEnum } from "@/lib/utils/types";
 import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
 import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { JwtPayload } from "jsonwebtoken";
@@ -24,11 +24,14 @@ export default function createActivityValidator(cookies: RequestCookies, formDat
     instructions: z.string(),
     activityData: z.string(),
     options: z.object({
-        timeLimit: z.number().min(0),
-        isGraded: z.boolean(),
-        grade: z.number().min(1).max(5).optional(),
-        difficulty: z.number().min(0).max(10).optional(),
-      })
+      timeLimit: z.number().min(0),
+      isGraded: z.boolean(),
+      grade: z.enum(Object.values(ActivityGradeEnum) as [string, ...string[]]).transform(function(value) {
+        return value === "ALL" ? 0 : Number(value);
+      }),
+      subject: z.enum(Object.values(SubjectEnum) as [string, ...string[]]),
+      difficulty: z.enum(Object.values(ActivityDifficultyEnum) as [string, ...string[]]),
+    })
   }).strict()
   
   const parsed_f = zFormData.safeParse(formData);
