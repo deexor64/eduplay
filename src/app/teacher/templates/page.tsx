@@ -70,6 +70,7 @@ export default function TemplateList() {
   }
 -
   useEffect(() => { 
+    setTriggerFilter(false);
     fetchTemplates();
   }, [triggerFilter, pagination]);
 
@@ -104,11 +105,13 @@ export default function TemplateList() {
       
       {/* Info */}
       <div className="w-full table-auto text-left">
-        {
+        {dbData.templates.length === 0 ? (
+          <div className="text-center text-gray-500 py-8">Nothing to display</div>
+        ) : (
           dbData.templates.map(function (item) {
             return <ViewTemplateItem itemData={item} key={item.templateCode}/>;
           })
-        }
+        )}
       </div>
   
       {/* paginator */}

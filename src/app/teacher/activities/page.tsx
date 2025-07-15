@@ -9,6 +9,7 @@ import ViewActivityItem from "@/components/activity/ViewActivityItem";
 import React, { useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
 import { ActivityDifficultyEnum, ActivityGradeEnum, ActivityStatusEnum, SubjectEnum } from "@/lib/utils/types";
+import ViewTemplateItem from "@/components/templates/ViewTemplateItem";
 
 export default function Activities() {
 
@@ -66,6 +67,7 @@ export default function Activities() {
   }
 
   useEffect(() => { 
+    setTriggerFilter(false);
     fetchActivities();
   }, [triggerFilter, pagination]);
 
@@ -108,12 +110,14 @@ export default function Activities() {
       </FilterWrapper>
 
       {/* Info */}
-      <div className="w-full table-auto text-left">
-        {
-          dbData.activities.map(function (item: any) {
+       <div className="w-full table-auto text-left">
+        {dbData.activities.length === 0 ? (
+          <div className="text-center text-gray-500 py-8">Nothing to display</div>
+        ) : (
+          dbData.activities.map(function (item) {
             return <ViewActivityItem itemData={item} key={item.activityID}/>;
           })
-        } 
+        )}
       </div>
 
       {/* paginator */}

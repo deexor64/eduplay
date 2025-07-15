@@ -110,11 +110,13 @@ export default function UserList() {
       
       {/* Info */}
       <div className="w-full table-auto text-left">
-        {
+        {dbData.users.length === 0 ? (
+          <div className="text-center text-gray-500 py-8">Nothing to display</div>
+        ) : (
           dbData.users.map(function (item) {
-            return <ViewUserItem itemData={item} key={item.indexNumber + item.user.firstName}/>;
+            return <ViewUserItem itemData={item} key={item.indexNumber}/>;
           })
-        } 
+        )}
       </div>
   
       {/* paginator */}
