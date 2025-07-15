@@ -4,7 +4,7 @@ import { faSync } from "@fortawesome/free-solid-svg-icons";
 
 type SyncTemplatesButtonProps = {
   syncTemplates: Function;
-};
+}
 
 export default function SyncTemplateButton(props: SyncTemplatesButtonProps) {
 
@@ -12,7 +12,7 @@ export default function SyncTemplateButton(props: SyncTemplatesButtonProps) {
 
   const handleSync = async () => {
     setIsSyncing(true);
-    try { props.syncTemplates() } 
+    try { await props.syncTemplates() } 
     finally { setIsSyncing(false) }
   };
 
