@@ -5,6 +5,7 @@ import CoverImage from "./view-layout/CoverImage";
 import Footer from "./view-layout/Footer";
 import Description from "./view-layout/Description";
 import Narrator from "./view-layout/Narrator";
+import NarratorButton from "./view-layout/NarratorButton";
 import { TemplateViewMode } from "@/lib/utils/types";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -113,7 +114,7 @@ export default function ViewLayout(props: ViewLayoutProps) {
   );
 
   // This function just give the current state of the activity
-  // It is used to restore the actiivty state for viewwing progress
+  // It is used to restore the activity state for viewing progress
   const [resultData, setResultData] = useState<any>();
 
   useEffect(() => {
@@ -187,57 +188,54 @@ export default function ViewLayout(props: ViewLayoutProps) {
     
   };
 
-
   // narrator
   const [showNarrator, setShowNarrator] = useState(false);
   
-  
   return (
-    
-    <div
-      className="fixed inset-0 bg-cover bg-center"
-      style={{ backgroundImage: "url('/images/activity-background.jpg')", 
-        backgroundAttachment: "fixed"}} >
-      
-      {/* Narrator overlay */}
-      <Narrator isVisible={showNarrator} zIndex={50}>
-        {/* Narrator content will go here */}
-      </Narrator>
-      
-      <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-4 backdrop-blur-xs 
-        bg-transparent">
+    <>
+      <div className="fixed inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/activity-background.jpg')", backgroundAttachment: "fixed"}} >
         
-        
-        {/* cover image */}
-        <CoverImage templateCode={templateCode}>
-          
-          {/* activity title */}
-          <ActivityTitle viewMode={viewMode} templateCode={templateCode}>
-            { dbData.title }</ActivityTitle>
-          
-          {/* description */}
-          <Description>{ dbData.instructions }</Description>
-          
-        </CoverImage>
-  
-        
-        {/* activity content */}
-        {activityData ? <props.viewActivityComponent 
-          activityData={activityData} 
-          setResultValidator={setResultValidator} 
-          setResultGrader={setResultGrader} 
-          setResultData={setResultData} /> 
-          : (
-            <div className="flex items-center justify-center p-8">
-              <div className="text-lg text-gray-600">Loading activity data...</div>
-            </div>
-          )
+        {/* Narrator */}
+        { showNarrator && 
+          <Narrator showNarrator={showNarrator} text="Hello, how are you?" /> 
         }
         
-        {/* footer */}
-        <Footer viewMode={viewMode} validateTemplate={resultValidator}/>
+        <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-4 backdrop-blur-xs bg-transparent">
+          
+          {/* cover image */}
+          <CoverImage templateCode={templateCode}>
+            {/* activity title */}
+            <ActivityTitle viewMode={viewMode} templateCode={templateCode}>
+              { dbData.title }
+            </ActivityTitle>
+            {/* description */}
+            <Description>{ dbData.instructions }</Description>
+          </CoverImage>
+          
+          {/* activity content */}
+          {activityData ? <props.viewActivityComponent 
+            activityData={activityData} 
+            setResultValidator={setResultValidator} 
+            setResultGrader={setResultGrader} 
+            setResultData={setResultData} /> 
+            : (
+              <div className="flex items-center justify-center p-8">
+                <div className="text-lg text-gray-600">Loading activity data...</div>
+              </div>
+            )
+          }
+
+          {/* footer */}
+          <Footer viewMode={viewMode} validateTemplate={resultValidator}/>
         
+        </div>
       </div>
-    </div>
+
+      {/* Narrator toggle button  */}
+      <NarratorButton setShowNarrator={setShowNarrator}/>
+     
+    </>
   );
+
 }
