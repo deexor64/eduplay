@@ -1,22 +1,38 @@
-import { useState, ChangeEvent, ReactNode } from "react";
+import { useRef, ChangeEvent } from "react";
 
 interface InputFilterProps {
   filterKey: string;
-  setFilter: (prev: any) => void;
-  children: ReactNode
+  setFilter: React.Dispatch<React.SetStateAction<any>>;
+  setTriggerFilter: React.Dispatch<React.SetStateAction<boolean>>;
+  children: React.ReactNode;
 }
 
 export default function InputFilter(props: InputFilterProps) {
- 
-  const { filterKey, setFilter } = props;
-  
+
+  const { filterKey, setFilter, setTriggerFilter } = props;
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let newValue: string | undefined= e.target.value;
-    (newValue === "") ? newValue = undefined : newValue = newValue.toLowerCase();
+
+    let newValue: string | undefined = e.target.value;
+    newValue = newValue === "" ? undefined : newValue;
+
     setFilter((prev: any) => ({
       ...prev,
       [filterKey]: newValue,
     }));
+
+    // Clear previous timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    // Set new timeout
+    timeoutRef.current = setTimeout(() => {
+      setTriggerFilter(true);
+    }, 2000);
+    
   };
 
   return (
@@ -29,7 +45,6 @@ export default function InputFilter(props: InputFilterProps) {
         type="text"
         className="border border-gray-300 rounded-lg px-2 py-1 bg-white text-purple-800 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-150 outline-none placeholder:text-gray-400 text-sm"
         onChange={handleInputChange}
-        placeholder="Type to filter..."
       />
     </div>
   );

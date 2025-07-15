@@ -4,7 +4,6 @@ import Title from "@/components/shared/headings/Title";
 import FilterWrapper from "@/components/shared/filter/FilterWrapper";
 import InputFilter from "@/components/shared/filter/InputFilter";
 import OptionFilter from "@/components/shared/filter/OptionFilter";
-import FilterControls from "@/components/shared/filter/FilterControls";
 import Paginator from "@/components/shared/pagination/Paginator";
 import ViewActivityItem from "@/components/activity/ViewActivityItem";
 import React, { useEffect, useState } from "react";
@@ -66,15 +65,9 @@ export default function Activities() {
 
   }
 
-  useEffect(() => {
-    if (!triggerFilter) return;
-    setTriggerFilter(false);
-    fetchActivities();
-  }, [triggerFilter]);
-
   useEffect(() => { 
     fetchActivities();
-  }, [pagination]);
+  }, [triggerFilter, pagination]);
 
   return (
     <>
@@ -86,30 +79,32 @@ export default function Activities() {
         <InputFilter
           filterKey="title"
           setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
         >Activity Title</InputFilter>
         <OptionFilter
           filterKey="subject"
           values={Object.values(SubjectEnum)}
           setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
         >Subject</OptionFilter>
         <OptionFilter
           filterKey="grade"
           values={Object.values(ActivityGradeEnum)}
           setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
         >Grade</OptionFilter>
         <OptionFilter
           filterKey="difficulty"
           values={Object.values(ActivityDifficultyEnum)}
           setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
         >Difficulty</OptionFilter>
         <OptionFilter
           filterKey="status"
           values={Object.values(ActivityStatusEnum)}
           setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
         >Status</OptionFilter>
-        <div className="ml-auto">
-          <FilterControls setFilter={setFilter} setTriggerFilter={setTriggerFilter}/>
-        </div>
       </FilterWrapper>
 
       {/* Info */}

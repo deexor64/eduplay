@@ -4,7 +4,6 @@ import Title from "@/components/shared/headings/Title";
 import FilterWrapper from "@/components/shared/filter/FilterWrapper";
 import InputFilter from "@/components/shared/filter/InputFilter";
 import OptionFilter from "@/components/shared/filter/OptionFilter";
-import FilterControls from "@/components/shared/filter/FilterControls";
 import Paginator from "@/components/shared/pagination/Paginator";
 import ViewTemplateItem from "@/components/templates/ViewTemplateItem";
 import SyncTemplateButton from "@/components/templates/SyncTemplatesButton";
@@ -69,16 +68,12 @@ export default function TemplateList() {
     const res = await fetch(url, {method: "POST"});
     fetchTemplates();
   }
-
-  useEffect(() => {
-    if (!triggerFilter) return;
-    setTriggerFilter(false);
-    fetchTemplates();
-  }, [triggerFilter]);
-  
+-
   useEffect(() => { 
     fetchTemplates();
-  }, [pagination]);
+  }, [triggerFilter, pagination]);
+
+  console.log(teacherRole)
   
   return (
     <>
@@ -92,17 +87,16 @@ export default function TemplateList() {
           filterKey="templateType"
           values={["Drag and Drop", "Match", "Fill Blanks"]}
           setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
         >Type</OptionFilter>
         <InputFilter
           filterKey="title"
           setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
         >Title</InputFilter>
-        <div className="ml-auto">
-          <FilterControls setFilter={setFilter} setTriggerFilter={setTriggerFilter}/>
-        </div>
         {/* sync button. shown only to admins */}
         {
-          teacherRole === TeacherRoleEnum.ADMIN && (
+          [TeacherRoleEnum.MASTER, TeacherRoleEnum.ADMIN].includes(teacherRole as TeacherRoleEnum)  && (
             <SyncTemplateButton syncTemplates={syncTemplates} />
           )
         }

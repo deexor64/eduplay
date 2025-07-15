@@ -11,9 +11,10 @@ export default function SyncTemplateButton(props: SyncTemplatesButtonProps) {
   return (
     <button
       onClick={async () => {
-        await props.syncTemplates();
+        props.syncTemplates();
       }}
-      className="p-2 rounded-md bg-green-600 hover:bg-green-700 text-white">
+      title="Sync Templates"
+      className="ml-auto h-fit p-2 rounded-md bg-green-600 hover:bg-green-700 text-white">
       <FontAwesomeIcon icon={faSync} />
     </button>
   );

@@ -1,23 +1,35 @@
-import { ChangeEvent, ReactNode } from "react";
+import { ChangeEvent, useRef } from "react";
 
 interface OptionFilterProps {
   filterKey: string;
   values: string[];
-  setFilter: (prev: any) => void;
-  children: ReactNode
+  setFilter: React.Dispatch<React.SetStateAction<any>>;
+  setTriggerFilter: React.Dispatch<React.SetStateAction<boolean>>;
+  children: React.ReactNode;
 }
 
 export default function OptionFilter(props: OptionFilterProps) {
-  
-  const { filterKey, values, setFilter } = props;
+  const { filterKey, values, setFilter, setTriggerFilter } = props;
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
     let newValue: string | undefined = e.target.value;
-    (newValue === "All") ? newValue = undefined : newValue = newValue;
+    newValue = newValue === "All" ? undefined : newValue;
+
     setFilter((prev: any) => ({
       ...prev,
       [filterKey]: newValue,
     }));
+
+    // Debounce trigger
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      setTriggerFilter(true);
+    }, 2000); 
   };
 
   return (

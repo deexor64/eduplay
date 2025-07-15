@@ -4,7 +4,6 @@ import Title from "@/components/shared/headings/Title";
 import FilterWrapper from "@/components/shared/filter/FilterWrapper";
 import InputFilter from "@/components/shared/filter/InputFilter";
 import OptionFilter from "@/components/shared/filter/OptionFilter";
-import FilterControls from "@/components/shared/filter/FilterControls";
 import Paginator from "@/components/shared/pagination/Paginator";
 import ViewUserItem from "@/components/users/ViewUserItem";
 import React, { useEffect, useState } from "react";
@@ -69,14 +68,9 @@ export default function UserList() {
   }
   
   useEffect(() => {
-    if (!triggerFilter) return;
     setTriggerFilter(false);
     fetchUsers();
-  }, [triggerFilter]);
-  
-  useEffect(() => { 
-    fetchUsers();
-  }, [userListType, pagination]);
+  }, [pagination, triggerFilter]);
   
   return (
     <>
@@ -91,26 +85,27 @@ export default function UserList() {
         <InputFilter
           filterKey="fullName"
           setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
         >Full Name</InputFilter>
         {
           userListType !== "parent" && 
           <InputFilter
             filterKey="indexNumber"
             setFilter={setFilter}
+            setTriggerFilter={setTriggerFilter}
           >Index NUmber</InputFilter>
         }
         <InputFilter
           filterKey="email"
           setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
         >Email</InputFilter>
         <OptionFilter
           filterKey="status"
           values={["PENDING", "ACTIVE", "INACTIVE", "SUSPENDED"]}
           setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
         >Status</OptionFilter>
-        <div className="ml-auto">
-          <FilterControls setFilter={setFilter} setTriggerFilter={setTriggerFilter}/>
-        </div>
       </FilterWrapper>
       
       {/* Info */}
