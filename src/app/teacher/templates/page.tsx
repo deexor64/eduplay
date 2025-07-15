@@ -65,7 +65,7 @@ export default function TemplateList() {
 
   async function syncTemplates() {
     const url = `/api/templates/sync`;
-    const res = await fetch(url, {method: "POST"});
+    const res = await fetch(url, {method: "PUT"});
     fetchTemplates();
   }
 -

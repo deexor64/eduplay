@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import syncService from '@/services/templates/sync/syncService';
 import syncValidator from '@/validators/templates/sync/syncValidator';
-import { UserType } from '@/lib/utils/types';
 
-export async function POST(req: NextRequest) {
+export async function PUT(req: NextRequest) {
   
   try {
     
     const cookies = req.cookies;
     
-    const parsed = await syncValidator(cookies);
+    const parsed = syncValidator(cookies);
     if (!parsed.status) return NextResponse.json(
       {status: false, responseType: "log", data: parsed.data},
       { status: 401 }
