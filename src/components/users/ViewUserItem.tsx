@@ -35,8 +35,17 @@ export default function ViewUserItem(props: ViewUserItemProps) {
     <div className="border border-blue-200 bg-white rounded-xl p-4 flex items-center shadow hover:shadow-lg transition 
     hover:bg-blue-50 justify-between relative mb-0.5 mt-2 min-h-[96px]">
 
+      {/* Display picture */}
+      <div className="flex-shrink-0 mr-4">
+        <img
+          src={itemData.user.displayPicUrl}
+          alt={itemData.user.firstName + ' ' + itemData.user.lastName}
+          className="w-15 h-15 rounded-full object-cover border border-gray-200"
+        />
+      </div>
+
       {/* Item info */}
-        <div className="min-w-0">
+        <div className="min-w-0 mr-auto">
 
           {/* Clickable link */}
           <div className="flex items-center gap-2">
