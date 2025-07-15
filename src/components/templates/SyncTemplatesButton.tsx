@@ -10,7 +10,7 @@ export default function SyncTemplateButton(props: SyncTemplatesButtonProps) {
 
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const handleSync = async () => {
+  async function handleSync() {
     setIsSyncing(true);
     try { await props.syncTemplates() } 
     finally { setIsSyncing(false) }
