@@ -107,7 +107,7 @@ model Activity {
   activityID   String             @id @default(uuid())
   title        String
   instructions String
-  activityData String
+  activityData Json
   status       ActivityStatus     @default(UNPUBLISHED)
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
