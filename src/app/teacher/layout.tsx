@@ -1,4 +1,4 @@
-import CommonLayout from "@/components/navigator/NavigatorLayout";
+import CommonLayout from "@/layouts/NavigatorLayout";
 import AuthWrapper from "@/contexts/AuthWrapper";
 
 export default function AdminLayout(props: any) {

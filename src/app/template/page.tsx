@@ -4,8 +4,8 @@ import { TemplateViewMode, UserType } from "@/lib/utils/types";
 import { useSearchParams } from "next/navigation";
 import { lazy, Suspense, useMemo } from "react";
 import { EdgeStoreProvider } from "@/lib/edgestore";
-import CreateLayout from "@/components/templates/CreateLayout";
-import ViewLayout from "@/components/templates/ViewLayout";
+import CreateLayout from "@/layouts/CreateLayout";
+import ViewLayout from "@/layouts/ViewLayout";
 
 function loadComponent(templateCode: string, viewMode: TemplateViewMode) {
   if (viewMode === "CREATE") return lazy(() => import(`./${templateCode}/Create.tsx`));
