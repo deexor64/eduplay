@@ -13,11 +13,11 @@ import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
 
 
-type ViewLayoutProps = {
+type ViewActivityLayoutProps = {
   viewActivityComponent: React.LazyExoticComponent<React.ComponentType<any>>;
 }
 
-export default function ViewLayout(props: ViewLayoutProps) {
+export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   
   const { userType, teacherRole } = useAuth();
   
@@ -192,7 +192,7 @@ export default function ViewLayout(props: ViewLayoutProps) {
   const [showNarrator, setShowNarrator] = useState(false);
   
   return (
-    <>
+    <>ViewActivityLayout
       <div className="fixed inset-0 bg-cover bg-center"
         style={{ backgroundImage: "url('/images/activity-background.jpg')", backgroundAttachment: "fixed"}} >
         

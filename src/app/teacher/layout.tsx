@@ -1,12 +1,12 @@
-import CommonLayout from "@/layouts/NavigatorLayout";
+import NavigatorLayout from "@/layouts/NavigatorLayout";
 import AuthWrapper from "@/contexts/AuthWrapper";
 
 export default function AdminLayout(props: any) {
   return (
     <AuthWrapper allowedUserTypes={["TEACHER"]}>
-      <CommonLayout>
+      <NavigatorLayout>
         {props.children}
-      </CommonLayout>
+      </NavigatorLayout>
     </AuthWrapper>
   );
 }

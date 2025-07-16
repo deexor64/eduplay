@@ -9,11 +9,11 @@ import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 
-type CreateLayoutProps = {
+type CreateActivityLayoutProps = {
   createActivityComponent: React.LazyExoticComponent<React.ComponentType<any>>;
 }
 
-export default function CreateLayout(props: CreateLayoutProps) {
+export default function CreateActivityLayout(props: CreateActivityLayoutProps) {
 
   const searchParams = useSearchParams();
   const viewMode = searchParams.get("viewMode") as UserType;
