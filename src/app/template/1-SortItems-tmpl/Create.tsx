@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import generateHash  from "@/lib/utils/generateHash";
-import { CreateActivityProps } from "@/lib/utils/types";
+import { CreateActivityProps } from "@/layouts/CreateActivityLayout";
 
 type BasketItem = {
   type: "text" | "image";

@@ -17,6 +17,12 @@ type ViewActivityLayoutProps = {
   viewActivityComponent: React.LazyExoticComponent<React.ComponentType<any>>;
 }
 
+export interface ViewActivityProps {
+  activityData: any;
+  setResultValidation: React.Dispatch<React.SetStateAction<{ status: boolean, message: string}>>,
+  setResultData: React.Dispatch<React.SetStateAction<{score: any, data: any}>>,
+}
+
 export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   
   const { userType, teacherRole } = useAuth();

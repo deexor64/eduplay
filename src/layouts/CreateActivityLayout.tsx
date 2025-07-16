@@ -13,6 +13,12 @@ type CreateActivityLayoutProps = {
   createActivityComponent: React.LazyExoticComponent<React.ComponentType<any>>;
 }
 
+export interface CreateActivityProps {
+  setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
+  setActivityValidation: React.Dispatch<React.SetStateAction<{ status: boolean, message: string}>>,
+  setActivityFinalizer: React.Dispatch<React.SetStateAction<(fileUrlMap: Map<string, string> | false) => string>>,
+}
+
 export default function CreateActivityLayout(props: CreateActivityLayoutProps) {
 
   const searchParams = useSearchParams();

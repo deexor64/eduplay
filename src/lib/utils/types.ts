@@ -61,20 +61,6 @@ export type ResType = {
   data: any
 }
 
-// templates props
-// remove convert function out put to data output ....!!!
-export interface ViewActivityProps {
-  activityData: any;
-  setResultValidation: React.Dispatch<React.SetStateAction<{ status: boolean, message: string}>>,
-  setResultData: React.Dispatch<React.SetStateAction<{score: any, data: any}>>,
-}
-
-export interface CreateActivityProps {
-  setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
-  setActivityValidation: React.Dispatch<React.SetStateAction<{ status: boolean, message: string}>>,
-  setActivityFinalizer: React.Dispatch<React.SetStateAction<(fileUrlMap: Map<string, string> | false) => string>>,
-}
-
 // activity difficulty
 export type ActivityDifficulty = "EASY" | "MEDIUM" | "HARD";
 
