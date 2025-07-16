@@ -16,7 +16,7 @@ type CreateActivityLayoutProps = {
 export interface CreateActivityProps {
   setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
   setActivityValidation: React.Dispatch<React.SetStateAction<{ status: boolean, message: string}>>,
-  setActivityFinalizer: React.Dispatch<React.SetStateAction<(fileUrlMap: Map<string, string> | false) => string>>,
+  setActivityFinalizer: React.Dispatch<React.SetStateAction<(fileUrlMap: Map<string, string> | false) => Object>>,
 }
 
 export default function CreateActivityLayout(props: CreateActivityLayoutProps) {
@@ -45,8 +45,8 @@ export default function CreateActivityLayout(props: CreateActivityLayoutProps) {
   // Then it sends the valid activity info as json string (json structure depends on 
   // implementation of individual template)
   // If set false activity data is output without replacing filehashes
-  const [activityFinalizer, setActivityFinalizer] = useState<((fileUrlMap: Map<string, string> | false) => string)>(
-    (fileUrlMap: Map<string, string> | false): string => {return ""}
+  const [activityFinalizer, setActivityFinalizer] = useState<((fileUrlMap: Map<string, string> | false) => Object)>(
+    (fileUrlMap: Map<string, string> | false): Object => {return {}}
   );
 
   // ------------------------------------------------

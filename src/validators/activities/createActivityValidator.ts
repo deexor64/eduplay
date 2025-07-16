@@ -22,7 +22,7 @@ export default function createActivityValidator(cookies: RequestCookies, formDat
     templateCode: z.string(),
     title: z.string(),
     instructions: z.string(),
-    activityData: z.string(),
+    activityData: z.any(),
     options: z.object({
       timeLimit: z.number().min(0),
       isGraded: z.boolean(),
