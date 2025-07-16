@@ -1,11 +1,11 @@
 "use client";
 
-import ActivityTitle from "../components/templates/view-layout/ActivityTitle";
-import CoverImage from "../components/templates/view-layout/CoverImage";
-import Footer from "../components/templates/view-layout/Footer";
-import Description from "../components/templates/view-layout/Description";
-import Narrator from "../components/templates/view-layout/Narrator";
-import NarratorButton from "../components/templates/view-layout/NarratorButton";
+import ActivityTitle from "@/components/templates/view/ActivityTitle";
+import CoverImage from "@/components/templates/view/CoverImage";
+import Footer from "@/components/templates/view/Footer";
+import Description from "@/components/templates/view/Description";
+import Narrator from "@/components/templates/view/Narrator";
+import NarratorButton from "@/components/templates/view/NarratorButton";
 import { TemplateViewMode } from "@/lib/utils/types";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";

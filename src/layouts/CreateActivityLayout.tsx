@@ -1,9 +1,9 @@
-import TemplateTitle from "../components/templates/create-layout/TemplateTitle";
-import ActivityTitle from "../components/templates/create-layout/ActivityTitle";
-import Instructions from "../components/templates/create-layout/Instructions";
-import ActivityOptions from "../components/templates/create-layout/ActivityOptions";
-import Footer from "../components/templates/create-layout/Footer";
-import ActivityUploadProgress from "../components/templates/ActivityUploadProgress";
+import TemplateTitle from "@/components/templates/create/TemplateTitle";
+import ActivityTitle from "@/components/templates/create/ActivityTitle";
+import Instructions from "@/components/templates/create/Instructions";
+import ActivityOptions from "@/components/templates/create/ActivityOptions";
+import Footer from "@/components/templates/create/Footer";
+import ActivityUploadProgress from "@/components/templates/ActivityUploadProgress";
 import { UserType } from "@/lib/utils/types";
 import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
