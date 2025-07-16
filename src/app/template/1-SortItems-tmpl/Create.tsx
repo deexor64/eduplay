@@ -17,7 +17,7 @@ type Basket = {
 
 export default function SortItems(props: CreateActivityProps) {
 
-  const { setActivityValidator, setMediaFiles, setActivityFinerlizer } = props;
+  const { setMediaFiles, setActivityValidation, setActivityFinalizer } = props;
 
   const [baskets, setBaskets] = useState<Basket[]>([
     { title: "", items: [{ type: "text", value: "" }] },
@@ -25,26 +25,27 @@ export default function SortItems(props: CreateActivityProps) {
 
   // common
   useEffect(() => {
-    setActivityValidator(() => {
-      return () =>{
-        for (let basket of baskets) {
-          if (!basket.title.trim()) {
-            return { status: false, message: "Each basket must have a title." };
-          }
-          for (let item of basket.items) {
-            if (!item.value.trim()) {
-              return { status: false, message: "Each item must have a value." };
-            }
-          }
-        }
-        return { status: true, message: "" };
+      
+    for (let basket of baskets) {
+      if (!basket.title.trim()) {
+        setActivityValidation({ status: false, message: "Each basket must have a title." });
+        return;
       }
-    });
+      for (let item of basket.items) {
+        if (!item.value.trim()) {
+          setActivityValidation ({ status: false, message: "Each item must have a value." });
+          return;
+        }
+      }
+    }
+
+    setActivityValidation ({ status: true, message: "" });
+     
   }, [baskets]);
   
   // common
   useEffect(() => {
-    setActivityFinerlizer(() => {
+    setActivityFinalizer(() => {
       return (mediaFileUrls: Map<string, string> | false): string => {
     
         // Deep copy baskets to avoid mutating state

@@ -74,7 +74,7 @@ function DroppableZone(props: { id: string; children: any }) {
 
 function SortItems(props: ViewActivityProps) {
 
-  const { activityData, setResultValidator, setResultGrader, setResultData } = props;
+  const { activityData, setResultValidation, setResultData } = props;
 
   const [items, setItems] = useState<{
     [location: string]: { label: string; type: string; value: string }[];
@@ -110,12 +110,16 @@ function SortItems(props: ViewActivityProps) {
     setItems(initialItems);
   }
 
+  // result validation
+  useEffect(() => {
+    setResultValidation({ status: true, message: "" });
+  }, [activityData, setResultValidation]);
+
   // Return resultData in same format as activityData
   useEffect(() => {
-    setResultData(() => {
+
       const resultData: any[] = [];
       
-      // Convert current items state back to activityData format
       for (let key in items) {
         if (key !== 'box') {
           resultData.push({
@@ -129,49 +133,11 @@ function SortItems(props: ViewActivityProps) {
         }
       }
       
-      return resultData;
-    });
-  }, [items, setResultData]);
+      setResultData({score: {}, data: resultData});
 
-  useEffect(() => {
-    setResultValidator(() => {
-      // under development
-      return { status: true, message: "" }
-    });
-  }, [setResultValidator]);
+    }, [items, setResultData]);
 
-  useEffect(() => {
-    setResultGrader((workedData: any) => {
-      
-      // under development
-    
-      let correctCount = 0;
-      let totalGroups = activityData && Array.isArray(activityData) ? activityData.length : 0;
-
-      if (activityData && Array.isArray(activityData)) {
-        activityData.forEach((group: any) => {
-          const correctLabels = group.items.map((item: any) => item.label || item.value);
-          const userLabels = (workedData[group.title] || []).map((i: any) => i.label);
-
-          const sortedCorrect = [...correctLabels].sort();
-          const sortedUser = [...userLabels].sort();
-
-          if (JSON.stringify(sortedCorrect) === JSON.stringify(sortedUser)) {
-            correctCount += 1;
-          }
-        });
-      }
-
-      const passed = correctCount === totalGroups;
-      const message = `${passed ? "🎉 Great job! Everything is sorted correctly.\n" :
-        ""}✅ You got ${correctCount} out of ${totalGroups} baskets correct.`;
-
-      return { grading: {},
-        examinerDialog: message,
-        impression: passed ? "GOOD" as const : "OKAY" as const };
-      
-    });
-  }, [activityData, setResultGrader]);
+  
 
   function findContainer(label: string): string | null {
     for (let key in items) {

@@ -99,23 +99,18 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   // This is the data that is used by the viewActivityComponent
   const [activityData, setActivityData] = useState<any>();
 
-  // Result validation logic is specific to each template
   // The function just returns the correct validation message
   // Function doens't grade and score the activity
   // Only validations like if the student have completed the activity before submission etc
-  const [resultValidator, setResultValidator] = useState<Function>(
-    () => {return {status: false, message: ""}}
+  const [resultValidation, setResultValidation] = useState<{ status: boolean, message: string}>(
+    {status: false, message: ""}
   );
 
-  // Gives the score and grading of the activity based on the current state of the activity
-  // Grading is used as the score and an input to the narrator to give a feedback
-  const [resultGrader, setResultGrader] = useState<Function>(
-    () => {return {grading: {}, examinerDialog: "", impression: "HELP"}}
-  );
-
-  // This function just give the current state of the activity
+  // This function just give the current state of the activity and the scoring
   // It is used to restore the activity state for viewing progress
-  const [resultData, setResultData] = useState<any>();
+  const [resultData, setResultData] = useState<{score: any, data: any}>(
+    {score: {}, data: {}}
+  );
 
   useEffect(() => {
     setActivityData(dbData.activityData);
@@ -124,6 +119,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   // ------------------------------------------------
 
   // data sent to server
+  // under devlopment
   const [formData, setFormData] = useState({
     resultData: {}, // from children
     gradingData: {},
@@ -136,10 +132,8 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   
     // no validations for common template
     // validate lesson template
-    let validT = resultValidator();
-    if (!validT.status) {
-      return validT;
-    }
+    let validT = resultValidation;
+    if (!validT.status) return validT;
     
     return { status: true, message: "Success" };
     
@@ -192,7 +186,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   const [showNarrator, setShowNarrator] = useState(false);
   
   return (
-    <>ViewActivityLayout
+    <>
       <div className="fixed inset-0 bg-cover bg-center"
         style={{ backgroundImage: "url('/images/activity-background.jpg')", backgroundAttachment: "fixed"}} >
         
@@ -216,8 +210,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           {/* activity content */}
           {activityData ? <props.viewActivityComponent 
             activityData={activityData} 
-            setResultValidator={setResultValidator} 
-            setResultGrader={setResultGrader} 
+            setResultValidation={setResultValidation}
             setResultData={setResultData} /> 
             : (
               <div className="flex items-center justify-center p-8">
@@ -227,7 +220,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           }
 
           {/* footer */}
-          <Footer viewMode={viewMode} validateTemplate={resultValidator}/>
+          {/* <Footer viewMode={viewMode} validateTemplate={resultValidation}/> */}
         
         </div>
       </div>

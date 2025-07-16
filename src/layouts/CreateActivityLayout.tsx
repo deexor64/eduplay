@@ -22,16 +22,16 @@ export default function CreateActivityLayout(props: CreateActivityLayoutProps) {
 
   // For template -----------------------------------
 
-  // Only the particular template knows how to validate the activity
-  // template should validate the activity as it wish and just return the status
-  const [activityValidator, setActivityValidator] = useState<Function>(
-    () => { return {status: false, message: ""} }
-  );
-
   // As we are using edge store, the template cannot get a valid url while
   // editing the template. Urls are only generated after submitting the files
   // So the template just save their files temporaly in the state
   const [mediaFiles, setMediaFiles] = useState<Map<string, File>>(new Map());
+
+  // Only the particular template knows how to validate the activity
+  // template should validate the activity as it wish and just return the status
+  const [activityValidation, setActivityValidation] = useState<{ status: boolean, message: string}>(
+    {status: false, message: ""}
+  );
 
   // But only the template knows how to replace the file hashes with the actual urls
   // So we need to upload files first and then pass the media files urls 
@@ -39,8 +39,8 @@ export default function CreateActivityLayout(props: CreateActivityLayoutProps) {
   // Then it sends the valid activity info as json string (json structure depends on 
   // implementation of individual template)
   // If set false activity data is output without replacing filehashes
-  const [activityFinerlizer, setActivityFinerlizer] = useState<Function>(
-    (fileUrlMap: Map<string, File> | false): string => {return ""}
+  const [activityFinalizer, setActivityFinalizer] = useState<((fileUrlMap: Map<string, string> | false) => string)>(
+    (fileUrlMap: Map<string, string> | false): string => {return ""}
   );
 
   // ------------------------------------------------
@@ -80,18 +80,18 @@ export default function CreateActivityLayout(props: CreateActivityLayoutProps) {
     }
     
     // validate activity
-    return activityValidator();
+    return activityValidation;
     
   }
   
   // Create the final form combining the common and activity specific fields
   // Then return the combined form as a json string
-  function activityForm(mediaFileUrls: Map<string, string>): string {
+  function activityForm(finalizedActivityData: any): string {
       
     // form
     const form = {
       ...formData,
-      activityData: activityFinerlizer(mediaFileUrls),
+      activityData: finalizedActivityData,
     }
   
     return JSON.stringify(form);
@@ -132,7 +132,8 @@ export default function CreateActivityLayout(props: CreateActivityLayoutProps) {
     }
     
     // send the form data
-    const form = activityForm(mediaFileUrls);
+    const finalizedActivityData = activityFinalizer(mediaFileUrls)
+    const form = activityForm(finalizedActivityData);
     
     const url = `/api/activities`;
     const res = await fetch(url, {
@@ -173,9 +174,9 @@ export default function CreateActivityLayout(props: CreateActivityLayoutProps) {
         
         {/* template content */}
         {<props.createActivityComponent
-          setActivityValidator={setActivityValidator}
           setMediaFiles={setMediaFiles}
-          setActivityFinerlizer={setActivityFinerlizer}
+          setActivityValidation={setActivityValidation}
+          setActivityFinalizer={setActivityFinalizer}
         />}
 
         {/* activity options */}
