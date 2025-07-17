@@ -12,7 +12,6 @@ import { useSearchParams } from "next/navigation";
 import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
 
-
 type ViewActivityLayoutProps = {
   viewActivityComponent: React.LazyExoticComponent<React.ComponentType<any>>;
 }
@@ -20,7 +19,14 @@ type ViewActivityLayoutProps = {
 export interface ViewActivityProps {
   activityData: any;
   setResultValidation: React.Dispatch<React.SetStateAction<{ status: boolean, message: string}>>,
-  setResultData: React.Dispatch<React.SetStateAction<{score: any, data: any}>>,
+  setResultData: React.Dispatch<React.SetStateAction<{
+    score: {
+      baseScore: number,
+      maxScore: number,
+      displayText: string,
+    },
+    data: any
+  }>>,
 }
 
 export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
@@ -82,8 +88,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
       const url = `/api/activities/${activityID}`;
       const res = await fetch(url);
       const resData = await res.json();
-      setDbData({...resData.data, 
-        activityData: JSON.parse(resData.data.activityData)});
+      setDbData(resData.data);
     }
     // view mode is "PROGRESS"
     else {

@@ -3,17 +3,30 @@
 import { ViewActivityProps } from "@/layouts/ViewActivityLayout";
 import { useEffect, useState } from "react";
 import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-kit/core";
+import { ActivityDataType, Basket, BasketItemType } from "./Create";
 
-type BasketItem = {
-  type: "text" | "image";
-  value: string;
-  label?: string;
-};
+/*
+Activity input example
 
-type Basket = {
-  title: string;
-  items: BasketItem[];
-};
+{
+  "box": [
+    { "basket": "Fruits", "type": "text", "value": "Apple" },
+    { "basket": "Fruits", "type": "image", "value": "https://example.com/apple.jpg", "label": "Apple" }
+    { "basket": "Vegetables", "type": "image", "value": "https://example.com/carrot.jpg", "label": "Carrot" }
+  ],
+  "baskets": [
+    { 
+      "basket": "Fruits",
+      "items": []
+    },
+    {
+      "basket": "Vegetables",
+      "items": [{ "basket": "Vegetables", "type": "text", "value": "Carrot" }]
+    }
+  ]
+}
+*/
+
 
 // text component
 function TextItem(props: { id: string }) {
@@ -76,72 +89,37 @@ function SortItems(props: ViewActivityProps) {
 
   const { activityData, setResultValidation, setResultData } = props;
 
-  const [items, setItems] = useState<{
-    [location: string]: { label: string; type: string; value: string }[];
-  }>({ box: [] })
+  // Central state for all activity data
+  const [basketData, setBasketData] = useState<ActivityDataType>(
+    { box: [], baskets: [] }
+  );
 
-  // Build structure from activityData or reconstruct from resultData
+  // Sync basketData when activityData changes (for async loads)
   useEffect(() => {
-    if (activityData && Array.isArray(activityData)) {
-      buildStructure(activityData);
+    if (activityData && activityData.box && activityData.baskets) {
+      setBasketData(JSON.parse(JSON.stringify(activityData)));
     }
   }, [activityData]);
 
-  function buildStructure(data: any) {
-    const initialItems: {
-      [location: string]: { label: string; type: string; value: string }[];
-    } = { box: [] };
-
-    // Build structure from activityData format
-    data.forEach((group: any) => {
-      const basketId = group.title;
-      initialItems[basketId] = [];
-
-      group.items.forEach((item: any) => {
-        const label = item.label || item.value;
-        initialItems.box.push({
-          label: label,
-          type: item.type,
-          value: item.value,
-        });
-      });
-    });
-    
-    setItems(initialItems);
-  }
-
-  // result validation
+  // Validation effect
   useEffect(() => {
     setResultValidation({ status: true, message: "" });
-  }, [activityData, setResultValidation]);
+  }, [basketData, setResultValidation]);
 
-  // Return resultData in same format as activityData
+  // Result reporting effect
   useEffect(() => {
+    setResultData({ score: { baseScore: 0, maxScore: 0, displayText: "" }, data: basketData });
+  }, [basketData, setResultData]);
 
-      const resultData: any[] = [];
-      
-      for (let key in items) {
-        if (key !== 'box') {
-          resultData.push({
-            title: key,
-            items: items[key].map((item) => ({
-              label: item.label,
-              type: item.type,
-              value: item.value,
-            }))
-          });
-        }
-      }
-      
-      setResultData({score: {}, data: resultData});
-
-    }, [items, setResultData]);
-
-  
-
-  function findContainer(label: string): string | null {
-    for (let key in items) {
-      if (items[key].some((item) => item.label === label)) return key;
+  // Drag-and-drop logic
+  function findItemLocation(itemLabel: string): { type: 'box' | 'basket', basketIdx?: number, itemIdx: number } | null {
+    // Search box
+    const boxIdx = basketData.box.findIndex(item => (item.label || item.value) === itemLabel);
+    if (boxIdx !== -1) return { type: 'box', itemIdx: boxIdx };
+    // Search baskets
+    for (let b = 0; b < basketData.baskets.length; ++b) {
+      const idx = basketData.baskets[b].items.findIndex(item => (item.label || item.value) === itemLabel);
+      if (idx !== -1) return { type: 'basket', basketIdx: b, itemIdx: idx };
     }
     return null;
   }
@@ -149,34 +127,55 @@ function SortItems(props: ViewActivityProps) {
   function handleDragEnd(event: any) {
     const { active, over } = event;
     if (!over) return;
+    const itemLabel = active.id;
+    const toId = over.id;
+    const fromLoc = findItemLocation(itemLabel);
+    if (!fromLoc) return;
 
-    const from = findContainer(active.id);
-    const to = over.id;
-
-    if (from && to && from !== to) {
-      setItems((prev) => {
-        const activeItem = prev[from].find((item) => item.label === active.id);
-        if (!activeItem) return prev;
-
-        const newFrom = prev[from].filter((item) => item.label !== active.id);
-        const newTo = [...(prev[to] || []), activeItem];
-        return { ...prev, [from]: newFrom, [to]: newTo };
-      });
+    // If dropped in same place, do nothing
+    if ((fromLoc.type === 'box' && toId === 'box') ||
+        (fromLoc.type === 'basket' && basketData.baskets[fromLoc.basketIdx!].basket === toId)) {
+      return;
     }
+
+    setBasketData(prev => {
+      let newBox = prev.box.slice();
+      let newBaskets = prev.baskets.map(b => ({ ...b, items: b.items.slice() }));
+      let movedItem: BasketItemType | null = null;
+      // Remove from old location
+      if (fromLoc.type === 'box') {
+        movedItem = newBox.splice(fromLoc.itemIdx, 1)[0];
+      } else {
+        movedItem = newBaskets[fromLoc.basketIdx!].items.splice(fromLoc.itemIdx, 1)[0];
+      }
+      if (!movedItem) return prev;
+      // Add to new location
+      if (toId === 'box') {
+        movedItem.basket = "";
+        newBox.push(movedItem);
+      } else {
+        // Find basket index
+        const basketIdx = newBaskets.findIndex(b => b.basket === toId);
+        if (basketIdx !== -1) {
+          movedItem.basket = toId;
+          newBaskets[basketIdx].items.push(movedItem);
+        }
+      }
+      return { box: newBox, baskets: newBaskets };
+    });
   }
 
   return (
-  
     <DndContext collisionDetection={rectIntersection} onDragEnd={handleDragEnd}>
       <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
         <h2 className="text-xl font-semibold mb-4">Items to Sort</h2>
         <DroppableZone id="box">
           <div className="flex flex-wrap gap-4">
-            {items.box &&
-              items.box.map((item) => (
+            {basketData.box &&
+              basketData.box.map((item, idx) => (
                 <DraggableItem
-                  key={item.label}
-                  id={item.label}
+                  key={item.type + '-' + item.value}
+                  id={item.label || item.value}
                   type={item.type}
                   value={item.value}
                 />
@@ -186,18 +185,18 @@ function SortItems(props: ViewActivityProps) {
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        {activityData && Array.isArray(activityData) && activityData.map((group: any) => (
+        {basketData.baskets.map((basket, basketIdx) => (
           <div
             className="bg-gray-50 border-2 border-dashed border-gray-300 p-4 rounded-xl min-h-[120px]"
-            key={group.title}
+            key={basket.basket || basketIdx}
           >
-            <h3 className="text-lg font-semibold mb-2 text-gray-900">{group.title}</h3>
-            <DroppableZone id={group.title}>
-              {items[group.title] &&
-                items[group.title].map((item) => (
+            <h3 className="text-lg font-semibold mb-2 text-gray-900">{basket.basket}</h3>
+            <DroppableZone id={basket.basket}>
+              {basket.items &&
+                basket.items.map((item, idx) => (
                   <DraggableItem
-                    key={item.label}
-                    id={item.label}
+                    key={item.type + '-' + item.value}
+                    id={item.label || item.value}
                     type={item.type}
                     value={item.value}
                   />
@@ -207,7 +206,6 @@ function SortItems(props: ViewActivityProps) {
         ))}
       </section>
     </DndContext>
-
   );
 }
 
