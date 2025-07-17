@@ -119,7 +119,10 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
   // This function just give the current state of the activity and the scoring
   // It is used to restore the activity state for viewing progress
-  const [resultData, setResultData] = useState<{score: any, data: any}>(
+  const [resultData, setResultData] = useState<{
+    score: { baseScore: number, maxScore: number, summery: string },
+    data: any
+  }>(
     {score: { baseScore: 0, maxScore: 0, summery: "" }, data: {}}
   );
 
@@ -129,10 +132,20 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
   // ------------------------------------------------
 
+  // narrator
+  const [showNarrator, setShowNarrator] = useState(false);
+
   // data sent to server
   // under devlopment
   const [formData, setFormData] = useState({
-    resultData: {}, // from children
+    resultData: {
+      score: {
+          baseScore: 0,
+          maxScore: 0,
+          summery: ""
+      },
+      data: {}
+    },
     gradingData: {},
   });
 
@@ -141,7 +154,8 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     
     // under devlopment
   
-    // no validations for common template
+    // validations for common template
+
     // validate lesson template
     let validT = resultValidation;
     if (!validT.status) return validT;
@@ -151,16 +165,16 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   }
   
   function resultForm(): {form: string, params: URLSearchParams} {
-    // under devlopment
     
     // form
     const form = {
       ...formData,
+      resultData: resultData,
     };
     
     // params
     const params = cleanParams({ 
-      userType: userType
+      activityID: activityID
     })
     
     return {
@@ -176,6 +190,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     // validate
     const valid = validateResultForm();
     console.log(valid);
+    if (!valid.status) return;
     
     // submit
     const form = resultForm();
@@ -193,18 +208,11 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     
   };
 
-  // narrator
-  const [showNarrator, setShowNarrator] = useState(false);
   
   return (
     <>
       <div className="fixed inset-0 bg-cover bg-center"
         style={{ backgroundImage: "url('/images/activity-background.jpg')", backgroundAttachment: "fixed"}} >
-        
-        {/* Narrator */}
-        { showNarrator && 
-          <Narrator showNarrator={showNarrator} text="Hello, how are you?" /> 
-        }
         
         <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-4 backdrop-blur-xs bg-transparent">
           
@@ -234,6 +242,13 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           {/* <Footer viewMode={viewMode} validateTemplate={resultValidation}/> */}
         
         </div>
+
+        {/* Narrator */}
+        { showNarrator && 
+          <Narrator showNarrator={showNarrator} setShowNarrator={setShowNarrator} 
+          resultData={resultData}/> 
+        }
+
       </div>
 
       {/* Narrator toggle button  */}

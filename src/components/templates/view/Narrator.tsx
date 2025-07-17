@@ -8,11 +8,20 @@ import React, { useEffect, useState } from "react";
 
 type NarratorProps = {
   showNarrator: boolean,
-  text: string,
+  setShowNarrator: React.Dispatch<React.SetStateAction<boolean>>,
+  resultData: {
+    score: {
+        baseScore: number;
+        maxScore: number;
+        summery: string;
+    };
+    data: any;
+  },
 };
 
 export default function Narrator(props: NarratorProps) {
 
+  // Animate narrator pop up
   const [animate, setAnimate] = useState(false);
   const [visible, setVisible] = useState(props.showNarrator);
 
@@ -28,22 +37,48 @@ export default function Narrator(props: NarratorProps) {
     }
   }, [props.showNarrator]);
 
+  // Narrator text
+  const [narratorText, setNarratorText] = useState("");
+  
+  // Fech narrator text
+  // Each time result data chnages, the narrator gives a guide or hint
+  async function fetchNarratorText() {
+
+    setNarratorText(props.resultData.score.summery);
+
+    // const url = `/api/chatbot/narrator`;
+    // const res = await fetch(url, {
+    //   method: "POST",
+    //   headers: { 
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(props.resultData)
+    // });
+    // const resData = await res.json();
+    // setNarratorText(resData.data);
+
+  }
+
+  useEffect(() => {
+    fetchNarratorText();
+  }, [props.resultData]);
+
   if (!visible) return null;
 
   return (
 
-    <div className="fixed inset-0 w-full h-full pointer-events-auto z-50">
+    <div className="fixed inset-0 w-full h-full pointer-events-auto z-50" onClick={function() { props.setShowNarrator(false) }}>
       <div className="absolute top-2 bottom-7 right-8 flex flex-col items-end max-h-[100vh]">
         
         {/* Narrator box */}
         <div className="bg-black/30 rounded-2xl shadow-2xl p-8 pr-10 flex flex-col items-end min-w-[400px] max-w-[500px] h-full w-full justify-end"
           style={{backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)"}}
-        >
+          onClick={function(e) { e.stopPropagation() }}>
 
           {/* Dialogue box */}
           <div className="flex-1 w-full bg-white/95 rounded-xl px-8 py-5 shadow-md text-[1.1rem] text-[#222] mb-6 overflow-y-auto flex items-start justify-start">
             {/* Dialogue will go here */}
-            {props.text}
+            {narratorText}
           </div>
           
           {/* Narrator image */}

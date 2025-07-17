@@ -27,6 +27,29 @@ Activity input example
 }
 */
 
+/*
+Activity output example
+
+{
+  "box": [],
+  "baskets": [
+    { 
+      "basket": "Fruits",
+      "items": [
+        { "basket": "Fruits", "type": "text", "value": "Apple" },
+        { "basket": "Fruits", "type": "image", "value": "https://example.com/apple.jpg", "label": "Apple" },
+      ]
+    },
+    {
+      "basket": "Vegetables",
+      "items": [
+        { "basket": "Vegetables", "type": "text", "value": "Carrot" },
+        { "basket": "Vegetables", "type": "image", "value": "https://example.com/carrot.jpg", "label": "Carrot" }
+      ]
+    }
+  ]
+}
+*/
 
 // text component
 function TextItem(props: { id: string; value: string }) {
