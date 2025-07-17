@@ -5,6 +5,7 @@ import CoverImage from "@/components/templates/view/CoverImage";
 import Footer from "@/components/templates/view/Footer";
 import Description from "@/components/templates/view/Description";
 import Narrator from "@/components/templates/view/Narrator";
+import Celebration from "@/components/templates/view/Celebration";
 import NarratorButton from "@/components/templates/view/NarratorButton";
 import { TemplateViewMode } from "@/lib/utils/types";
 import { useEffect, useState } from "react";
@@ -135,6 +136,9 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   // narrator
   const [showNarrator, setShowNarrator] = useState(false);
 
+  // Celebration
+  const [showCelebration, setShowCelebration] = useState(false);
+
   // data sent to server
   // under devlopment
   const [formData, setFormData] = useState({
@@ -195,16 +199,22 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     // submit
     const form = resultForm();
     
-    const url = `/api/signin?${form.params}`;
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-      },
-      body: form.form
-    })
- 
-    const resData = await res.json();
+    // Progress is saved only for graded activities
+    if (dbData.isGraded) { 
+
+      const url = `/api/progress?${form.params}`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+        },
+        body: form.form
+      })
+
+    }
+    
+    // Celebration is shown regardless of graded or not
+    setShowCelebration(true);
     
   };
 
@@ -239,7 +249,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           }
 
           {/* footer */}
-          {/* <Footer viewMode={viewMode} validateTemplate={resultValidation}/> */}
+          <Footer viewMode={viewMode} handleSubmit={handleSubmit} />
         
         </div>
 
@@ -247,6 +257,13 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
         { showNarrator && 
           <Narrator showNarrator={showNarrator} setShowNarrator={setShowNarrator} 
           resultData={resultData}/> 
+        }
+
+        {/* Celebration */}
+        { showCelebration && 
+          <Celebration showCelebration={showCelebration} setShowCelebration={setShowCelebration}
+            score={resultData.score}
+          />
         }
 
       </div>
