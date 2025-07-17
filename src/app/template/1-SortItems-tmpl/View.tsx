@@ -11,7 +11,7 @@ Activity input example
 {
   "box": [
     { "basket": "Fruits", "type": "text", "value": "Apple" },
-    { "basket": "Fruits", "type": "image", "value": "https://example.com/apple.jpg", "label": "Apple" }
+    { "basket": "Fruits", "type": "image", "value": "https://example.com/apple.jpg", "label": "Apple" },
     { "basket": "Vegetables", "type": "image", "value": "https://example.com/carrot.jpg", "label": "Carrot" }
   ],
   "baskets": [
@@ -29,8 +29,8 @@ Activity input example
 
 
 // text component
-function TextItem(props: { id: string }) {
-  return <span>{props.id}</span>;
+function TextItem(props: { id: string; value: string }) {
+  return <span>{props.value}</span>;
 }
 
 // image component
@@ -64,7 +64,7 @@ function DraggableItem(props: { id: string; type: string; value: string }) {
       {props.type === "image" ? (
         <ImageItem src={props.value} alt={props.id} />
       ) : (
-        <TextItem id={props.id} />
+        <TextItem id={props.id} value={props.value} />
       )}
     </div>
   );
@@ -103,22 +103,57 @@ function SortItems(props: ViewActivityProps) {
 
   // Validation effect
   useEffect(() => {
-    setResultValidation({ status: true, message: "" });
+    // Check if all items are used (box is empty)
+    const itemsInBox = basketData.box.length;
+    if (itemsInBox === 0) {
+      setResultValidation({ status: true, message: "All items have been sorted!" });
+    } else {
+      setResultValidation({ status: false, message: `Please sort all ${itemsInBox} remaining item(s).` });
+    }
   }, [basketData, setResultValidation]);
 
   // Result reporting effect
   useEffect(() => {
-    setResultData({ score: { baseScore: 0, maxScore: 0, displayText: "" }, data: basketData });
+    // Calculate score based on correctly sorted items
+    let correctItems = 0;
+    let incorrectItems = 0;
+    
+    basketData.baskets.forEach(basket => {
+      basket.items.forEach(item => {
+        // Item is correct if its intended basket matches the current basket
+        if (item.basket === basket.basket) {
+          correctItems++;
+        } else {
+          incorrectItems++;
+        }
+      });
+    });
+    
+    const notSortedItems = basketData.box.length;
+    const totalItems = correctItems + incorrectItems + notSortedItems;
+    
+    const score = totalItems > 0 ? Math.round((correctItems / totalItems) * 100) : 0;
+    
+    const summery = `Correctly sorted ${correctItems} \nIncorrectly sorted ${incorrectItems}`;
+    
+    setResultData({ 
+      score: { 
+        baseScore: score, 
+        maxScore: 100, 
+        summery: summery 
+      }, 
+      data: basketData 
+    });
   }, [basketData, setResultData]);
 
   // Drag-and-drop logic
-  function findItemLocation(itemLabel: string): { type: 'box' | 'basket', basketIdx?: number, itemIdx: number } | null {
+  function findItemLocation(itemId: string): { type: 'box' | 'basket', basketIdx?: number, itemIdx: number } | null {
     // Search box
-    const boxIdx = basketData.box.findIndex(item => (item.label || item.value) === itemLabel);
+    const boxIdx = basketData.box.findIndex(item => (item.basket + '-' + (item.label || item.value)) === itemId);
     if (boxIdx !== -1) return { type: 'box', itemIdx: boxIdx };
     // Search baskets
     for (let b = 0; b < basketData.baskets.length; ++b) {
-      const idx = basketData.baskets[b].items.findIndex(item => (item.label || item.value) === itemLabel);
+      const idx = basketData.baskets[b].items.findIndex(item => (item.basket + '-' + (item.label || item.value)) === itemId);
       if (idx !== -1) return { type: 'basket', basketIdx: b, itemIdx: idx };
     }
     return null;
@@ -127,9 +162,9 @@ function SortItems(props: ViewActivityProps) {
   function handleDragEnd(event: any) {
     const { active, over } = event;
     if (!over) return;
-    const itemLabel = active.id;
+    const itemId = active.id;
     const toId = over.id;
-    const fromLoc = findItemLocation(itemLabel);
+    const fromLoc = findItemLocation(itemId);
     if (!fromLoc) return;
 
     // If dropped in same place, do nothing
@@ -151,13 +186,11 @@ function SortItems(props: ViewActivityProps) {
       if (!movedItem) return prev;
       // Add to new location
       if (toId === 'box') {
-        movedItem.basket = "";
         newBox.push(movedItem);
       } else {
         // Find basket index
         const basketIdx = newBaskets.findIndex(b => b.basket === toId);
         if (basketIdx !== -1) {
-          movedItem.basket = toId;
           newBaskets[basketIdx].items.push(movedItem);
         }
       }
@@ -174,8 +207,8 @@ function SortItems(props: ViewActivityProps) {
             {basketData.box &&
               basketData.box.map((item, idx) => (
                 <DraggableItem
-                  key={item.type + '-' + item.value}
-                  id={item.label || item.value}
+                  key={item.basket + '-' + (item.label || item.value)}
+                  id={item.basket + '-' + (item.label || item.value)}
                   type={item.type}
                   value={item.value}
                 />
@@ -195,8 +228,8 @@ function SortItems(props: ViewActivityProps) {
               {basket.items &&
                 basket.items.map((item, idx) => (
                   <DraggableItem
-                    key={item.type + '-' + item.value}
-                    id={item.label || item.value}
+                    key={item.basket + '-' + (item.label || item.value)}
+                    id={item.basket + '-' + (item.label || item.value)}
                     type={item.type}
                     value={item.value}
                   />

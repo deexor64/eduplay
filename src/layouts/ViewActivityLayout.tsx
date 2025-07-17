@@ -23,7 +23,7 @@ export interface ViewActivityProps {
     score: {
       baseScore: number,
       maxScore: number,
-      displayText: string,
+      summery: string,
     },
     data: any
   }>>,
@@ -120,7 +120,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   // This function just give the current state of the activity and the scoring
   // It is used to restore the activity state for viewing progress
   const [resultData, setResultData] = useState<{score: any, data: any}>(
-    {score: {}, data: {}}
+    {score: { baseScore: 0, maxScore: 0, summery: "" }, data: {}}
   );
 
   useEffect(() => {
@@ -237,7 +237,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
       </div>
 
       {/* Narrator toggle button  */}
-      <NarratorButton setShowNarrator={setShowNarrator}/>
+      <NarratorButton setShowNarrator={setShowNarrator} />
      
     </>
   );
