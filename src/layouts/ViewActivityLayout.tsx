@@ -142,15 +142,14 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   // data sent to server
   // under devlopment
   const [formData, setFormData] = useState({
-    resultData: {
-      score: {
-          baseScore: 0,
-          maxScore: 0,
-          summery: ""
-      },
-      data: {}
+    activityID: activityID,
+    score: {
+      baseScore: 0,
+      maxScore: 0,
+      summery: ""
     },
-    gradingData: {},
+    data: {},
+    timeTaken: 0,
   });
 
   
@@ -168,23 +167,15 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     
   }
   
-  function resultForm(): {form: string, params: URLSearchParams} {
+  function resultForm(): string {
     
     // form
     const form = {
       ...formData,
-      resultData: resultData,
+      ...resultData,
     };
     
-    // params
-    const params = cleanParams({ 
-      activityID: activityID
-    })
-    
-    return {
-      form: JSON.stringify(form),
-      params: new URLSearchParams(params)
-    }
+    return JSON.stringify(form);
     
   }
   
@@ -202,14 +193,16 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     // Progress is saved only for graded activities
     if (dbData.isGraded) { 
 
-      const url = `/api/progress?${form.params}`;
+      const url = `/api/progress`;
       const res = await fetch(url, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
         },
-        body: form.form
+        body: form
       })
+
+      console.log(await res.json())
 
     }
     
