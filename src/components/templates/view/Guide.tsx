@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 
 /*
 
-  const [showNarrator, setShowNarrator] = useState(true);
+  const [showGuide, setShowGuide] = useState(true);
 
 */
 
-type NarratorProps = {
-  showNarrator: boolean,
-  setShowNarrator: React.Dispatch<React.SetStateAction<boolean>>,
+type GuideProps = {
+  showGuide: boolean,
+  setShowGuide: React.Dispatch<React.SetStateAction<boolean>>,
   resultData: {
     score: {
         baseScore: number;
@@ -19,14 +19,14 @@ type NarratorProps = {
   },
 };
 
-export default function Narrator(props: NarratorProps) {
+export default function Guide(props: GuideProps) {
 
-  // Animate narrator pop up
+  // Animate guide pop up
   const [animate, setAnimate] = useState(false);
-  const [visible, setVisible] = useState(props.showNarrator);
+  const [visible, setVisible] = useState(props.showGuide);
 
   useEffect(() => {
-    if (props.showNarrator) {
+    if (props.showGuide) {
       setVisible(true);
       setTimeout(() => {
         setAnimate(true);
@@ -35,18 +35,18 @@ export default function Narrator(props: NarratorProps) {
       setAnimate(false);
       setVisible(false);
     }
-  }, [props.showNarrator]);
+  }, [props.showGuide]);
 
-  // Narrator text
-  const [narratorText, setNarratorText] = useState("");
+  // Guide text
+  const [guideText, setGuideText] = useState("");
   
-  // Fech narrator text
-  // Each time result data chnages, the narrator gives a guide or hint
-  async function fetchNarratorText() {
+  // Fech guide text
+  // Each time result data chnages, the guide gives a guide or hint
+  async function fetchGuideText() {
 
-    setNarratorText(props.resultData.score.summery);
+    setGuideText(props.resultData.score.summery);
 
-    // const url = `/api/chatbot/narrator`;
+    // const url = `/api/chatbot/guide`;
     // const res = await fetch(url, {
     //   method: "POST",
     //   headers: { 
@@ -55,22 +55,22 @@ export default function Narrator(props: NarratorProps) {
     //   body: JSON.stringify(props.resultData)
     // });
     // const resData = await res.json();
-    // setNarratorText(resData.data);
+    // setGuideText(resData.data);
 
   }
 
   useEffect(() => {
-    fetchNarratorText();
+    fetchGuideText();
   }, [props.resultData]);
 
   if (!visible) return null;
 
   return (
 
-    <div className="fixed inset-0 w-full h-full pointer-events-auto z-50" onClick={function() { props.setShowNarrator(false) }}>
+    <div className="fixed inset-0 w-full h-full pointer-events-auto z-50" onClick={function() { props.setShowGuide(false) }}>
       <div className="absolute top-2 bottom-7 right-8 flex flex-col items-end max-h-[100vh]">
         
-        {/* Narrator box */}
+        {/* Guide box */}
         <div className="bg-black/30 rounded-2xl shadow-2xl p-8 pr-10 flex flex-col items-end min-w-[400px] max-w-[500px] h-full w-full justify-end"
           style={{backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)"}}
           onClick={function(e) { e.stopPropagation() }}>
@@ -78,16 +78,16 @@ export default function Narrator(props: NarratorProps) {
           {/* Dialogue box */}
           <div className="flex-1 w-full bg-white/95 rounded-xl px-8 py-5 shadow-md text-[1.1rem] text-[#222] mb-6 overflow-y-auto flex items-start justify-start">
             {/* Dialogue will go here */}
-            {narratorText}
+            {guideText}
           </div>
           
-          {/* Narrator image */}
+          {/* Guide character image */}
           <img
-            src="/images/narrator.png"
-            alt="Narrator"
+            src="/images/guide.png"
+            alt="Guide"
             className={
               "h-[50vh] max-h-[50vh] w-auto self-end transition-transform duration-400" +
-              (animate ? " narrator-genie-in" : " narrator-genie-out")
+              (animate ? " guide-genie-in" : " guide-genie-out")
             }
             style={{}}
           />
@@ -97,13 +97,13 @@ export default function Narrator(props: NarratorProps) {
 
       {/* Genie animation CSS */}
       <style jsx global>{`
-        .narrator-genie-in {
-          animation: narrator-genie-in-anim 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        .guide-genie-in {
+          animation: guide-genie-in-anim 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
-        .narrator-genie-out {
-          animation: narrator-genie-out-anim 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        .guide-genie-out {
+          animation: guide-genie-out-anim 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
-        @keyframes narrator-genie-in-anim {
+        @keyframes guide-genie-in-anim {
           0% {
             opacity: 0;
             transform: translate(-60px, 60px) scale(0.3);
@@ -117,7 +117,7 @@ export default function Narrator(props: NarratorProps) {
             transform: translate(0, 0) scale(1);
           }
         }
-        @keyframes narrator-genie-out-anim {
+        @keyframes guide-genie-out-anim {
           0% {
             opacity: 1;
             transform: translate(0, 0) scale(1);

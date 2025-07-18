@@ -4,9 +4,9 @@ import ActivityTitle from "@/components/templates/view/ActivityTitle";
 import CoverImage from "@/components/templates/view/CoverImage";
 import Footer from "@/components/templates/view/Footer";
 import Description from "@/components/templates/view/Description";
-import Narrator from "@/components/templates/view/Narrator";
+import Guide from "@/components/templates/view/Guide";
 import Celebration from "@/components/templates/view/Celebration";
-import NarratorButton from "@/components/templates/view/NarratorButton";
+import GuideButton from "@/components/templates/view/GuideButton";
 import { TemplateViewMode } from "@/lib/utils/types";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -133,8 +133,8 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
   // ------------------------------------------------
 
-  // narrator
-  const [showNarrator, setShowNarrator] = useState(false);
+  // guide
+  const [showGuide, setShowGuide] = useState(false);
 
   // Celebration
   const [showCelebration, setShowCelebration] = useState(false);
@@ -246,9 +246,9 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
         
         </div>
 
-        {/* Narrator */}
-        { showNarrator && 
-          <Narrator showNarrator={showNarrator} setShowNarrator={setShowNarrator} 
+        {/* Guide */}
+        { showGuide && 
+          <Guide showGuide={showGuide} setShowGuide={setShowGuide} 
           resultData={resultData}/> 
         }
 
@@ -261,8 +261,8 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
       </div>
 
-      {/* Narrator toggle button  */}
-      <NarratorButton setShowNarrator={setShowNarrator} />
+      {/* Guide toggle button  */}
+      <GuideButton setShowGuide={setShowGuide} />
      
     </>
   );
