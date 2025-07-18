@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
+import Assistant from "@/components/shared/Assistant";
 
 type ViewActivityLayoutProps = {
   viewActivityComponent: React.LazyExoticComponent<React.ComponentType<any>>;
@@ -38,6 +39,13 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   const viewMode = searchParams.get("viewMode") as TemplateViewMode;
   const templateCode = searchParams.get("templateCode") as string;
   const activityID = searchParams.get("activityID") as string;
+
+  const [showAssistant, setShowAssistant] = useState<boolean>(false);
+  const [assistantMessage, setAssistantMessage] = useState<{
+    text: string,
+    mood?: "happy" | "angry" | "sad" | "normal" | "scared" | "confused",
+    type?: "normal" | "error" | "success" | "warning" | "info"
+  }>({text: ""});
   
   // Data recieved from server
   // This object is used by subcomponents to display the data
@@ -133,7 +141,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
   // ------------------------------------------------
 
-  // guide
+  // Guide
   const [showGuide, setShowGuide] = useState(false);
 
   // Celebration
@@ -182,10 +190,13 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   async function handleSubmit () {
     // under devlopment
   
-    // validate
+    // validate and show assistant message
     const valid = validateResultForm();
-    console.log(valid);
-    if (!valid.status) return;
+    if (!valid.status) {
+      setAssistantMessage({text: valid.message});
+      setShowAssistant(true);
+      return;
+    }
     
     // submit
     const form = resultForm();
@@ -245,6 +256,12 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           <Footer viewMode={viewMode} handleSubmit={handleSubmit} />
         
         </div>
+
+        {/* Assistant */}
+        { showAssistant && 
+          <Assistant showAssistant={showAssistant} setShowAssistant={setShowAssistant} 
+            message={assistantMessage} /> 
+        }
 
         {/* Guide */}
         { showGuide && 
