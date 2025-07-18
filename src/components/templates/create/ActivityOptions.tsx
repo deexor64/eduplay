@@ -1,4 +1,5 @@
 import { ActivityDifficultyEnum, ActivityGradeEnum, SubjectEnum } from "@/lib/utils/types";
+import { useState } from "react";
 
 // Activity options are predefined
 
@@ -15,6 +16,8 @@ export default function ActivityOptions(props: ActivityOptionsProps) {
       return { ...prev, options: options }
     }); 
   }
+
+  const [isGraded, setIsGraded] = useState(false);
   
   return (
     <section className="mb-6 bg-white/40 backdrop-blur p-6 rounded-xl shadow-md">
@@ -29,6 +32,7 @@ export default function ActivityOptions(props: ActivityOptionsProps) {
           className="w-5 h-5 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
           onChange={function (e) {
             setOptions("isGraded", e.target.checked === true);
+            setIsGraded(e.target.checked === true);
           }} />
       </div>
 
@@ -82,18 +86,20 @@ export default function ActivityOptions(props: ActivityOptionsProps) {
       </div>
 
       {/* time limit */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <label className="block font-semibold text-gray-700 min-w-[140px]">Time Limit</label>
-        <input
-          type="number"
-          min={0}
-          className="flex-1 p-3 border border-gray-300 rounded-lg bg-white/80 backdrop-blur transition-all duration-300 focus:border-blue-500 focus:outline-none focus:bg-white focus:shadow-md"
-          placeholder="Time in minutes"
-          onChange={function (e) { 
-            setOptions("timeLimit", Number.parseInt(e.target.value));
-          }}
-        />
-      </div>
+      {isGraded && (
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <label className="block font-semibold text-gray-700 min-w-[140px]">Time Limit</label>
+          <input
+            type="number"
+            min={0}
+            className="flex-1 p-3 border border-gray-300 rounded-lg bg-white/80 backdrop-blur transition-all duration-300 focus:border-blue-500 focus:outline-none focus:bg-white focus:shadow-md"
+            placeholder="Time in minutes"
+            onChange={function (e) { 
+              setOptions("timeLimit", Number.parseInt(e.target.value));
+            }}
+          />
+        </div>
+      )}
       
     </section>
   )
