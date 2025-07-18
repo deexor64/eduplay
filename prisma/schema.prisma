@@ -122,6 +122,8 @@ model Activity {
 
   createdBy String
   teacher   Teacher @relation("activityCreator", fields: [createdBy], references: [teacherID])
+
+  progress Progress[] @relation("progressOf")
 }
 
 model Template {
@@ -137,7 +139,15 @@ model Template {
 
 model Progress {
   progressID String @id @default(uuid())
+  baseScore  Int    @default(0)
+  maxScore   Int    @default(100)
+  summery    String
+  data       Json
+  timeTaken  Int?
 
   progressFor String
   student     Student @relation("progress", fields: [progressFor], references: [studentID])
+
+  progressOf String
+  activity   Activity @relation("progressOf", fields: [progressOf], references: [activityID])
 }
