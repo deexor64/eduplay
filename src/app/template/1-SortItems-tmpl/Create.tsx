@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import generateHash  from "@/lib/utils/generateHash";
-import { CreateActivityProps } from "@/layouts/CreateActivityLayout";
+import { CreateActivityProps } from "@/components/layouts/CreateActivityLayout";
 
 export type BasketItemType = {
   basket: string,

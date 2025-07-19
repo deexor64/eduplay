@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react";
-import Navbar from "../components/navigator/Navbar";
-import Sidebar from "../components/navigator/Sidebar";
+import Navbar from "../navigator/Navbar";
+import Sidebar from "../navigator/Sidebar";
 
 
 export default function NavigatorLayout(props: any) {

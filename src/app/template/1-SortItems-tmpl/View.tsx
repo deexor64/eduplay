@@ -1,6 +1,6 @@
 "use client";
 
-import { ViewActivityProps } from "@/layouts/ViewActivityLayout";
+import { ViewActivityProps } from "@/components/layouts/ViewActivityLayout";
 import { useEffect, useState } from "react";
 import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-kit/core";
 import { ActivityDataType, Basket, BasketItemType } from "./Create";
