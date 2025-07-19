@@ -9,6 +9,8 @@ import { useRef, useState } from "react";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 import { useParams } from "next/navigation";
 import { lazy, Suspense, useMemo } from "react";
+import toast from "react-hot-toast";
+import router, { Router } from "next/router";
 
 export interface CreateActivityProps {
   setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
@@ -151,12 +153,17 @@ export default function CreateActivityLayout() {
     })
     
     const resData = await res.json();
-    console.log(resData) // display message
-
-    // if not okay setUploadProgress({ ...prev, status: "ERROR" });
+    
+    if (!resData.status) {
+      setUploadProgress((prev) => ({ ...prev, status: "ERROR" }));
+      return;
+    }
 
     setUploadProgress({ progress: 100, status: "COMPLETED" });
     abortSave.current = true;
+    
+    // navigate to newly made activity
+    window.open(`/teacher/activities/${resData.data}`, "_blank");
     
   };
   

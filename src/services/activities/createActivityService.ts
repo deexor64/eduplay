@@ -29,8 +29,11 @@ export default async function createActivityService(data: any): Promise<ResType>
         connect: { teacherID: teacher?.teacherID},
       },      
     },
+    select: {
+      activityID: true,
+    }
   })
   
-  return { status: true, resDataType: "success", data: "Activity created" };
+  return { status: true, resDataType: "success", data: existing.activityID };
   
 }
