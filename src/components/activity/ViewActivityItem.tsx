@@ -14,7 +14,6 @@ interface ViewActivityItemProps {
     timeLimit: number;
     isGraded: boolean;
     difficulty: string;
-    templateCode: string;
   };
 }
 
@@ -36,7 +35,7 @@ export default function ViewActivityItem(props: ViewActivityItemProps) {
         {/* Clickable link and activityID badge */}
         <div className="flex items-center gap-2">
           <Link
-            href={`/template?viewMode=VIEW&templateCode=${itemData.templateCode}&activityID=${itemData.activityID}`}
+            href={`/teacher/activities/${itemData.activityID}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-lg font-semibold text-purple-800 truncate focus:outline-none focus:ring-2 focus:ring-blue-200 cursor-pointer no-underline hover:text-purple-900"

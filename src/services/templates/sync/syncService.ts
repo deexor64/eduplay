@@ -6,7 +6,7 @@ import path from "path";
 
 export default async function syncService(): Promise<ResType> {
   
-  const templateDir = path.join(process.cwd(), "src/app/template");
+  const templateDir = path.join(process.cwd(), "src/templates");
   const folders = fs.readdirSync(templateDir);
   
   for (const folder of folders) {

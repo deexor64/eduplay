@@ -6,12 +6,9 @@ import Footer from "@/components/templates/create/Footer";
 import ActivityUploadProgress from "@/components/templates/ActivityUploadProgress";
 import { UserType } from "@/lib/utils/types";
 import { useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
-
-type CreateActivityLayoutProps = {
-  createActivityComponent: React.LazyExoticComponent<React.ComponentType<any>>;
-}
+import { useParams } from "next/navigation";
+import { lazy, Suspense, useMemo } from "react";
 
 export interface CreateActivityProps {
   setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
@@ -19,12 +16,15 @@ export interface CreateActivityProps {
   setActivityFinalizer: React.Dispatch<React.SetStateAction<(fileUrlMap: Map<string, string> | false) => Object>>,
 }
 
-export default function CreateActivityLayout(props: CreateActivityLayoutProps) {
+export default function CreateActivityLayout() {
 
-  const searchParams = useSearchParams();
-  const viewMode = searchParams.get("viewMode") as UserType;
-  const templateCode = searchParams.get("templateCode") as UserType;
-
+  const params = useParams();
+  const templateCode = params.templateCode as string;
+  
+  // dynamically load template using template code
+  const CreateActivityComponent = useMemo(() => {
+    return lazy(() => import(`@/templates/${templateCode}/Create.tsx`));
+  }, [templateCode]);
 
   // For template -----------------------------------
 
@@ -179,11 +179,13 @@ export default function CreateActivityLayout(props: CreateActivityLayoutProps) {
         <Instructions setFormData={setFormData} />
         
         {/* template content */}
-        {<props.createActivityComponent
-          setMediaFiles={setMediaFiles}
-          setActivityValidation={setActivityValidation}
-          setActivityFinalizer={setActivityFinalizer}
-        />}
+        <Suspense>
+          <CreateActivityComponent
+            setMediaFiles={setMediaFiles}
+            setActivityValidation={setActivityValidation}
+            setActivityFinalizer={setActivityFinalizer}
+          />
+        </Suspense>
 
         {/* activity options */}
         <ActivityOptions setFormData={setFormData} />

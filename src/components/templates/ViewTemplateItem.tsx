@@ -33,7 +33,7 @@ export default function ViewTemplateItem(props: ViewTemplateItemProps) {
           {/* Clickable link */}
           <div className="flex items-center gap-2">
             <Link
-              href={`/template?viewMode=SAMPLE&templateCode=${itemData.templateCode}`}
+              href={`/teacher/templates/${itemData.templateCode}/sample`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-lg font-semibold text-pink-700 truncate focus:outline-none focus:ring-2 

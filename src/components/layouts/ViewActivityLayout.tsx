@@ -7,15 +7,16 @@ import Description from "@/components/templates/view/Description";
 import Guide from "@/components/templates/view/Guide";
 import Celebration from "@/components/templates/view/Celebration";
 import GuideButton from "@/components/templates/view/GuideButton";
-import { TemplateViewMode } from "@/lib/utils/types";
+import { ActivityViewMode } from "@/lib/utils/types";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
 import Assistant from "@/components/shared/Assistant";
+import { useParams } from "next/navigation";
+import { lazy, Suspense, useMemo } from "react";
 
 type ViewActivityLayoutProps = {
-  viewActivityComponent: React.LazyExoticComponent<React.ComponentType<any>>;
+  viewMode: ActivityViewMode
 }
 
 export interface ViewActivityProps {
@@ -34,11 +35,10 @@ export interface ViewActivityProps {
 export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   
   const { userType, teacherRole } = useAuth();
-  
-  const searchParams = useSearchParams();
-  const viewMode = searchParams.get("viewMode") as TemplateViewMode;
-  const templateCode = searchParams.get("templateCode") as string;
-  const activityID = searchParams.get("activityID") as string;
+
+  const params = useParams();
+  const templateCode = params.templateCode as string;
+  const activityID = params.activityID as string;
 
   const [showAssistant, setShowAssistant] = useState<boolean>(false);
   const [assistantMessage, setAssistantMessage] = useState<{
@@ -59,7 +59,8 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     grade: number,
     isGraded: boolean,
     status: string,
-  }>({title: "", instructions: "", activityData: {}, timeLimit: 0, difficulty: "", subject: "", grade: 0, isGraded: false, status: ""});
+    templateCode: string,
+  }>({title: "", instructions: "", activityData: {}, timeLimit: 0, difficulty: "", subject: "", grade: 0, isGraded: false, status: "", templateCode: ""});
   
 
   // Only used for fetching a sample activity
@@ -86,14 +87,14 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     const params = activityQuery();
 
     // view mode is "SAMPLE"
-    if (viewMode === "SAMPLE") {
+    if (props.viewMode === "SAMPLE") {
       const url = `/api/activities/sample?${params}`;
       const res = await fetch(url);
       const resData = await res.json();
       setDbData(resData.data.sampleActivity);
     } 
     // view mode is "VIEW"
-    else if (viewMode === "VIEW") {
+    else if (props.viewMode === "VIEW") {
       const url = `/api/activities/${activityID}`;
       const res = await fetch(url);
       const resData = await res.json();
@@ -112,6 +113,11 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   useEffect(() => {
     fetchActivity();
   }, []);
+
+  // dynamically load template using template code
+  const ViewActivityComponent = useMemo(() => {
+    return lazy(() => import(`@/templates/${dbData.templateCode}/View.tsx`));
+  }, [dbData.templateCode]);
   
   
   // For activity -----------------------------------
@@ -233,9 +239,9 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
         <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-4 backdrop-blur-xs bg-transparent">
           
           {/* cover image */}
-          <CoverImage templateCode={templateCode}>
+          <CoverImage templateCode={dbData.templateCode}>
             {/* activity title */}
-            <ActivityTitle viewMode={viewMode} templateCode={templateCode}>
+            <ActivityTitle viewMode={props.viewMode} templateCode={dbData.templateCode}>
               { dbData.title }
             </ActivityTitle>
             {/* description */}
@@ -243,7 +249,8 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           </CoverImage>
           
           {/* activity content */}
-          {activityData ? <props.viewActivityComponent 
+          <Suspense>
+          {activityData ? <ViewActivityComponent
             activityData={activityData} 
             setResultValidation={setResultValidation}
             setResultData={setResultData} /> 
@@ -253,9 +260,10 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
               </div>
             )
           }
+          </Suspense>
 
           {/* footer */}
-          <Footer viewMode={viewMode} handleSubmit={handleSubmit} />
+          <Footer viewMode={props.viewMode} handleSubmit={handleSubmit} />
         
         </div>
 

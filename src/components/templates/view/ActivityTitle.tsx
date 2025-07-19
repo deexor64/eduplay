@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { TemplateViewMode } from "@/lib/utils/types";
+import { ActivityViewMode } from "@/lib/utils/types";
 
 interface ActivityTitleProps {
-  viewMode: TemplateViewMode,
+  viewMode: ActivityViewMode,
   templateCode: string,
   children: React.ReactNode
 }
@@ -23,7 +23,7 @@ export default function ActivityTitle(props: ActivityTitleProps) {
       {/* Go to Template button (if SAMPLE) */}
       {props.viewMode === "SAMPLE" && (
         <Link
-          href={`/template?viewMode=CREATE&templateCode=${props.templateCode}`}
+          href={`/teacher/templates/${props.templateCode}/create`}
           className="ml-auto flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-medium shadow-sm 
           transition bg-blue-600 hover:bg-blue-700"
           target="_parent"
