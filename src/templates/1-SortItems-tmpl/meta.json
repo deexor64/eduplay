@@ -11,9 +11,9 @@
     "activityData": {
       "box": [
         { "basket": "Fruits", "type": "text", "value": "Apple" },
-        { "basket": "Fruits", "type": "image", "value": "https://example.com/apple.jpg", "label": "Apple" },
-        { "basket": "Vegetables", "type": "image", "value": "https://example.com/carrot.jpg", "label": "Carrot" },
-        { "basket": "Vegetables", "type": "text", "value": "Carrot" }
+        { "basket": "Fruits", "type": "text", "value": "Orange" },
+        { "basket": "Vegetables", "type": "text", "value": "Carrot" },
+        { "basket": "Vegetables", "type": "text", "value": "Potato" }
       ],
       "baskets": [
         { 

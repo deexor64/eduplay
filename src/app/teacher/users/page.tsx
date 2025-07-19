@@ -74,7 +74,7 @@ export default function UserList() {
   useEffect(() => {
     setTriggerFilter(false);
     fetchUsers();
-  }, [pagination, triggerFilter]);
+  }, [pagination, triggerFilter, userListType]);
   
   return (
     <NavigatorLayout>
@@ -118,7 +118,7 @@ export default function UserList() {
           <div className="text-center text-gray-500 py-8">Nothing to display</div>
         ) : (
           dbData.users.map(function (item) {
-            return <ViewUserItem itemData={item} onUpdateUserStatus={fetchUsers} key={item.indexNumber}/>;
+            return <ViewUserItem itemData={item} onUpdateUserStatus={fetchUsers} key={item.user.userID}/>;
           })
         )}
       </div>
