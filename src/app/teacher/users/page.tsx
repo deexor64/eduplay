@@ -9,6 +9,7 @@ import ViewUserItem from "@/components/users/ViewUserItem";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 import cleanParams from "@/lib/utils/cleanParams";
+import NavigatorLayout from "@/components/layouts/NavigatorLayout";
 
 export default function UserList() {
   
@@ -73,7 +74,7 @@ export default function UserList() {
   }, [pagination, triggerFilter]);
   
   return (
-    <>
+    <NavigatorLayout>
       
       {/* Title */}
       {(userListType === "teacher") && <Title title="Manage Teachers" />}
@@ -122,7 +123,7 @@ export default function UserList() {
       {/* paginator */}
       <Paginator totalItems={dbData.total} pagination={pagination} setPagination={setPagination}/>
 
-    </>
+    </NavigatorLayout>
     
   );
 }

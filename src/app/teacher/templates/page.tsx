@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import { TeacherRoleEnum } from "@/lib/utils/types";
 import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
+import NavigatorLayout from "@/components/layouts/NavigatorLayout";
 
 export default function TemplateList() {
   
@@ -75,9 +76,9 @@ export default function TemplateList() {
   }, [triggerFilter, pagination]);
 
   console.log(teacherRole)
-  
+
   return (
-    <>
+    <NavigatorLayout>
       
       {/* Title */}
       <Title title="Activity Templates" />
@@ -117,7 +118,7 @@ export default function TemplateList() {
       {/* paginator */}
       <Paginator totalItems={dbData.total} pagination={pagination} setPagination={setPagination}/>
 
-    </>
+    </NavigatorLayout>
     
   );
 }
