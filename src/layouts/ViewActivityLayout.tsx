@@ -213,7 +213,9 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
         body: form
       })
 
-      console.log(await res.json())
+      const resData = await res.json();
+      setAssistantMessage({text: resData.data});
+      setShowAssistant(true);
 
     }
     
@@ -272,8 +274,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
         {/* Celebration */}
         { showCelebration && 
           <Celebration showCelebration={showCelebration} setShowCelebration={setShowCelebration}
-            score={resultData.score}
-          />
+            score={resultData.score}/>
         }
 
       </div>

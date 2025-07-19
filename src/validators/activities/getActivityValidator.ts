@@ -8,7 +8,7 @@ export default function getActivityValidator(cookies: RequestCookies, slugParam:
 
   // User token validation
   const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenChecker(userToken, ["TEACHER"],
+  const valid = userTokenChecker(userToken, ["TEACHER", "STUDENT"],
     [TeacherRoleEnum.MASTER, TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER]);
   
   if (!valid.status) return valid;

@@ -47,14 +47,14 @@ export default function Assistant(props: AssistantProps) {
       {/* Overlay */}
       <div
         className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-        style={{ WebkitBackdropFilter: "blur(4px)", backdropFilter: "blur(4px)" }}
+        style={{ WebkitBackdropFilter: "blur(1px)", backdropFilter: "blur(1px)" }}
         onClick={function() { props.setShowAssistant(false); }}
       />
 
       {/* Message box at top center */}
-      <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center">
+      <div className="fixed top-8 left-1/3 transform -translate-x-1/3 z-50 flex flex-col items-center">
         <div className="bg-white/95 rounded-xl shadow-lg px-10 py-6 flex items-center gap-4 max-w-2xl min-w-[350px] border border-gray-200">
-          <span className="text-2xl font-semibold text-gray-900 text-center" style={{ lineHeight: 1.3 }}>
+          <span className="text-xl font-semibold text-gray-900 text-center" style={{ lineHeight: 1.3 }}>
             {props.message.text}
           </span>
         </div>
