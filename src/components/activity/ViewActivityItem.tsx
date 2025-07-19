@@ -3,26 +3,39 @@
 import Link from "next/link";
 import InfoBadge from "@/components/shared/badges/InfoBadge";
 import ViewItemActionButton from "@/components/shared/buttons/ViewItemActionButton";
+import { ActivityStatus } from "@prisma/client";
+import { updateActivityStatus } from "@/actions/activity/updateActivityStatus";
+import toast from "react-hot-toast";
 
 interface ViewActivityItemProps {
   itemData: {
     activityID: string;
     title: string;
-    status?: string;
+    status: string;
     subject: string;
     grade: number;
     timeLimit: number;
     isGraded: boolean;
     difficulty: string;
   };
+  onUpdateActivityStatus: Function;
 }
 
 export default function ViewActivityItem(props: ViewActivityItemProps) {
 
   const itemData = props.itemData;
 
-  function handleAction(action: string) {
-    alert(`Action "${action}" clicked for activity ${itemData.title}`);
+  function handleUpdateActivityStatus(status: ActivityStatus) {
+
+    toast.promise(updateActivityStatus(itemData.activityID, status), {
+      loading: "Updating activity status...",
+      success: () => {
+        props.onUpdateActivityStatus();
+        return "Activity status updated successfully";
+      },
+      error: "Failed to update activity status",
+    })
+
   }
 
   return (
@@ -61,7 +74,7 @@ export default function ViewActivityItem(props: ViewActivityItemProps) {
           {itemData.timeLimit > 0 && (
             <InfoBadge text={`${itemData.timeLimit} min`} colorTheme="gray" />
           )}
-          {itemData.status && (
+          {itemData.status === "UNPUBLISHED" && (
             <InfoBadge text={itemData.status} colorTheme="indigo" />
           )}
         </div>
@@ -70,12 +83,34 @@ export default function ViewActivityItem(props: ViewActivityItemProps) {
 
       {/* Action buttons */}
       <div className="flex flex-row items-end gap-2 ml-4">
-        <ViewItemActionButton text="Publish" colorTheme="blue"
-        onAction={() => handleAction("Publish")} />
-        <ViewItemActionButton text="Edit" colorTheme="green" 
-        onAction={() => handleAction("Edit")} />
-        <ViewItemActionButton text="Delete" colorTheme="red" 
-        onAction={() => handleAction("Delete")} />
+        {
+          itemData.status === "UNPUBLISHED" && (
+            <>
+              <ViewItemActionButton text="Publish" colorTheme="blue"
+                onAction={() => handleUpdateActivityStatus("PUBLISHED")} />
+              <ViewItemActionButton text="Delete" colorTheme="red" 
+                onAction={() => handleUpdateActivityStatus("DELETED")} />
+            </>
+          )
+        }
+        {
+          itemData.status === "PUBLISHED" && (
+            <>
+              <ViewItemActionButton text="Unpublish" colorTheme="yellow"
+                onAction={() => handleUpdateActivityStatus("UNPUBLISHED")} />
+              <ViewItemActionButton text="Delete" colorTheme="red" 
+                onAction={() => handleUpdateActivityStatus("DELETED")} />
+            </>
+          )
+        }
+        {
+          itemData.status === "DELETED" && (
+            <>
+              <ViewItemActionButton text="Restore" colorTheme="green"
+                onAction={() => handleUpdateActivityStatus("UNPUBLISHED")} />
+            </>
+          )
+        }
       </div>
 
     </div>

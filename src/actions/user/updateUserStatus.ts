@@ -4,14 +4,9 @@ import { cookies } from "next/headers";
 import { TeacherRoleEnum } from "@/lib/utils/types";
 import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { prisma } from "@/lib/prisma";
+import { UserStatus } from "@prisma/client";
 
-const userListHandler: any = {
-  teacher: prisma.teacher,
-  parent: prisma.parent,
-  student: prisma.student,
-} as const;
-
-export async function deleteUser(userID: string) {
+export async function updateUserStatus(userID: string, status: UserStatus) {
 
   const cookieStore = await cookies();
   
@@ -22,13 +17,16 @@ export async function deleteUser(userID: string) {
   if (!valid) throw new Error("Unauthorized");
 
   try {
-    const existing = await userListHandler.teacher.delete({
+    const existing = await prisma.user.update({
       where: {
-        user: { userID: userID },
+        userID: userID ,
+      },
+      data: {
+        status: status
       }
     })
   } catch(e) {
     throw new Error("User not found");
   }
  
-}
+} 

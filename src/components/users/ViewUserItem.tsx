@@ -5,6 +5,9 @@
 import Link from "next/link";
 import InfoBadge from "@/components/shared/badges/InfoBadge";
 import ViewItemActionButton from "@/components/shared/buttons/ViewItemActionButton";
+import { updateUserStatus } from "@/actions/user/updateUserStatus";
+import { UserStatus } from "@prisma/client";
+import toast from "react-hot-toast";
 
 interface ViewUserItemProps {
   itemData: {
@@ -14,12 +17,14 @@ interface ViewUserItemProps {
     grade?: number, // student
     class?: string, // student
     user: {
+      userID: string,
       firstName: string; // teacher, student, parent
       lastName: string; // teacher, student, parent
       status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED" | string; // teacher, student, parent
       displayPicUrl: string; // teacher, student, parent
     }
-  };
+  },
+  onUpdateUserStatus: Function,
 }
 
 
@@ -27,8 +32,17 @@ export default function ViewUserItem(props: ViewUserItemProps) {
 
   const itemData = props.itemData;
 
-  function handleAction() {
-    alert("Action clicked");
+  function handleUpdateUserStatus(status: UserStatus) {
+
+    toast.promise(updateUserStatus(itemData.user.userID, status), {
+      loading: "Updating user status...",
+      success: () => {
+        props.onUpdateUserStatus();
+        return "User status updated successfully";
+      },
+      error: "Failed to update user status",
+    })
+
   }
 
   return (
@@ -83,6 +97,11 @@ export default function ViewUserItem(props: ViewUserItemProps) {
                 <InfoBadge text={`Grade ${itemData.grade} ${itemData.class}`} colorTheme="indigo" />
               )
             }
+            {
+              itemData.user.status && (
+                <InfoBadge text={itemData.user.status} colorTheme="gray" />
+              )
+            }
           </div>
         </div>
      
@@ -92,9 +111,9 @@ export default function ViewUserItem(props: ViewUserItemProps) {
           itemData.user.status === "PENDING" && (
             <>
               <ViewItemActionButton text="Accept" colorTheme="green"
-                onAction={() => handleAction()} />
+                onAction={() => handleUpdateUserStatus("ACTIVE")} />
               <ViewItemActionButton text="Reject" colorTheme="red"
-                onAction={() => handleAction()} />
+                onAction={() => handleUpdateUserStatus("INACTIVE")} />
             </>
           )
         }
@@ -102,9 +121,9 @@ export default function ViewUserItem(props: ViewUserItemProps) {
           itemData.user.status === "ACTIVE" && (
             <>
               <ViewItemActionButton text="Suspend" colorTheme="yellow"
-                onAction={() => handleAction()} />
+                onAction={() => handleUpdateUserStatus("SUSPENDED")} />
               <ViewItemActionButton text="Delete" colorTheme="red"
-                onAction={() => handleAction()} />
+                onAction={() => handleUpdateUserStatus("DELETED")} />
             </>
           )
         }
@@ -112,9 +131,9 @@ export default function ViewUserItem(props: ViewUserItemProps) {
           itemData.user.status === "INACTIVE" && (
             <>
               <ViewItemActionButton text="Suspend" colorTheme="yellow"
-                onAction={() => handleAction()} />
+                onAction={() => handleUpdateUserStatus("SUSPENDED")} />
               <ViewItemActionButton text="Delete" colorTheme="red"
-                onAction={() => handleAction()} />
+                onAction={() => handleUpdateUserStatus("DELETED")} />
             </>
           )
         }
@@ -122,9 +141,9 @@ export default function ViewUserItem(props: ViewUserItemProps) {
           itemData.user.status === "SUSPENDED" && (
             <>
               <ViewItemActionButton text="Activate" colorTheme="green"
-                onAction={() => handleAction()} />
+                onAction={() => handleUpdateUserStatus("ACTIVE")} />
               <ViewItemActionButton text="Delete" colorTheme="red"
-                onAction={() => handleAction()} />
+                onAction={() => handleUpdateUserStatus("DELETED")} />
             </>
           )
         }
@@ -132,9 +151,9 @@ export default function ViewUserItem(props: ViewUserItemProps) {
           itemData.user.status === "DELETED" && (
             <>
               <ViewItemActionButton text="Activate" colorTheme="green"
-                onAction={() => handleAction()} />
+                onAction={() => handleUpdateUserStatus("ACTIVE")} />
               <ViewItemActionButton text="Delete" colorTheme="red"
-                onAction={() => handleAction()} />
+                onAction={() => handleUpdateUserStatus("DELETED")} />
             </>
           )
         }

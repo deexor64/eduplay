@@ -19,7 +19,10 @@ export default function UserList() {
   const [dbData, setDbData] = useState<{
     users: Array<{
       indexNumber?: string,
+      grade?: number,
+      class?: string,
       user: {
+        userID: string,
         firstName: string,
         lastName: string,
         displayPicUrl: string,
@@ -115,7 +118,7 @@ export default function UserList() {
           <div className="text-center text-gray-500 py-8">Nothing to display</div>
         ) : (
           dbData.users.map(function (item) {
-            return <ViewUserItem itemData={item} key={item.indexNumber}/>;
+            return <ViewUserItem itemData={item} onUpdateUserStatus={fetchUsers} key={item.indexNumber}/>;
           })
         )}
       </div>

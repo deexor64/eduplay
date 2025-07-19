@@ -66,17 +66,6 @@ export default function TemplateList() {
   
   }
 
-  async function handleSyncTemplates() {
-    toast.promise(syncTemplates(), {
-      loading: "Syncing Templates",
-      success: () => {
-        fetchTemplates();
-        return "Templates synced successfully";
-      },
-      error: "Failed to sync Templates",
-    })
-  }
-
   useEffect(() => { 
     setTriggerFilter(false);
     fetchTemplates();
@@ -106,7 +95,7 @@ export default function TemplateList() {
         {/* sync button. shown only to admins */}
         {
           [TeacherRoleEnum.MASTER, TeacherRoleEnum.ADMIN].includes(teacherRole as TeacherRoleEnum)  && (
-            <SyncTemplateButton syncTemplates={handleSyncTemplates} />
+            <SyncTemplateButton onSyncTemplates={fetchTemplates} />
           )
         }
       </FilterWrapper>

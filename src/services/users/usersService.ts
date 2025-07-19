@@ -28,6 +28,7 @@ Promise<ResType> {
     class: true,
     user: {
       select: {
+        userID: true,
         firstName: true,
         lastName: true,
         displayPicUrl: true,

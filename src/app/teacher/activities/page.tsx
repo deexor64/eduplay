@@ -17,7 +17,7 @@ export default function Activities() {
     activities: Array<{
       activityID: string,  
       title: string,
-      status?: string,
+      status: string,
       subject: string,
       grade: number,
       timeLimit: number,
@@ -113,7 +113,7 @@ export default function Activities() {
           <div className="text-center text-gray-500 py-8">Nothing to display</div>
         ) : (
           dbData.activities.map(function (item) {
-            return <ViewActivityItem itemData={item} key={item.activityID}/>;
+            return <ViewActivityItem itemData={item} onUpdateActivityStatus={fetchActivities} key={item.activityID}/>;
           })
         )}
       </div>
