@@ -12,6 +12,8 @@ import { TeacherRoleEnum } from "@/lib/utils/types";
 import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
 import NavigatorLayout from "@/components/layouts/NavigatorLayout";
+import { syncTemplates } from "@/actions/templates/syncTemplates";
+import toast from "react-hot-toast";
 
 export default function TemplateList() {
   
@@ -64,12 +66,17 @@ export default function TemplateList() {
   
   }
 
-  async function syncTemplates() {
-    const url = `/api/templates/sync`;
-    const res = await fetch(url, {method: "PUT"});
-    fetchTemplates();
+  async function handleSyncTemplates() {
+    toast.promise(syncTemplates(), {
+      loading: "Syncing Templates",
+      success: () => {
+        fetchTemplates();
+        return "Templates synced successfully";
+      },
+      error: "Failed to sync Templates",
+    })
   }
--
+
   useEffect(() => { 
     setTriggerFilter(false);
     fetchTemplates();
@@ -99,7 +106,7 @@ export default function TemplateList() {
         {/* sync button. shown only to admins */}
         {
           [TeacherRoleEnum.MASTER, TeacherRoleEnum.ADMIN].includes(teacherRole as TeacherRoleEnum)  && (
-            <SyncTemplateButton syncTemplates={syncTemplates} />
+            <SyncTemplateButton syncTemplates={handleSyncTemplates} />
           )
         }
       </FilterWrapper>

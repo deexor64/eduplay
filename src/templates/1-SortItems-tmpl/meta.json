@@ -4,25 +4,28 @@
   "description": "Move items in the box to correct baskets",
   "templateType": "Drag and Drop",
   "sampleActivity": {
+    "templateCode": "1-SortItems-tmpl",
     "title": "Sort Animals and Vegetables",
     "instructions":
       "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
-    "activityData": [
-      {
-        "title": "Animals",
-        "items": [
-          { "type": "text", "value": "Cat" },
-          { "type": "image", "value": "templates/1-SortItems-tmpl/imageItem.jpg", "label": "Jiraffe" }
-        ]
-      },
-      {
-        "title": "Vegetables",
-        "items": [
-          { "type": "text", "value": "Carrot" },
-          { "type": "text", "value": "Potatoe" }
-        ]
-      }
-    ],
+    "activityData": {
+      "box": [
+        { "basket": "Fruits", "type": "text", "value": "Apple" },
+        { "basket": "Fruits", "type": "image", "value": "https://example.com/apple.jpg", "label": "Apple" },
+        { "basket": "Vegetables", "type": "image", "value": "https://example.com/carrot.jpg", "label": "Carrot" },
+        { "basket": "Vegetables", "type": "text", "value": "Carrot" }
+      ],
+      "baskets": [
+        { 
+          "basket": "Fruits",
+          "items": []
+        },
+        {
+          "basket": "Vegetables",
+          "items": []
+        }
+      ]
+    },
     "timeLimit": 0,
     "difficulty": "EASY",
     "subject": "COMMON",
