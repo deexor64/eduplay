@@ -11,7 +11,7 @@ type Props = {
   label: string;
 };
 
-export default function ActionButton(props: Props) {
+export default function ShortCutButton(props: Props) {
   return (
     <Link 
       href={props.href} 

@@ -1,8 +1,12 @@
+import NavigatorLayout from "@/components/layouts/NavigatorLayout";
+
 export default function Dashboard(props: any) {
 
   return (
-    <div >
-      teacher dash
-    </div>
+    <NavigatorLayout>
+      <div >
+        teacher dash
+      </div>
+    </NavigatorLayout>
   );
 }

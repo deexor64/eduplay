@@ -26,7 +26,7 @@ export default function ViewItemActionButton({text, colorTheme = "default",
   onAction, className, style}: ViewItemActionButtonProps) {
   return (
     <button
-      className={`px-3 py-1 rounded-full text-white text-xs font-medium shadow-sm transition ${colorThemeClasses[colorTheme]} ${className || ""}`}
+      className={`px-3 py-1 cursor-pointer rounded-full text-white text-xs font-medium shadow-sm transition ${colorThemeClasses[colorTheme]} ${className || ""}`}
       style={style}
       onClick={(e) => {
         e.preventDefault();
