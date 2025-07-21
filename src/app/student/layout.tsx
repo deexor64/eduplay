@@ -1,8 +1,11 @@
-export default function Layout(props: any) {
-  return (
+import AuthWrapper from "@/contexts/AuthWrapper";
+import { Toaster } from "react-hot-toast";
 
-    <>
-    {props.children}
-    </>
+export default function StudentLayout(props: any) {
+  return (
+    <AuthWrapper allowedUserTypes={["STUDENT"]}>
+      <Toaster position="top-right" reverseOrder={false}/> {/* Notification provider */}
+        {props.children}
+    </AuthWrapper>
   );
 }
