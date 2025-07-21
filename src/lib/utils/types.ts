@@ -89,3 +89,15 @@ export enum ActivityGradeEnum {
   FOUR = "4",
   FIVE = "5",
 }
+
+// student progress
+export type Achievements = "Student" | "First Activity" | "Consistent Learner" | "Math Whiz" | "Science Whiz" | "English Whiz";
+
+export enum AchievementsEnum {
+  STUDENT = "Student",
+  FIRST_ACTIVITY = "First Activity",
+  CONSISTENT_LEARNER = "Consistent Learner",
+  MATH_WHIZ = "Math Whiz",
+  SCIENCE_WHIZ = "Science Whiz",
+  ENGLISH_WHIZ = "English Whiz",
+}

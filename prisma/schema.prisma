@@ -144,6 +144,7 @@ model Progress {
   summery    String
   data       Json
   timeTaken  Int?
+  createdAt     DateTime   @default(now())
 
   progressFor String
   student     Student @relation("progress", fields: [progressFor], references: [studentID])
