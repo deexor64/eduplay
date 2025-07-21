@@ -7,7 +7,9 @@ import Achievements from "@/components/student/progress/Achievements";
 import { useEffect, useState } from "react";
 
 export default function Progress() {
-
+  
+  // Analysed summery form the server
+  // Not raw db data
   const [dbData, setDbData] = useState({
     totalCompleted: 12,
     averageScore: 85,

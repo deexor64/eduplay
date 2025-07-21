@@ -15,24 +15,24 @@ export default function Activities() {
 
   const [dbData, setDbData] = useState<{
     activities: Array<{
-      activityID: string,  
+      activityID: string,
       title: string,
-      status: string,
       subject: string,
       grade: number,
       timeLimit: number,
       isGraded: boolean,
       difficulty: string,
+      completed: boolean, // not a raw db field
     }>,
     total: number;
   }>({ activities: [], total: 0 });
 
   const [filter, setFilter] = useState({
     title: undefined,
-    status: undefined,
     grade: undefined,
     difficulty: undefined,
     subject: undefined,
+    completed: undefined,
   });
   
   const [pagination, setPagination] = useState({
@@ -69,10 +69,7 @@ export default function Activities() {
     fetchActivities();
   }, [triggerFilter, pagination]);
 
-  // Filter to only show published activities for students
-  const publishedActivities = dbData.activities.filter(activity => activity.status === "PUBLISHED");
-
-    return (
+  return (
 
     <StudentNavigatorLayout>
   
@@ -104,25 +101,31 @@ export default function Activities() {
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Difficulty</OptionFilter>
+        <OptionFilter
+          filterKey="completed"
+          values={["Completed", "Not Completed"]}
+          setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
+        >Completed</OptionFilter>
       </FilterWrapper>
 
       {/* Activity List */}
       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
-        {publishedActivities.length === 0 ? (
+        {dbData.activities.length === 0 ? (
           <div className="col-span-full text-center py-12">
             <div className="text-6xl mb-4">😴</div>
             <div className="text-gray-600 text-lg mb-2">No activities available right now</div>
             <div className="text-gray-500">Check back later for new learning adventures!</div>
           </div>
         ) : (
-          publishedActivities.map(function (item) {
+          dbData.activities.map(function (item) {
             return <StudentViewActivityItem itemData={item} key={item.activityID}/>;
           })
         )}
       </div>
 
       {/* paginator */}
-      <Paginator totalItems={publishedActivities.length} pagination={pagination} setPagination={setPagination}/>
+      <Paginator totalItems={dbData.activities.length} pagination={pagination} setPagination={setPagination}/>
 
     </StudentNavigatorLayout>
   );

@@ -1,27 +1,21 @@
 // This list item is specially made for viewing lessons
 // Attributes are predefined and cannot be changed
-
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 
 interface StudentViewActivityItemProps {
   itemData: {
     activityID: string;
     title: string;
-    status: string;
     subject: string;
     grade: number;
     timeLimit: number;
     isGraded: boolean;
     difficulty: string;
+    completed: boolean;
   }
 }
 
 export default function StudentViewActivityItem(props: StudentViewActivityItemProps) {
-  
-  const [showPreview, setShowPreview] = useState(false);
   
   // Generate a fun emoji based on subject
   function getSubjectEmoji(subject: string): string {
@@ -35,10 +29,10 @@ export default function StudentViewActivityItem(props: StudentViewActivityItemPr
 
   // Generate difficulty emoji
   function getDifficultyEmoji(difficulty: string): string {
-    switch(difficulty.toLowerCase()) {
-      case 'easy': return '😊';
-      case 'medium': return '🤔';
-      case 'hard': return '😰';
+    switch(difficulty) {
+      case 'EASY': return '😊';
+      case 'MEDIUM': return '🤔';
+      case 'HARD': return '😰';
       default: return '📝';
     }
   }
@@ -70,10 +64,12 @@ export default function StudentViewActivityItem(props: StudentViewActivityItemPr
           </div>
           {/* Completion status badge - moved to right side */}
           <div className="ml-2">
-            {/* TODO: Replace with real completion status from API */}
+          {
+            props.itemData.completed && 
             <span className="inline-block bg-green-100 text-green-700 text-base font-semibold px-2 py-1 rounded-full">
               Completed
             </span>
+          } 
           </div>
         </div>
 

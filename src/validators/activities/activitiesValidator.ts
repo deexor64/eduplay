@@ -14,6 +14,7 @@ export default function activitiesValidator(cookies: RequestCookies, searchParam
   if (!valid.status) return valid;
 
   const userID = (valid.data as JwtPayload).userID as string;
+  const userType = (valid.data as JwtPayload).userType as string;
 
   // constraints
   const zSearchParams = z.object({
@@ -26,6 +27,7 @@ export default function activitiesValidator(cookies: RequestCookies, searchParam
       })
       .optional(),
     difficulty: z.enum(Object.values(ActivityDifficultyEnum) as [string, ...string[]]).optional(),
+    completed: z.enum(["Completed", "Not Completed"]).optional(),
     page: z.string().transform((val) => parseInt(val)).pipe(z.number().min(1)),
     limit: z.string().transform((val) => parseInt(val)).pipe(z.number().min(1))
   }).strict();
@@ -35,5 +37,5 @@ export default function activitiesValidator(cookies: RequestCookies, searchParam
     return { status: false, data: parsed.error.message };
   }
 
-  return { status: true, data: parsed.data };
+  return { status: true, data: {...parsed.data, userID: userID, userType: userType} };
 }
