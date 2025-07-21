@@ -39,6 +39,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   const params = useParams();
   const templateCode = params.templateCode as string;
   const activityID = params.activityID as string;
+  const progressID = params.progressID as string;
 
   const [showAssistant, setShowAssistant] = useState<boolean>(false);
   const [assistantMessage, setAssistantMessage] = useState<{
@@ -69,7 +70,6 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     // params
     const params = cleanParams({
       templateCode: templateCode,
-      activityId: activityID,
     });
 
     return new URLSearchParams(params);
@@ -88,24 +88,31 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
     // view mode is "SAMPLE"
     if (props.viewMode === "SAMPLE") {
-      const url = `/api/activities/sample?${params}`;
-      const res = await fetch(url);
+      const res = await fetch(`/api/activities/sample?${params}`);
       const resData = await res.json();
       setDbData(resData.data.sampleActivity);
     } 
     // view mode is "VIEW"
     else if (props.viewMode === "VIEW") {
-      const url = `/api/activities/${activityID}`;
-      const res = await fetch(url);
+      const res = await fetch(`/api/activities/${activityID}`);
       const resData = await res.json();
       setDbData(resData.data);
     }
     // view mode is "PROGRESS"
     else {
-      // const url = `/api/activities/progress?${params}`;
-      // const res = await fetch(url);
-      // const resData = await res.json();
-      // setDbData(resData.data);
+      const res = await fetch(`/api/progress/${progressID}`);
+      const resData = await res.json();
+
+      console.log(resData)
+
+      setDbData(resData.data.activity)
+      setResultData({
+        score: resData.data.score,
+        data: resData.data.data
+      })
+
+      setShowCelebration(true);
+
     }
 
   }
@@ -194,7 +201,12 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   }
   
   async function handleSubmit () {
-    // under devlopment
+    
+    // progress or sample cannot be submitted back
+    if (props.viewMode === "PROGRESS" || props.viewMode === "SAMPLE") {
+      setShowCelebration(true);
+      return;
+    }
   
     // validate and show assistant message
     const valid = validateResultForm();
