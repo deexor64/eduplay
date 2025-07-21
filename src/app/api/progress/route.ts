@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import createProgressService from "@/services/progress/createProgressService";
 import createProgressValidator from "@/validators/progress/createProgressValidator";
-import getProgressService from "@/services/progress/getProgressService";
-import getProgressValidator from "@/validators/progress/getProgressValidator";
+import progressService from "@/services/progress/progressService";
+import progressValidator from "@/validators/progress/progressValidator";
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,12 +34,12 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const cookies = req.cookies;
-    let parsed = getProgressValidator(cookies);
+    let parsed = progressValidator(cookies);
     if (!parsed.status) return NextResponse.json(
       {status: false, responseType: "log", data: parsed.data},
       { status: 401 }
     );
-    const query = await getProgressService(parsed.data);
+    const query = await progressService(parsed.data);
     if (!query.status) return NextResponse.json(
       query,
       { status: 500 }

@@ -2,7 +2,7 @@ import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
 import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { JwtPayload } from "jsonwebtoken";
 
-export default function getProgressValidator(cookies: RequestCookies): { status: boolean, data: any } {
+export default function progressValidator(cookies: RequestCookies): { status: boolean, data: any } {
   // User token validation
   const userToken = cookies.get("userInfo")?.value;
   const valid = userTokenChecker(userToken, ["STUDENT", "TEACHER", "PARENT"], ["ADMIN", "MASTER", "TEACHER"]);

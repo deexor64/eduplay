@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { Achievements, AchievementsEnum, ResType } from '@/lib/utils/types';
 
-export default async function getProgressService(data: any): Promise<ResType> {
+export default async function progressService(data: any): Promise<ResType> {
 
   // In here the student data is analysed and a comprehensive 
   // progress analysis is generated
