@@ -22,7 +22,8 @@ export default function Activities() {
       timeLimit: number,
       isGraded: boolean,
       difficulty: string,
-      completed: boolean, // not a raw db field
+      completed: boolean, // Not a raw db field
+      progressID?: string, // Only if activity is completed
     }>,
     total: number;
   }>({ activities: [], total: 0 });
@@ -59,8 +60,6 @@ export default function Activities() {
 
     const resData = await res.json();
     setDbData(resData.data);
-
-    console.log(resData.data);
 
   }
 

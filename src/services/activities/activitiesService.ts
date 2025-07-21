@@ -26,7 +26,7 @@ export default async function activitiesService(data: any): Promise<ResType> {
     delete selectClause.status;
   }
 
-  let activities = await prisma.activity.findMany({
+  let activities: any = await prisma.activity.findMany({
     where: whereClause,
     select: selectClause,
     skip: (data.page - 1) * data.limit,
@@ -48,19 +48,30 @@ export default async function activitiesService(data: any): Promise<ResType> {
     const progresses = await prisma.progress.findMany({
       where: { progressFor: studentID },
       select: { 
-        progressOf: true 
+        progressOf: true,
+        progressID: true
       }
     });
 
-    // Add completed attribute
-    const completedSet = new Set(progresses.map(p => p.progressOf));
-    activities = activities.map(a => ({ ...a, completed: completedSet.has(String(a.activityID)) } as any));
+    // Create a map from activityID to progressID
+    const progressMap: { [key: string]: string } = {};
+    progresses.forEach(p => {
+      progressMap[String(p.progressOf)] = p.progressID;
+    });
+
+    // Add completed attribute and progressID if completed
+    activities = activities.map((a: any) => {
+      const completed = progressMap[String(a.activityID)] !== undefined;
+      return completed
+        ? { ...a, completed: true, progressID: progressMap[String(a.activityID)] }
+        : { ...a, completed: false };
+    });
     
     // filter if filter is set
     if (data.completed === "Completed") {
-      activities = activities.filter(a => a.completed);
+      activities = activities.filter((a: any) => a.completed);
     } else if (data.completed === "Not Completed") {
-      activities = activities.filter(a => !a.completed);
+      activities = activities.filter((a: any) => !a.completed);
     }
 
   }
