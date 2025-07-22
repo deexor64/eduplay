@@ -15,8 +15,7 @@ export default async function getActivityService(data: any): Promise<ResType> {
       subject: true,
       grade: true,
       difficulty: true,
-      timeLimit: true,
-      isGraded: true,
+      isScored: true,
       templateCode: true,
     }
   })

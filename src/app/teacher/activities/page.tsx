@@ -20,8 +20,7 @@ export default function Activities() {
       status: string,
       subject: string,
       grade: number,
-      timeLimit: number,
-      isGraded: boolean,
+      isScored: boolean,
       difficulty: string,
     }>,
     total: number;

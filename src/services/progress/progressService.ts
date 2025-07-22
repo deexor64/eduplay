@@ -26,7 +26,6 @@ export default async function progressService(data: any): Promise<ResType> {
   const totalScore = progresses.reduce((sum, p) => sum + (p.baseScore || 0), 0);
   const totalMaxScore = progresses.reduce((sum, p) => sum + (p.maxScore || 0), 0);
   const averageScore = totalCompleted > 0 ? Math.round((totalScore / totalMaxScore) * 100) : 0;
-  const timeSpent = progresses.reduce((sum, p) => sum + (p.timeTaken || 0), 0);
 
   // Subject breakdown
   const subjectMap: { [subject: string]: { total: number, score: number } } = {};
@@ -74,7 +73,6 @@ export default async function progressService(data: any): Promise<ResType> {
     data: {
       totalCompleted,
       averageScore,
-      timeSpent,
       bestSubject,
       subjectStats,
       recent,

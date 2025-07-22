@@ -113,8 +113,7 @@ model Activity {
   updatedAt    DateTime           @updatedAt
   subject      Subject            @default(COMMON)
   grade        Int                @default(0)
-  timeLimit    Int                @default(0)
-  isGraded     Boolean            @default(false)
+  isScored     Boolean            @default(false)
   difficulty   ActivityDifficulty @default(EASY)
 
   templateCode String
@@ -143,7 +142,6 @@ model Progress {
   maxScore   Int    @default(100)
   summery    String
   data       Json
-  timeTaken  Int?
   createdAt     DateTime   @default(now())
 
   progressFor String

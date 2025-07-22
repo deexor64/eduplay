@@ -23,7 +23,6 @@ Promise<{ status: boolean, data: any }> {
       summery: z.string(),
     }),
     data: z.any(),
-    timeTaken: z.number().min(0),
   }).strict();
 
   // if activity is not graded progress is not saved
@@ -33,11 +32,11 @@ Promise<{ status: boolean, data: any }> {
       activityID: formData.activityID,
     },
     select: {
-      isGraded: true,
+      isScored: true,
     }
   });
   
-  if (!activity?.isGraded) {
+  if (!activity?.isScored) {
     return { status: false, data: "Activity is not graded" };
   } 
 

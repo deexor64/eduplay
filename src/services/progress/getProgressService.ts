@@ -12,16 +12,14 @@ export default async function getProgressService(data: any): Promise<ResType> {
       maxScore: true,
       summery: true,
       data: true,
-      timeTaken: true,
       activity: {
         select: {
           title: true,
           instructions: true,
-          timeLimit: true,
           difficulty: true,
           subject: true,
           grade: true,
-          isGraded: true,
+          isScored: true,
           status: true,
           templateCode: true,
         }
@@ -37,7 +35,6 @@ export default async function getProgressService(data: any): Promise<ResType> {
         summery: existing?.summery,
       },
       data: existing?.data,
-      timeTaken: existing?.timeTaken,
       activity: {
         ...existing?.activity,
         activityData: existing?.data

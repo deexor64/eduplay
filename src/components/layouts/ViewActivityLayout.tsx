@@ -41,6 +41,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   const activityID = params.activityID as string;
   const progressID = params.progressID as string;
 
+  // Assistant 
   const [showAssistant, setShowAssistant] = useState<boolean>(false);
   const [assistantMessage, setAssistantMessage] = useState<{
     text: string,
@@ -48,20 +49,25 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     type?: "normal" | "error" | "success" | "warning" | "info"
   }>({text: ""});
   
+  // Guide
+  const [showGuide, setShowGuide] = useState(false);
+
+  // Celebration
+  const [showCelebration, setShowCelebration] = useState(false);
+  
   // Data recieved from server
   // This object is used by subcomponents to display the data
   const [dbData, setDbData] = useState<{
     title: string,
     instructions: string,
     activityData: any,
-    timeLimit: number,
     difficulty: string,
     subject: string,
     grade: number,
-    isGraded: boolean,
+    isScored: boolean,
     status: string,
     templateCode: string,
-  }>({title: "", instructions: "", activityData: {}, timeLimit: 0, difficulty: "", subject: "", grade: 0, isGraded: false, status: "", templateCode: ""});
+  }>({title: "", instructions: "", activityData: {}, difficulty: "", subject: "", grade: 0, isScored: false, status: "", templateCode: ""});
   
 
   // Only used for fetching a sample activity
@@ -102,15 +108,14 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     else {
       const res = await fetch(`/api/progress/${progressID}`);
       const resData = await res.json();
-
-      console.log(resData)
-
+      // Construct activity state for progress
       setDbData(resData.data.activity)
       setResultData({
         score: resData.data.score,
         data: resData.data.data
       })
-
+      
+      // Show celebration at first for the progress
       setShowCelebration(true);
 
     }
@@ -154,12 +159,6 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
   // ------------------------------------------------
 
-  // Guide
-  const [showGuide, setShowGuide] = useState(false);
-
-  // Celebration
-  const [showCelebration, setShowCelebration] = useState(false);
-
   // data sent to server
   // under devlopment
   const [formData, setFormData] = useState({
@@ -170,15 +169,12 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
       summery: ""
     },
     data: {},
-    timeTaken: 0,
   });
 
   
   function validateResultForm(): { status: boolean, message: string } {
-    
-    // under devlopment
-  
-    // validations for common template
+
+    // No validations for common template
 
     // validate lesson template
     let validT = resultValidation;
@@ -220,7 +216,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     const form = resultForm();
     
     // Progress is saved only for graded activities
-    if (dbData.isGraded) { 
+    if (dbData.isScored) { 
 
       const url = `/api/progress`;
       const res = await fetch(url, {
@@ -232,8 +228,19 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
       })
 
       const resData = await res.json();
-      setAssistantMessage({text: resData.data});
-      setShowAssistant(true);
+
+      if (resData.status) {
+        setShowCelebration(true);
+        setTimeout(() => {
+          setAssistantMessage({text: resData.data});
+          setShowAssistant(true);
+        }, 4000)
+      } else {
+        setAssistantMessage({text: resData.data});
+        setShowAssistant(true);
+      }
+      
+      return;
 
     }
     
@@ -259,8 +266,8 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
             {/* description */}
             <Description>{ dbData.instructions }</Description>
           </CoverImage>
-          
-          {/* activity content */}
+
+          {/* Activity content */}
           <Suspense>
           {activityData ? <ViewActivityComponent
             activityData={activityData} 
@@ -268,7 +275,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
             setResultData={setResultData} /> 
             : (
               <div className="flex items-center justify-center p-8">
-                <div className="text-lg text-gray-600">Loading activity data...</div>
+                <div className="text-lg text-gray-600">Loading activity...</div>
               </div>
             )
           }
@@ -280,13 +287,15 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
         </div>
 
         {/* Assistant */}
+        {/* Shown for notifications and error messages */}
         { showAssistant && 
           <Assistant showAssistant={showAssistant} setShowAssistant={setShowAssistant} 
             message={assistantMessage} /> 
         }
 
         {/* Guide */}
-        { showGuide && 
+        {/* Not available for progress and scored activities */}
+        { (props.viewMode !== "PROGRESS") && (!dbData.isScored) && showGuide &&
           <Guide showGuide={showGuide} setShowGuide={setShowGuide} 
           resultData={resultData}/> 
         }
@@ -300,7 +309,9 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
       </div>
 
       {/* Guide toggle button  */}
-      <GuideButton setShowGuide={setShowGuide} />
+      { ((props.viewMode !== "PROGRESS") || (!dbData.isScored)) &&
+        <GuideButton setShowGuide={setShowGuide} />
+      }
      
     </>
   );

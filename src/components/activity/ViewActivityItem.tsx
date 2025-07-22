@@ -14,8 +14,7 @@ interface ViewActivityItemProps {
     status: string;
     subject: string;
     grade: number;
-    timeLimit: number;
-    isGraded: boolean;
+    isScored: boolean;
     difficulty: string;
   };
   onUpdateActivityStatus: Function;
@@ -68,11 +67,8 @@ export default function ViewActivityItem(props: ViewActivityItemProps) {
           )}
           <InfoBadge text={itemData.subject} colorTheme="green" />
           <InfoBadge text={itemData.difficulty} colorTheme="yellow" />
-          {itemData.isGraded && (
+          {itemData.isScored && (
             <InfoBadge text="SCORED" colorTheme="purple" />
-          )}
-          {itemData.timeLimit > 0 && (
-            <InfoBadge text={`${itemData.timeLimit} min`} colorTheme="gray" />
           )}
           {itemData.status === "UNPUBLISHED" && (
             <InfoBadge text={itemData.status} colorTheme="indigo" />

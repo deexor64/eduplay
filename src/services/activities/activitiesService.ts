@@ -18,8 +18,7 @@ export default async function activitiesService(data: any): Promise<ResType> {
     subject: true,
     grade: true,
     difficulty: true,
-    timeLimit: true,
-    isGraded: true,
+    isScored: true,
   }
 
   if (data.userType === "STUDENT") {

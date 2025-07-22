@@ -3,7 +3,7 @@ import { ActivityViewMode } from "@/lib/utils/types";
 
 interface ActivityTitleProps {
   viewMode: ActivityViewMode,
-  templateCode: string,
+  templateCode?: string,
   children: React.ReactNode
 }
 

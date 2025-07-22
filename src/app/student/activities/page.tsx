@@ -19,8 +19,7 @@ export default function Activities() {
       title: string,
       subject: string,
       grade: number,
-      timeLimit: number,
-      isGraded: boolean,
+      isScored: boolean,
       difficulty: string,
       completed: boolean, // Not a raw db field
       progressID?: string, // Only if activity is completed

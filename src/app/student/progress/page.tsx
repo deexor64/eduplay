@@ -13,7 +13,6 @@ export default function Progress() {
   const [dbData, setDbData] = useState({
     totalCompleted: 12,
     averageScore: 85,
-    timeSpent: 320,
     bestSubject: "Mathematics",
     subjectStats: [
       { subject: "Mathematics", score: 92 },
@@ -61,11 +60,6 @@ export default function Progress() {
           <div className="text-4xl mb-2">📈</div>
           <div className="text-lg font-bold text-blue-800">Average Score</div>
           <div className="text-2xl text-purple-700 font-extrabold">{dbData.averageScore}%</div>
-        </div>
-        <div className="flex-1 flex flex-col items-center md:items-start mb-4 md:mb-0">
-          <div className="text-4xl mb-2">⏰</div>
-          <div className="text-lg font-bold text-blue-800">Time Spent</div>
-          <div className="text-2xl text-pink-700 font-extrabold">{dbData.timeSpent} min</div>
         </div>
         <div className="flex-1 flex flex-col items-center md:items-start">
           <div className="text-4xl mb-2">⭐</div>

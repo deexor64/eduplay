@@ -18,7 +18,6 @@ export default async function createProgressService(data: any): Promise<ResType>
       maxScore: data.score.maxScore,
       summery: data.score.summery,
       data: data.data,
-      timeTaken: data.timeTaken,
       student: {
         connect: { studentID: student?.studentID},
       },

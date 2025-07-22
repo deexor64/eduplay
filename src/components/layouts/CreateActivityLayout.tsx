@@ -66,8 +66,7 @@ export default function CreateActivityLayout() {
     instructions: "",
     activityData: "",
     options: {
-      timeLimit: 0,
-      isGraded: false,
+      isScored: false,
       grade: "ALL",
       difficulty: "EASY",
       subject: "COMMON",

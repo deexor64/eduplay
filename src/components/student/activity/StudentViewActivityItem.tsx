@@ -9,8 +9,7 @@ interface StudentViewActivityItemProps {
     title: string;
     subject: string;
     grade: number;
-    timeLimit: number;
-    isGraded: boolean;
+    isScored: boolean;
     difficulty: string;
     completed: boolean;
     progressID?: string;
@@ -136,12 +135,7 @@ export default function StudentViewActivityItem(props: StudentViewActivityItemPr
           <span className={`text-base font-medium px-2 py-1 rounded-full ${theme.subjectTag}`}>
            📚 {itemData.subject}
          </span>
-          {itemData.timeLimit > 0 && (
-            <span className="text-base bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
-              ⏱️ {itemData.timeLimit}m
-            </span>
-          )}
-          {itemData.isGraded && (
+          {itemData.isScored && (
             <span className="text-base bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
               🏆 Scored
             </span>

@@ -24,8 +24,7 @@ export default function createActivityValidator(cookies: RequestCookies, formDat
     instructions: z.string(),
     activityData: z.any(),
     options: z.object({
-      timeLimit: z.number().min(0),
-      isGraded: z.boolean(),
+      isScored: z.boolean(),
       grade: z.enum(Object.values(ActivityGradeEnum) as [string, ...string[]]).transform(function(value) {
         return value === "ALL" ? 0 : Number(value);
       }),
