@@ -9,7 +9,7 @@ import ViewActivityItem from "@/components/activity/ViewActivityItem";
 import React, { useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
 import { ActivityDifficultyEnum, ActivityGradeEnum, ActivityStatusEnum, SubjectEnum } from "@/lib/utils/types";
-import NavigatorLayout from "@/components/layouts/NavigatorLayout";
+import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 
 export default function Activities() {
 

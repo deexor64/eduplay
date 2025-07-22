@@ -9,7 +9,7 @@ import ViewUserItem from "@/components/users/ViewUserItem";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 import cleanParams from "@/lib/utils/cleanParams";
-import NavigatorLayout from "@/components/layouts/NavigatorLayout";
+import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 
 export default function UserList() {
   

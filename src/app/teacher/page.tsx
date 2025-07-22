@@ -1,4 +1,4 @@
-import NavigatorLayout from "@/components/layouts/NavigatorLayout";
+import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 
 export default function Dashboard(props: any) {
 

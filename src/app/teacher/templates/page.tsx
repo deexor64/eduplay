@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { TeacherRoleEnum } from "@/lib/utils/types";
 import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
-import NavigatorLayout from "@/components/layouts/NavigatorLayout";
+import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import { syncTemplates } from "@/actions/templates/syncTemplates";
 import toast from "react-hot-toast";
 
