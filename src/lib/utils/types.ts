@@ -52,12 +52,13 @@ export enum TeacherRoleEnum {
 }
 
 // template view mode
-export type ActivityViewMode = "VIEW" | "SAMPLE" | "PROGRESS";
+export type ActivityViewMode = "VIEW" | "SAMPLE" | "PROGRESS" | "PREVIEW";
 
 export enum ActivityViewModeEnum {
   VIEW = "VIEW",
   SAMPLE = "SAMPLE",
   PROGRESS = "PROGRESS",
+  PREVIEW = "PREVIEW",
 }
 
 // api response type

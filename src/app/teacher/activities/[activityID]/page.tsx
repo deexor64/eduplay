@@ -4,6 +4,6 @@ import ViewActivityLayout from "@/components/layouts/ViewActivityLayout";
 
 export default function Activity() {
 
-  return <ViewActivityLayout viewMode="VIEW" />
+  return <ViewActivityLayout viewMode="PREVIEW" />
 
 }

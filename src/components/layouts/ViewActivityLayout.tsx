@@ -99,7 +99,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
       setDbData(resData.data.sampleActivity);
     } 
     // view mode is "VIEW"
-    else if (props.viewMode === "VIEW") {
+    else if (props.viewMode === "VIEW" || props.viewMode === "PREVIEW") {
       const res = await fetch(`/api/activities/${activityID}`);
       const resData = await res.json();
       setDbData(resData.data);
@@ -163,12 +163,6 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   // under devlopment
   const [formData, setFormData] = useState({
     activityID: activityID,
-    score: {
-      baseScore: 0,
-      maxScore: 0,
-      summery: ""
-    },
-    data: {},
   });
 
   
@@ -198,8 +192,9 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   
   async function handleSubmit () {
     
-    // progress or sample cannot be submitted back
-    if (props.viewMode === "PROGRESS" || props.viewMode === "SAMPLE") {
+    // progress or sample or preview cannot be submitted back
+    // TODO: validate this at backend
+    if (props.viewMode === "PROGRESS" || props.viewMode === "SAMPLE" || props.viewMode === "PREVIEW") {
       setShowCelebration(true);
       return;
     }
@@ -232,6 +227,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
       if (resData.status) {
         setShowCelebration(true);
         setTimeout(() => {
+          setShowCelebration(false);
           setAssistantMessage({text: resData.data});
           setShowAssistant(true);
         }, 4000)
@@ -295,7 +291,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
         {/* Guide */}
         {/* Not available for progress and scored activities */}
-        { (props.viewMode !== "PROGRESS") && (!dbData.isScored) && showGuide &&
+        { showGuide &&
           <Guide showGuide={showGuide} setShowGuide={setShowGuide} 
           resultData={resultData}/> 
         }
@@ -309,7 +305,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
       </div>
 
       {/* Guide toggle button  */}
-      { ((props.viewMode !== "PROGRESS") || (!dbData.isScored)) &&
+      { ((props.viewMode === "VIEW" || props.viewMode === "PREVIEW") && (!dbData.isScored)) &&
         <GuideButton setShowGuide={setShowGuide} />
       }
      
