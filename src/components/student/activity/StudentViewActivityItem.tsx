@@ -2,6 +2,9 @@
 // Attributes are predefined and cannot be changed
 import { ActivityDifficultyEnum, SubjectEnum } from "@/lib/utils/types";
 import Link from "next/link";
+import InfoBadge from "./InfoBadge";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 interface StudentViewActivityItemProps {
   itemData: {
@@ -90,10 +93,10 @@ export default function StudentViewActivityItem(props: StudentViewActivityItemPr
         `/student/progress/${itemData.progressID}` :
         `/student/activities/${itemData.activityID}`}
       target="_blank"
-      className={`group relative border-2 rounded-xl p-4 
+      className={`group relative border-2 ${theme.border} rounded-xl p-4 
         shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer 
-        ${theme.cardBg} ${theme.border} hover:border-purple-300 hover:bg-gradient-to-br ${theme.bg}
-        transform hover:scale-105 hover:-translate-y-1 overflow-hidden`}
+        ${theme.cardBg} hover:border-purple-300 hover:bg-gradient-to-br ${theme.bg}
+        transform hover:scale-101 hover:-translate-y-1 overflow-hidden`}
     >
       {/* Animated background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-100/50 to-purple-100/50 
@@ -117,8 +120,10 @@ export default function StudentViewActivityItem(props: StudentViewActivityItemPr
           <div className="ml-2">
           {
             itemData.completed && 
-            <span className={`inline-block text-base font-semibold px-2 py-1 rounded-full ${theme.badge} bg-green-300`}>
+            <span className="flex items-center px-2 py-1 rounded-full font-medium text-base border-2
+             bg-gray-200 text-green-700 border-green-300">
               Completed
+              <FontAwesomeIcon icon={faCheckCircle} className="ml-1 text-green-600" />
             </span>
           } 
           </div>
@@ -126,19 +131,11 @@ export default function StudentViewActivityItem(props: StudentViewActivityItemPr
 
         {/* Attribute badges  */}
         <div className="flex flex-wrap gap-2 mb-3">
-          <span className="text-base font-medium text-blue-600 flex items-center">
-            {getDifficultyEmoji(itemData.difficulty as ActivityDifficultyEnum)} {itemData.difficulty}
-          </span>
-          <span className="text-base font-medium text-green-600">
-            Grade {itemData.grade === 0 ? 'All' : itemData.grade}
-          </span>
-          <span className={`text-base font-medium px-2 py-1 rounded-full ${theme.subjectTag}`}>
-           📚 {itemData.subject}
-         </span>
+          <InfoBadge type="grade" text={itemData.grade === 0 ? 'Grade All' : 'Grade ' + itemData.grade.toString()} />
+          <InfoBadge type="difficulty" text={itemData.difficulty} emoji={getDifficultyEmoji(itemData.difficulty as ActivityDifficultyEnum)} />
+          <InfoBadge type="subject" text={itemData.subject} emoji={getSubjectEmoji(itemData.subject as SubjectEnum)} />
           {itemData.isScored && (
-            <span className="text-base bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
-              🏆 Scored
-            </span>
+            <InfoBadge type="scored" text="Scored" emoji="🏆" />
           )}
         </div>
 
@@ -147,8 +144,9 @@ export default function StudentViewActivityItem(props: StudentViewActivityItemPr
           <div className="text-base text-gray-500 font-medium group-hover:text-gray-700 transition-colors">
             Click to start
           </div>
-          <div className="text-2xl group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
-            🚀
+          {/* Font Awesome play icon for start */}
+          <div className="text-2xl group-hover:scale-110 transition-all duration-300 text-blue-600">
+            <FontAwesomeIcon icon={faPlay} />
           </div>
         </div>
       </div>

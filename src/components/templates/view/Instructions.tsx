@@ -1,14 +1,37 @@
-import { useState } from "react";
+import InfoBadge from "@/components/shared/badges/InfoBadge";
+import { ReactNode, useState } from "react";
 
-export default function Description(props: any) {
+type InstructionsProps = {
+  infoTags: any,
+  children: ReactNode,
+}
+
+export default function Instructions(props: InstructionsProps) {
   const [open, setOpen] = useState(false);
 
   return (
     <section className="bg-white/40 p-3 rounded-xl shadow-sm relative transition-all duration-300">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center">
         <h2 className="text-base font-semibold text-gray-800 select-none">Instructions</h2>
+        {/* Info tags */}
+        <div className="flex items-center gap-2 mt-1 text-xs flex-wrap ml-4">
+          {props.infoTags.grade === 0 ? (
+            <InfoBadge text="ALL GRADES" colorTheme="blue" />
+          ) : (
+            <InfoBadge text={"GRADE " + String(props.infoTags.grade)} colorTheme="blue" />
+          )}
+          <InfoBadge text={props.infoTags.subject} colorTheme="green" />
+          <InfoBadge text={props.infoTags.difficulty} colorTheme="yellow" />
+          {props.infoTags.isScored && (
+            <InfoBadge text="SCORED" colorTheme="purple" />
+          )}
+          {props.infoTags.status === "UNPUBLISHED" && (
+            <InfoBadge text={props.infoTags.status} colorTheme="indigo" />
+          )}
+        </div>
+        {/* Collapse button */}
         <button
-          className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+          className="p-1 rounded-full hover:bg-gray-100 transition-colors ml-auto"
           aria-label={open ? 'Collapse instructions' : 'Expand instructions'}
           onClick={() => setOpen((v) => !v)}
           type="button"

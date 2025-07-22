@@ -3,7 +3,7 @@
 import ActivityTitle from "@/components/templates/view/ActivityTitle";
 import CoverImage from "@/components/templates/view/CoverImage";
 import Footer from "@/components/templates/view/Footer";
-import Description from "@/components/templates/view/Description";
+import Instructions from "@/components/templates/view/Instructions";
 import Guide from "@/components/templates/view/Guide";
 import Celebration from "@/components/templates/view/Celebration";
 import GuideButton from "@/components/templates/view/GuideButton";
@@ -260,7 +260,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
               { dbData.title }
             </ActivityTitle>
             {/* description */}
-            <Description>{ dbData.instructions }</Description>
+            <Instructions infoTags={dbData}>{ dbData.instructions }</Instructions>
           </CoverImage>
 
           {/* Activity content */}
