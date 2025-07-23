@@ -11,7 +11,7 @@ import { ActivityViewMode } from "@/lib/utils/types";
 import { useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
-import Assistant from "@/components/shared/Assistant";
+import Assistant from "@/components/student/Assistant";
 import { useParams } from "next/navigation";
 import { lazy, Suspense, useMemo } from "react";
 
@@ -44,12 +44,10 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   const progressID = params.progressID as string;
 
   // Assistant 
-  const [showAssistant, setShowAssistant] = useState<boolean>(false);
   const [assistantMessage, setAssistantMessage] = useState<{
+    show: boolean,
     text: string,
-    mood?: "happy" | "angry" | "sad" | "normal" | "scared" | "confused",
-    type?: "normal" | "error" | "success" | "warning" | "info"
-  }>({text: ""});
+  }>({show: false, text: ""});
   
   // Guide
   const [showGuide, setShowGuide] = useState(false);
@@ -195,11 +193,15 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     
   }
   
+  // Submit is invoked from footer
   async function handleSubmit () {
     
     // progress or sample or preview cannot be submitted back
     // TODO: validate this at backend
     if (props.viewMode === "PROGRESS" || props.viewMode === "SAMPLE" || props.viewMode === "PREVIEW") {
+      // Assistant is set to true from footer before invoking submit
+      // so it must be closed, then celebrate
+      setAssistantMessage({show: false, text: ""});
       setShowCelebration(true);
       return;
     }
@@ -207,10 +209,13 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     // validate and show assistant message
     const valid = validateResultForm();
     if (!valid.status) {
-      setAssistantMessage({text: valid.message});
-      setShowAssistant(true);
+      // Assitant opened from footer is used here 
+      setAssistantMessage({show: true, text: valid.message});
       return;
     }
+    
+    // Assistant opened by footer is not required from here
+    setAssistantMessage({show: false, text: ""});
     
     // submit
     const form = resultForm();
@@ -233,12 +238,10 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
         setShowCelebration(true);
         setTimeout(() => {
           setShowCelebration(false);
-          setAssistantMessage({text: resData.data});
-          setShowAssistant(true);
+          setAssistantMessage({show: true, text: resData.data});
         }, 4000)
       } else {
-        setAssistantMessage({text: resData.data});
-        setShowAssistant(true);
+        setAssistantMessage({show: true, text: resData.data});
       }
       
       return;
@@ -285,15 +288,15 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           </Suspense>
 
           {/* footer */}
-          <Footer viewMode={props.viewMode} setResetActivity={setResetActivity} handleSubmit={handleSubmit} />
+          <Footer viewMode={props.viewMode} setResetActivity={setResetActivity} 
+          setAssistantMessage={setAssistantMessage} handleSubmit={handleSubmit} />
         
         </div>
 
         {/* Assistant */}
         {/* Shown for notifications and error messages */}
-        { showAssistant && 
-          <Assistant showAssistant={showAssistant} setShowAssistant={setShowAssistant} 
-            message={assistantMessage} /> 
+        { assistantMessage.show && 
+          <Assistant assistantMessage={assistantMessage} setAssistantMessage={setAssistantMessage} /> 
         }
 
         {/* Guide */}
