@@ -17,9 +17,10 @@ type FooterProps = {
 export default function Footer(props: FooterProps) {
 
   function handleSubmit() {
+
     props.setAssistantMessage({
       show: true,
-      text: "Are you sure you want to submit? Your progress will be saved permanently ",
+      text: "Are you sure you want to submit? ",
       question: true,
       onAnswer: (answer: boolean) => {
         if (answer) {
@@ -32,9 +33,10 @@ export default function Footer(props: FooterProps) {
   }
   
   function handleActivityReset() {
+
     props.setAssistantMessage({
       show: true,
-      text: "Are you sure you want to reset? Your progress will be lost ",
+      text: "Are you sure you want to reset activity ? ",
       question: true,
       onAnswer: (answer: boolean) => {
         if (answer) props.setResetActivity(true);
