@@ -11,10 +11,11 @@ interface AcademicInfoData {
 
 interface AcademicInfoFormProps {
   data: AcademicInfoData;
+  onSave?: (updated: AcademicInfoData) => Promise<void>;
 }
 
 // Child-friendly academic information form
-export default function AcademicInfoForm({ data }: AcademicInfoFormProps) {
+export default function AcademicInfoForm({ data, onSave }: AcademicInfoFormProps) {
   const [formData, setFormData] = useState<AcademicInfoData>(data);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -30,12 +31,11 @@ export default function AcademicInfoForm({ data }: AcademicInfoFormProps) {
   // Handle save changes
   const handleSaveChanges = async () => {
     setIsSaving(true);
-    // TODO: Implement actual save functionality
-    console.log("Saving academic info:", formData);
-    
+    if (onSave) {
+      await onSave(formData);
+    }
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
     setIsSaving(false);
     setIsEditing(false);
   };

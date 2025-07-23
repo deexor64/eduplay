@@ -11,10 +11,11 @@ interface PersonalInfoData {
 
 interface PersonalInfoFormProps {
   data: PersonalInfoData;
+  onSave?: (updated: PersonalInfoData) => Promise<void>;
 }
 
 // Child-friendly personal information form
-export default function PersonalInfoForm({ data }: PersonalInfoFormProps) {
+export default function PersonalInfoForm({ data, onSave }: PersonalInfoFormProps) {
   const [formData, setFormData] = useState<PersonalInfoData>(data);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -30,12 +31,11 @@ export default function PersonalInfoForm({ data }: PersonalInfoFormProps) {
   // Handle save changes
   const handleSaveChanges = async () => {
     setIsSaving(true);
-    // TODO: Implement actual save functionality
-    console.log("Saving personal info:", formData);
-    
+    if (onSave) {
+      await onSave(formData);
+    }
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
     setIsSaving(false);
     setIsEditing(false);
   };
