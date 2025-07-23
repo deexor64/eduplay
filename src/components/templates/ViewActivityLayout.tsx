@@ -21,6 +21,8 @@ type ViewActivityLayoutProps = {
 
 export interface ViewActivityProps {
   activityData: any;
+  resetActivity: boolean;
+  setResetActivity: React.Dispatch<React.SetStateAction<boolean>>;
   setResultValidation: React.Dispatch<React.SetStateAction<{ status: boolean, message: string}>>,
   setResultData: React.Dispatch<React.SetStateAction<{
     score: {
@@ -137,6 +139,9 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   // This is the data that is used by the viewActivityComponent
   const [activityData, setActivityData] = useState<any>();
 
+  // This is used to reset the activity data
+  const [resetActivity, setResetActivity] = useState<boolean>(false);
+
   // The function just returns the correct validation message
   // Function doens't grade and score the activity
   // Only validations like if the student have completed the activity before submission etc
@@ -249,7 +254,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   return (
     <>
       <div className="fixed inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/activity-background.jpg')", backgroundAttachment: "fixed"}} >
+        style={{ backgroundImage: `url('/templates/${dbData.templateCode}/activity-background.jpeg')`, backgroundAttachment: "fixed"}} >
         
         <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-4 backdrop-blur-xs bg-transparent">
           
@@ -266,7 +271,9 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           {/* Activity content */}
           <Suspense>
           {activityData ? <ViewActivityComponent
-            activityData={activityData} 
+            activityData={activityData}
+            resetActivity={resetActivity}
+            setResetActivity={setResetActivity}
             setResultValidation={setResultValidation}
             setResultData={setResultData} /> 
             : (
@@ -278,7 +285,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           </Suspense>
 
           {/* footer */}
-          <Footer viewMode={props.viewMode} handleSubmit={handleSubmit} />
+          <Footer viewMode={props.viewMode} setResetActivity={setResetActivity} handleSubmit={handleSubmit} />
         
         </div>
 

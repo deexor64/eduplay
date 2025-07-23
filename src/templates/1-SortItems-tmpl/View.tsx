@@ -110,7 +110,7 @@ function DroppableZone(props: { id: string; children: any }) {
 
 function SortItems(props: ViewActivityProps) {
 
-  const { activityData, setResultValidation, setResultData } = props;
+  const { activityData, resetActivity, setResetActivity, setResultValidation, setResultData } = props;
 
   // Central state for all activity data
   const [basketData, setBasketData] = useState<ActivityDataType>(
@@ -123,6 +123,16 @@ function SortItems(props: ViewActivityProps) {
       setBasketData(JSON.parse(JSON.stringify(activityData)));
     }
   }, [activityData]);
+
+  // Reset effect
+  useEffect(() => {
+    if (resetActivity) {
+      if (activityData && activityData.box && activityData.baskets) {
+        setBasketData(JSON.parse(JSON.stringify(activityData)));
+      }
+      setResetActivity(false);
+    }
+  }, [resetActivity, activityData, setResetActivity]);
 
   // Validation effect
   useEffect(() => {
