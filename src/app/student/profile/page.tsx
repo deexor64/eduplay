@@ -16,27 +16,14 @@ export default function StudentProfile() {
 
   // Fetch student data (replace with real API call)
   useEffect(() => {
+
+    // Under development ....
     async function fetchStudent() {
-      // TODO: Replace with real API call to fetch current student info
-      // Example fetch: const res = await fetch("/api/student/profile");
-      // const data = await res.json();
-      // setStudentData(data);
-      setStudentData({
-        user: {
-          firstName: "John",
-          lastName: "Doe",
-          phoneNumber: "+1234567890",
-          dateOfBirth: "2010-05-15",
-          displayPicUrl: "/images/avatar.png",
-        },
-        student: {
-          studentID: "STU001",
-          email: "john.doe@school.com",
-          grade: 5,
-          class: "A",
-          indexNumber: "STU001",
-        },
-      });
+      
+      const res = await fetch("/api/profile");
+      const data = await res.json();
+      setStudentData(data.data);
+      console.log(data.data)
     }
     fetchStudent();
   }, []);
@@ -60,6 +47,8 @@ export default function StudentProfile() {
       student: { ...prev.student, ...updated },
     }));
   }
+  
+  if (!studentData) return null;
 
   return (
     <StudentNavigatorLayout>
@@ -71,10 +60,10 @@ export default function StudentProfile() {
         {  studentData ? (
           <>
           <ProfilePictureUpload 
-            currentImage={studentData.user.displayPicUrl}
-            studentName={`${studentData.user.firstName} ${studentData.user.lastName}`}
+            currentImage={studentData.displayPicUrl}
+            studentName={`${studentData.firstName} ${studentData.lastName}`}
           />
-          <PersonalInfoForm data={studentData.user} onSave={handleUpdatePersonalInfo} />
+          <PersonalInfoForm data={studentData} onSave={handleUpdatePersonalInfo} />
           <AcademicInfoForm data={studentData.student} onSave={handleUpdateAcademicInfo} />
           <PasswordChangeForm />
           </>
