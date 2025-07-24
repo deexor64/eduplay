@@ -15,7 +15,6 @@ export default async function profileService(data: any): Promise<ResType> {
       displayPicUrl: true,
       student: {
         select: {
-          studentID: true,
           email: true,
           grade: true,
           class: true,

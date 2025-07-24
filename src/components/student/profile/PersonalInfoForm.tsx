@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useState } from "react";
+import { updateStudentInfo } from "@/actions/student/updateStudentInfo";
+import React, { useState, useEffect } from "react";
 
 interface PersonalInfoData {
   firstName: string;
@@ -11,14 +12,21 @@ interface PersonalInfoData {
 
 interface PersonalInfoFormProps {
   data: PersonalInfoData;
-  onSave?: (updated: PersonalInfoData) => Promise<void>;
+  onUpdatePersonalInfo: Function;
 }
 
 // Child-friendly personal information form
-export default function PersonalInfoForm({ data, onSave }: PersonalInfoFormProps) {
+export default function PersonalInfoForm(props: PersonalInfoFormProps) {
+
+  const { data, onUpdatePersonalInfo } = props;
+  
   const [formData, setFormData] = useState<PersonalInfoData>(data);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    setFormData(data);
+  }, [data]);
 
   // Handle input changes
   const handleInputChange = (field: keyof PersonalInfoData, value: string) => {
@@ -29,19 +37,16 @@ export default function PersonalInfoForm({ data, onSave }: PersonalInfoFormProps
   };
 
   // Handle save changes
-  const handleSaveChanges = async () => {
+  async function handleSaveChanges() {
     setIsSaving(true);
-    if (onSave) {
-      await onSave(formData);
-    }
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await updateStudentInfo(formData);
+    onUpdatePersonalInfo();
     setIsSaving(false);
     setIsEditing(false);
   };
 
   // Handle cancel changes
-  const handleCancelChanges = () => {
+  function handleCancelChanges() {
     setFormData(data);
     setIsEditing(false);
   };

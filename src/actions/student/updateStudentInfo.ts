@@ -4,10 +4,11 @@ import { cookies } from "next/headers";
 import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { prisma } from "@/lib/prisma";
 import { TeacherRoleEnum, UserTypeEnum } from "@/lib/utils/types";
+import { JwtPayload } from "jsonwebtoken";
 
 // Not completed ......
 
-export async function updateStudentInfo(studentID: string, updateData: {
+export async function updateStudentInfo(updateData: {
   firstName?: string,
   lastName?: string,
   phoneNumber?: string,
@@ -22,39 +23,40 @@ export async function updateStudentInfo(studentID: string, updateData: {
   const valid = userTokenChecker(userToken, ["STUDENT", "TEACHER"], [TeacherRoleEnum.MASTER, TeacherRoleEnum.ADMIN]);
   if (!valid) throw new Error("Unauthorized");
 
+  const userID = (valid.data as JwtPayload).userID as string;
+
   // Find student and user
-  const student = await prisma.student.findUnique({
-    where: { studentID },
-    include: { user: true }
+  const student = await prisma.user.findUnique({
+    where: { userID: userID },
   });
-  if (!student) throw new Error("Student not found");
 
   // Prepare update objects
-  const userUpdate: any = {};
+  const studentUpdate: any = {};
+
+  if (updateData.email !== undefined) studentUpdate.email = updateData.email;
+  if (updateData.grade !== undefined) studentUpdate.grade = updateData.grade;
+  if (updateData.class !== undefined) studentUpdate.class = updateData.class;
+
+  const userUpdate: any = {
+    student: {
+      update: {
+        ...studentUpdate,
+      }
+    }
+  };
+
+  if (Object.keys(studentUpdate).length === 0) delete userUpdate.student;
   if (updateData.firstName !== undefined) userUpdate.firstName = updateData.firstName;
   if (updateData.lastName !== undefined) userUpdate.lastName = updateData.lastName;
   if (updateData.phoneNumber !== undefined) userUpdate.phoneNumber = updateData.phoneNumber;
   if (updateData.dateOfBirth !== undefined) userUpdate.dateOfBirth = updateData.dateOfBirth;
 
-  const studentUpdate: any = {};
-  if (updateData.email !== undefined) studentUpdate.email = updateData.email;
-  if (updateData.grade !== undefined) studentUpdate.grade = updateData.grade;
-  if (updateData.class !== undefined) studentUpdate.class = updateData.class;
-
   // Update user
-  if (Object.keys(userUpdate).length > 0) {
-    await prisma.user.update({
-      where: { userID: student.userID },
-      data: userUpdate
-    });
-  }
-  // Update student
-  if (Object.keys(studentUpdate).length > 0) {
-    await prisma.student.update({
-      where: { studentID },
-      data: studentUpdate
-    });
-  }
+  await prisma.user.update({
+    where: { userID: userID },
+    data: userUpdate
+  });
 
   return { status: true, message: "Student info updated" };
+  
 } 

@@ -1,47 +1,50 @@
 "use client"
 
-import React, { useState } from "react";
-
-interface AcademicInfoData {
-  email: string;
-  grade: number;
-  class: string;
-  indexNumber: string;
-}
+import { updateStudentInfo } from "@/actions/student/updateStudentInfo";
+import React, { useState, useEffect } from "react";
 
 interface AcademicInfoFormProps {
-  data: AcademicInfoData;
-  onSave?: (updated: AcademicInfoData) => Promise<void>;
+  data: {
+    email?: string;
+    grade?: number;
+    class?: string;
+    indexNumber: string;
+  },
+  onUpdateAcademicInfo: Function;
 }
 
 // Child-friendly academic information form
-export default function AcademicInfoForm({ data, onSave }: AcademicInfoFormProps) {
-  const [formData, setFormData] = useState<AcademicInfoData>(data);
+export default function AcademicInfoForm(props: AcademicInfoFormProps) {
+  
+  const { data, onUpdateAcademicInfo } = props;
+
+  const [formData, setFormData] = useState<any>(data);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  useEffect(() => {
+    setFormData(data);
+  }, [data]);
+
   // Handle input changes
-  const handleInputChange = (field: keyof AcademicInfoData, value: string | number) => {
-    setFormData(prev => ({
+  const handleInputChange = (field: keyof any, value: string | number) => {
+    setFormData((prev: any) => ({
       ...prev,
       [field]: value
     }));
   };
 
   // Handle save changes
-  const handleSaveChanges = async () => {
+  async function handleSaveChanges() {
     setIsSaving(true);
-    if (onSave) {
-      await onSave(formData);
-    }
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await updateStudentInfo(formData);
+    onUpdateAcademicInfo();
     setIsSaving(false);
     setIsEditing(false);
   };
 
   // Handle cancel changes
-  const handleCancelChanges = () => {
+  function handleCancelChanges() {
     setFormData(data);
     setIsEditing(false);
   };
