@@ -71,7 +71,9 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     isScored: boolean,
     status: string,
     templateCode: string,
-  }>({title: "", instructions: "", activityData: {}, difficulty: "", subject: "", grade: 0, isScored: false, status: "", templateCode: ""});
+    topic: string,
+  }>({title: "", instructions: "", activityData: {}, difficulty: "", subject: "", grade: 0, isScored: false,
+     status: "", templateCode: "", topic: ""});
   
 
   // Only used for fetching a sample activity

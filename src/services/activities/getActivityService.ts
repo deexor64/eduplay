@@ -17,6 +17,7 @@ export default async function getActivityService(data: any): Promise<ResType> {
       difficulty: true,
       isScored: true,
       templateCode: true,
+      topic: true,
     }
   })
   

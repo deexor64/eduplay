@@ -4,15 +4,8 @@ import { ReactNode } from "react";
 import Link from 'next/link';
 import useAuth from "@/hooks/useAuth";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faUsers, 
-  faUser, 
-  faUserFriends, 
-  faFileAlt, 
-  faBox, 
-  faCog, 
-  faEnvelope 
-} from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUser, faUserFriends, faFileAlt, faBox, faCog, faEnvelope }
+ from '@fortawesome/free-solid-svg-icons';
 
 interface SideBarLinkProps {
   link: string,
@@ -21,7 +14,9 @@ interface SideBarLinkProps {
   isOpen: boolean
 }
 
-function SideBarLink({ link, children, icon, isOpen }: SideBarLinkProps) { 
+function SideBarLink(props: SideBarLinkProps) { 
+
+  const { link, children, icon, isOpen } = props;
 
   return (
     <li>
@@ -46,41 +41,11 @@ type SidebarProps = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
+export default function Sidebar(props: SidebarProps) {
+
+  const { isOpen, setIsOpen } = props;
   
   const { userType } = useAuth();
-
-  const teacherLinks = {
-    "Students": "/teacher/users?userListType=student",
-    "Teachers": "/teacher/users?userListType=teacher", 
-    "Parents": "/teacher/users?userListType=parent",
-    "Templates": "/teacher/templates",
-    "Activities": "/teacher/activities",
-    "Profile": "/teacher/profile",
-    "System Settings": "/teacher/system-settings",
-  };
-
-  const parentLinks = {
-    "My Child": "/parent/mychild",
-    "Contact School": "/parent/contactschool", 
-    "Profile": "/parent/profile",
-    "Settings": "/parent/settings",
-  };
-
-  const icons = {
-    "Students": faUsers,
-    "Teachers": faUser,
-    "Parents": faUserFriends,
-    "Templates": faFileAlt,
-    "Activities": faBox,
-    "Profile": faUser,
-    "System Settings": faCog,
-    "My Child": faUser,
-    "Contact School": faEnvelope,
-    "Settings": faCog,
-  };
-
-  const links = userType === "TEACHER" ? teacherLinks : userType === "PARENT" ? parentLinks : {};
 
   return (
     <div className="w-50 fixed">
@@ -88,16 +53,25 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       <div className={`h-full bg-gray-600/50 backdrop-blur-lg border-r border-gray-800/50 shadow-sm transition-all duration-300
           pl-2 pr-2 py-1 ${isOpen ? "w-50" : "w-16"}`}>
         <ul className="space-y-2 mt-20 ">
-          {Object.entries(links).map(([label, href]) => (
-            <SideBarLink 
-              key={href as string} 
-              link={href as string} 
-              icon={icons[label as keyof typeof icons]} 
-              isOpen={isOpen}
-            >
-              {label}
-            </SideBarLink>
-          ))}
+          {userType === "TEACHER" && (
+            <>
+              <SideBarLink link="/teacher/users?userListType=student" icon={faUsers} isOpen={isOpen}>Students</SideBarLink>
+              <SideBarLink link="/teacher/users?userListType=teacher" icon={faUser} isOpen={isOpen}>Teachers</SideBarLink>
+              <SideBarLink link="/teacher/users?userListType=parent" icon={faUserFriends} isOpen={isOpen}>Parents</SideBarLink>
+              <SideBarLink link="/teacher/templates" icon={faFileAlt} isOpen={isOpen}>Templates</SideBarLink>
+              <SideBarLink link="/teacher/activities" icon={faBox} isOpen={isOpen}>Activities</SideBarLink>
+              <SideBarLink link="/teacher/profile" icon={faUser} isOpen={isOpen}>Profile</SideBarLink>
+              <SideBarLink link="/teacher/system-settings" icon={faCog} isOpen={isOpen}>System Settings</SideBarLink>
+            </>
+          )}
+          {userType === "PARENT" && (
+            <>
+              <SideBarLink link="/parent/mychild" icon={faUser} isOpen={isOpen}>My Child</SideBarLink>
+              <SideBarLink link="/parent/contactschool" icon={faEnvelope} isOpen={isOpen}>Contact School</SideBarLink>
+              <SideBarLink link="/parent/profile" icon={faUser} isOpen={isOpen}>Profile</SideBarLink>
+              <SideBarLink link="/parent/settings" icon={faCog} isOpen={isOpen}>Settings</SideBarLink>
+            </>
+          )}
         </ul>
       </div>
 

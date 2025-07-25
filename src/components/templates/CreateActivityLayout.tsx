@@ -4,13 +4,10 @@ import Instructions from "@/components/templates/create/Instructions";
 import ActivityOptions from "@/components/templates/create/ActivityOptions";
 import Footer from "@/components/templates/create/Footer";
 import ActivityUploadProgress from "@/components/templates/ActivityUploadProgress";
-import { UserType } from "@/lib/utils/types";
 import { useRef, useState } from "react";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 import { useParams } from "next/navigation";
 import { lazy, Suspense, useMemo } from "react";
-import toast from "react-hot-toast";
-import router, { Router } from "next/router";
 
 export interface CreateActivityProps {
   setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
@@ -22,13 +19,16 @@ export default function CreateActivityLayout() {
 
   const params = useParams();
   const templateCode = params.templateCode as string;
-  
+
   // dynamically load template using template code
   const CreateActivityComponent = useMemo(() => {
     return lazy(() => import(`@/templates/${templateCode}/Create.tsx`));
   }, [templateCode]);
 
   // For template -----------------------------------
+
+  // Context is not passed to template because it is vibe coded and isolated as possible from
+  // the template layout
 
   // As we are using edge store, the template cannot get a valid url while
   // editing the template. Urls are only generated after submitting the files
@@ -64,12 +64,13 @@ export default function CreateActivityLayout() {
     templateCode: templateCode,
     title: "",
     instructions: "",
-    activityData: "",
+    activityData: {},
     options: {
       isScored: false,
       grade: "ALL",
       difficulty: "EASY",
       subject: "COMMON",
+      topic: "",
     }
   });
   

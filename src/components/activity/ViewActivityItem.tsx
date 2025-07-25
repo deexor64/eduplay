@@ -16,6 +16,7 @@ interface ViewActivityItemProps {
     grade: number;
     isScored: boolean;
     difficulty: string;
+    topic: string;
   };
   onUpdateActivityStatus: Function;
 }
@@ -73,6 +74,7 @@ export default function ViewActivityItem(props: ViewActivityItemProps) {
           {itemData.status === "UNPUBLISHED" && (
             <InfoBadge text={itemData.status} colorTheme="indigo" />
           )}
+          <InfoBadge text={itemData.topic} colorTheme="yellow" />
         </div>
 
       </div>

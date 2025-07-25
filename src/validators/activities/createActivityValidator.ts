@@ -30,6 +30,7 @@ export default function createActivityValidator(cookies: RequestCookies, formDat
       }),
       subject: z.enum(Object.values(SubjectEnum) as [string, ...string[]]),
       difficulty: z.enum(Object.values(ActivityDifficultyEnum) as [string, ...string[]]),
+      topic: z.string().optional(),
     })
   }).strict()
   

@@ -22,6 +22,7 @@ export default function Activities() {
       grade: number,
       isScored: boolean,
       difficulty: string,
+      topic: string,
     }>,
     total: number;
   }>({ activities: [], total: 0 });
