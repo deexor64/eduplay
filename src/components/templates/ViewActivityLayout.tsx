@@ -261,14 +261,14 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   return (
     <>
       <div className="fixed inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('/templates/${dbData.templateCode}/activity-background.jpeg')`, backgroundAttachment: "fixed"}} >
+        style={{ backgroundImage: `url('/templates/${templateCode || dbData.templateCode}/activity-background.jpeg')`, backgroundAttachment: "fixed"}} >
         
         <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-4 backdrop-blur-xs bg-transparent">
           
           {/* cover image */}
           <CoverImage templateCode={dbData.templateCode}>
             {/* activity title */}
-            <ActivityTitle viewMode={props.viewMode} templateCode={dbData.templateCode}>
+            <ActivityTitle viewMode={props.viewMode} templateCode={templateCode || dbData.templateCode}>
               { dbData.title }
             </ActivityTitle>
             {/* description */}

@@ -169,7 +169,7 @@ export default function CreateActivityLayout() {
   return (
   
     <div className="fixed inset-0 bg-cover bg-center overflow-y-auto"
-      style={{ backgroundImage: "url('/images/activity-background.jpg')", 
+      style={{ backgroundImage: `url('/templates/${templateCode}/activity-background.jpeg')`, 
         backgroundAttachment: "fixed"}} >
       
       <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-4 backdrop-blur-xs 
