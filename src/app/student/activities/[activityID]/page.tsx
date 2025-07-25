@@ -1,9 +1,14 @@
 "use client"
 
 import ViewActivityLayout from "@/components/templates/ViewActivityLayout";
+import TemplateProvider from "@/contexts/TemplateProvider";
 
 export default function Activity() {
 
-  return <ViewActivityLayout viewMode="VIEW" />
+  return (
+    <TemplateProvider>
+      <ViewActivityLayout viewMode="VIEW" />
+    </TemplateProvider>
+  )
 
 }
