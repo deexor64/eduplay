@@ -111,10 +111,11 @@ model Activity {
   status       ActivityStatus     @default(UNPUBLISHED)
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
-  subject      Subject            @default(COMMON)
-  grade        Int                @default(0)
   isScored     Boolean            @default(false)
   difficulty   ActivityDifficulty @default(EASY)
+  grade        Int                @default(0)
+  subject      Subject            @default(COMMON)
+  topic        String?
 
   templateCode String
   template     Template @relation("activityTemplate", fields: [templateCode], references: [templateCode])
