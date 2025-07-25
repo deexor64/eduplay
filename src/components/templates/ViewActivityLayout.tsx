@@ -47,6 +47,10 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   const [assistantMessage, setAssistantMessage] = useState<{
     show: boolean,
     text: string,
+    mood?: "happy" | "angry" | "sad" | "normal" | "scared" | "confused",
+    type?: "normal" | "error" | "success" | "warning" | "info",
+    question?: boolean,
+    onAnswer?: (answer: boolean) => void,
   }>({show: false, text: ""});
   
   // Guide

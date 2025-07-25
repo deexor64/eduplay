@@ -6,8 +6,21 @@ import AcademicInfoForm from "@/components/student/profile/AcademicInfoForm";
 import ProfilePictureUpload from "@/components/student/profile/ProfilePictureUpload";
 import PasswordChangeForm from "@/components/student/profile/PasswordChangeForm";
 import { useEffect, useState } from "react";
+import { EdgeStoreProvider } from "@/lib/edgestore";
+import { updateStudentInfo } from "@/actions/student/updateStudentInfo";
+import Assistant from "@/components/student/Assistant";
 
 export default function StudentProfile() {
+
+  // Assistant 
+  const [assistantMessage, setAssistantMessage] = useState<{
+    show: boolean,
+    text: string,
+    mood?: "happy" | "angry" | "sad" | "normal" | "scared" | "confused",
+    type?: "normal" | "error" | "success" | "warning" | "info",
+    question?: boolean,
+    onAnswer?: (answer: boolean) => void,
+  }>({show: false, text: ""});
 
   // State for student data
   const [dbData, setDbData] = useState<{
@@ -43,13 +56,33 @@ export default function StudentProfile() {
     setDbData(resData.data);
   }
 
+  async function updateStudentInfoHandler(update: any) {
+    await updateStudentInfo(update);
+    await fetchStudent();
+    try {
+      setAssistantMessage({
+        show: true,
+        text: "Profile updated successfully",
+      });
+    } catch (e: any) {
+      setAssistantMessage({
+        show: true,
+        text: e.message,
+      });
+    }
+  }
+
   useEffect(() => {
     fetchStudent();
   }, []);
 
+
   return (
+    <>
     <StudentNavigatorLayout>
+      <EdgeStoreProvider>
       <div className="p-4 space-y-6">
+
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-blue-800 mb-2">My Profile</h1>
           <p className="text-gray-600">Update your personal information</p>
@@ -58,12 +91,20 @@ export default function StudentProfile() {
         <ProfilePictureUpload 
           currentImage={dbData.displayPicUrl}
           studentName={`${dbData.firstName} ${dbData.lastName}`}
+          updateStudentInfo={updateStudentInfoHandler}
         />
-        <PersonalInfoForm data={dbData} onUpdatePersonalInfo={fetchStudent} />
-        <AcademicInfoForm data={dbData.student} onUpdateAcademicInfo={fetchStudent} />
+        <PersonalInfoForm data={dbData} updateStudentInfo={updateStudentInfoHandler} />
+        <AcademicInfoForm data={dbData.student} updateStudentInfo={updateStudentInfoHandler} />
         <PasswordChangeForm />
 
-       </div>
+      </div>
+    
+      </EdgeStoreProvider>
     </StudentNavigatorLayout>
+
+    {/* Assistant */}
+    <Assistant assistantMessage={assistantMessage} setAssistantMessage={setAssistantMessage} />
+
+    </>
   );
-} 
+}

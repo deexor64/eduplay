@@ -10,13 +10,13 @@ interface AcademicInfoFormProps {
     class?: string;
     indexNumber: string;
   },
-  onUpdateAcademicInfo: Function;
+  updateStudentInfo: (update: any) => Promise<void>;
 }
 
 // Child-friendly academic information form
 export default function AcademicInfoForm(props: AcademicInfoFormProps) {
   
-  const { data, onUpdateAcademicInfo } = props;
+  const { data, updateStudentInfo } = props;
 
   const [formData, setFormData] = useState<any>(data);
   const [isEditing, setIsEditing] = useState(false);
@@ -38,7 +38,6 @@ export default function AcademicInfoForm(props: AcademicInfoFormProps) {
   async function handleSaveChanges() {
     setIsSaving(true);
     await updateStudentInfo(formData);
-    onUpdateAcademicInfo();
     setIsSaving(false);
     setIsEditing(false);
   };

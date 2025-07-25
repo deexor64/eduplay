@@ -9,25 +9,20 @@ import { useEffect, useState } from "react";
 export default function Progress() {
   
   // Analysed summery form the server
-  // Not raw db data
   const [dbData, setDbData] = useState({
-    totalCompleted: 12,
-    averageScore: 85,
-    bestSubject: "Mathematics",
+    totalCompleted: 0,
+    averageScore: 0,
+    bestSubject: "-",
     subjectStats: [
-      { subject: "Mathematics", score: 92 },
-      { subject: "Science", score: 80 },
-      { subject: "English", score: 83 },
+      { subject: "-", score: 0 },
+      { subject: "-", score: 0 },
+      { subject: "-", score: 0 },
     ],
     recent: [
-      { title: "Math Quiz 1", score: 95, maxScore: 100 },
-      { title: "Science Lab", score: 80, maxScore: 100 },
-      { title: "English Essay", score: 83, maxScore: 100 },
+      { title: "-", score:0, maxScore: 0 },
     ],
-    achievements: ["First Activity!", "Math Whiz", "Consistent Learner"]
+    achievements: ["-"]
   });
-  
-  // TODO: Replace with real data fetching
 
   async function fetchProgress() {
 
@@ -42,8 +37,6 @@ export default function Progress() {
   useEffect(() => { 
     fetchProgress();
   }, []);
-
-
 
   return (
     <StudentNavigatorLayout>

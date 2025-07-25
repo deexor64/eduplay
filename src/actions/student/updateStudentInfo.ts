@@ -6,8 +6,6 @@ import { prisma } from "@/lib/prisma";
 import { TeacherRoleEnum, UserTypeEnum } from "@/lib/utils/types";
 import { JwtPayload } from "jsonwebtoken";
 
-// Not completed ......
-
 export async function updateStudentInfo(updateData: {
   firstName?: string,
   lastName?: string,
@@ -16,6 +14,7 @@ export async function updateStudentInfo(updateData: {
   email?: string,
   grade?: number,
   class?: string,
+  displayPicUrl?: string,
 }) {
   const cookieStore = await cookies();
   const userToken = cookieStore.get("userInfo")?.value;
@@ -49,7 +48,11 @@ export async function updateStudentInfo(updateData: {
   if (updateData.firstName !== undefined) userUpdate.firstName = updateData.firstName;
   if (updateData.lastName !== undefined) userUpdate.lastName = updateData.lastName;
   if (updateData.phoneNumber !== undefined) userUpdate.phoneNumber = updateData.phoneNumber;
-  if (updateData.dateOfBirth !== undefined) userUpdate.dateOfBirth = updateData.dateOfBirth;
+  if (updateData.displayPicUrl !== undefined) userUpdate.displayPicUrl = updateData.displayPicUrl;
+  if (updateData.dateOfBirth !== undefined) {
+    // Convert string to Date object for Prisma compatibility
+    userUpdate.dateOfBirth = new Date(updateData.dateOfBirth);
+  }
 
   // Update user
   await prisma.user.update({

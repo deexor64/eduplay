@@ -1,19 +1,35 @@
 "use client"
 
 import React, { useState, useRef } from "react";
+import useFileStoreUploader from "@/hooks/useFileStoreUploader";
+import { updateStudentInfo } from "@/actions/student/updateStudentInfo";
+import generateHash from "@/lib/utils/generateHash";
 
 interface ProfilePictureUploadProps {
   currentImage: string;
   studentName: string;
+  updateStudentInfo: (update: any) => Promise<void>;
 }
 
 // Child-friendly profile picture upload component
-export default function ProfilePictureUpload({ currentImage, studentName }: ProfilePictureUploadProps) {
+export default function ProfilePictureUpload({ currentImage, studentName, updateStudentInfo }: ProfilePictureUploadProps) {
+  // State for the currently selected image (in memory, not yet uploaded)
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  // State for drag-and-drop UI
   const [isDragging, setIsDragging] = useState(false);
+  // Ref for the hidden file input
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // State for upload progress and status
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  // Ref to allow aborting the upload (not used in this UI)
+  const abortSave = useRef(false);
+  // File uploader hook
+  const fileStoreUploader = useFileStoreUploader();
+  // State for the file to upload
+  const [fileToUpload, setFileToUpload] = useState<File | null>(null);
 
-  // Handle file selection
+  // Handle file selection from input or drag-and-drop
   const handleFileSelect = (file: File) => {
     if (file && file.type.startsWith('image/')) {
       const reader = new FileReader();
@@ -21,10 +37,11 @@ export default function ProfilePictureUpload({ currentImage, studentName }: Prof
         setSelectedImage(e.target?.result as string);
       };
       reader.readAsDataURL(file);
+      setFileToUpload(file); // Save file for upload
     }
   };
 
-  // Handle file input change
+  // Handle file input change event
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -32,17 +49,19 @@ export default function ProfilePictureUpload({ currentImage, studentName }: Prof
     }
   };
 
-  // Handle drag and drop
+  // Handle drag over event for drag-and-drop
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
   };
 
+  // Handle drag leave event for drag-and-drop
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
   };
 
+  // Handle drop event for drag-and-drop
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
@@ -52,17 +71,45 @@ export default function ProfilePictureUpload({ currentImage, studentName }: Prof
     }
   };
 
-  // Handle upload button click
+  // Handle click on the upload button (opens file input)
   const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
 
-  // Handle save changes
-  const handleSaveChanges = () => {
-    // TODO: Implement actual save functionality
-    console.log("Saving profile picture...");
+  // Discard the selected image and file (reset to original state)
+  const handleDiscardChanges = () => {
+    setSelectedImage(null);
+    setFileToUpload(null);
   };
 
+  // Handle save changes (upload the selected image and update DB)
+  const handleSaveChanges = async () => {
+    if (!fileToUpload) return;
+    setUploading(true);
+    setUploadProgress(0);
+    try {
+      // Generate a unique hash for the filename
+      const hash = await generateHash(studentName + Date.now().toString());
+      const uniqueKey = `profile-${hash}`;
+      var files = new Map();
+      files.set(uniqueKey, fileToUpload);
+      const urlMap = await fileStoreUploader(files, abortSave, function(progress) {
+        setUploadProgress(progress);
+      });
+      const url = urlMap.get(uniqueKey);
+      if (url) {
+        await updateStudentInfo({ displayPicUrl: url });
+      }
+      setUploading(false);
+      setFileToUpload(null);
+      setSelectedImage(null); // Hide Save Changes button after upload
+    } catch (e) {
+      setUploading(false);
+      // Optionally show error
+    }
+  };
+
+  // The image to display in the preview (selected or current)
   const displayImage = selectedImage || currentImage;
 
   return (
@@ -79,9 +126,6 @@ export default function ProfilePictureUpload({ currentImage, studentName }: Prof
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="absolute -bottom-2 -right-2 bg-green-500 text-white rounded-full p-2">
-            <span className="text-lg">📷</span>
-          </div>
         </div>
 
         {/* Upload Area */}
@@ -94,7 +138,7 @@ export default function ProfilePictureUpload({ currentImage, studentName }: Prof
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          onClick={handleUploadClick}
+          onClick={!selectedImage ? handleUploadClick : undefined}
         >
           <div className="text-4xl mb-2">📁</div>
           <p className="text-gray-600 mb-2">
@@ -114,19 +158,36 @@ export default function ProfilePictureUpload({ currentImage, studentName }: Prof
 
         {/* Action Buttons */}
         <div className="flex space-x-3">
-          <button
-            onClick={handleUploadClick}
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
-          >
-            Choose Photo
-          </button>
-          {selectedImage && (
+          {!selectedImage && (
             <button
-              onClick={handleSaveChanges}
-              className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-semibold"
+              onClick={handleUploadClick}
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
+              disabled={uploading}
             >
-              Save Changes
+              Choose Photo
             </button>
+          )}
+          {selectedImage && !uploading && (
+            <>
+              <button
+                onClick={handleDiscardChanges}
+                className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold"
+              >
+                Discard Changes
+              </button>
+              <button
+                onClick={handleSaveChanges}
+                className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-semibold"
+              >
+                Save Changes
+              </button>
+            </>
+          )}
+          {uploading && (
+            <div className="flex items-center space-x-2">
+              <span className="text-blue-700 font-semibold">Uploading...</span>
+              <span>{uploadProgress}%</span>
+            </div>
           )}
         </div>
       </div>

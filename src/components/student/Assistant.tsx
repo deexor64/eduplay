@@ -8,11 +8,15 @@ import React, { useEffect, useState } from "react";
   const [assistantMessage, setAssistantMessage] = useState<{
     show: boolean,
     text: string,
+    mood?: "happy" | "angry" | "sad" | "normal" | "scared" | "confused",
+    type?: "normal" | "error" | "success" | "warning" | "info",
+    question?: boolean,
+    onAnswer?: (answer: boolean) => void,
   }>({show: false, text: ""});
 
 */
 
-type AssistantProps = {
+export type AssistantProps = {
   assistantMessage: {
     show: boolean,
     text: string,

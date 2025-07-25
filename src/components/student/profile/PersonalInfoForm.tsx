@@ -12,13 +12,13 @@ interface PersonalInfoData {
 
 interface PersonalInfoFormProps {
   data: PersonalInfoData;
-  onUpdatePersonalInfo: Function;
+  updateStudentInfo: (update: PersonalInfoData) => Promise<void>;
 }
 
 // Child-friendly personal information form
 export default function PersonalInfoForm(props: PersonalInfoFormProps) {
 
-  const { data, onUpdatePersonalInfo } = props;
+  const { data, updateStudentInfo } = props;
   
   const [formData, setFormData] = useState<PersonalInfoData>(data);
   const [isEditing, setIsEditing] = useState(false);
@@ -40,7 +40,6 @@ export default function PersonalInfoForm(props: PersonalInfoFormProps) {
   async function handleSaveChanges() {
     setIsSaving(true);
     await updateStudentInfo(formData);
-    onUpdatePersonalInfo();
     setIsSaving(false);
     setIsEditing(false);
   };
