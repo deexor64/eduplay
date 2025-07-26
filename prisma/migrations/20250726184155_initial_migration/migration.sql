@@ -1,21 +1,30 @@
 -- CreateEnum
-CREATE TYPE "Status" AS ENUM ('PENDING', 'ACTIVE', 'INACTIVE', 'SUSPENDED', 'DELETED');
+CREATE TYPE "Subject" AS ENUM ('MATHEMATICS', 'SCIENCE', 'ENGLISH', 'COMMON');
 
 -- CreateEnum
-CREATE TYPE "TeacherRole" AS ENUM ('MASTER', 'ADMIN', 'TEACHER');
+CREATE TYPE "UserStatus" AS ENUM ('PENDING', 'ACTIVE', 'INACTIVE', 'SUSPENDED', 'DELETED');
 
 -- CreateEnum
-CREATE TYPE "StudentRole" AS ENUM ('DEMONSTRATOR', 'STUDENT');
+CREATE TYPE "TeacherRole" AS ENUM ('MASTER', 'ADMIN', 'TEACHER', 'DEMONSTRATOR');
+
+-- CreateEnum
+CREATE TYPE "StudentClass" AS ENUM ('A', 'B', 'C', 'D', 'E', 'F');
+
+-- CreateEnum
+CREATE TYPE "ActivityDifficulty" AS ENUM ('EASY', 'MEDIUM', 'HARD');
+
+-- CreateEnum
+CREATE TYPE "ActivityStatus" AS ENUM ('UNPUBLISHED', 'PUBLISHED', 'DELETED');
 
 -- CreateTable
 CREATE TABLE "User" (
     "userID" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
-    "phoneNumber" TEXT NOT NULL,
+    "phoneNumber" TEXT,
     "dateOfBirth" TIMESTAMP(3),
     "password" TEXT NOT NULL,
-    "status" "Status" NOT NULL DEFAULT 'PENDING',
+    "status" "UserStatus" NOT NULL DEFAULT 'PENDING',
     "displayPicUrl" TEXT NOT NULL DEFAULT '/images/avatar.png',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -29,6 +38,7 @@ CREATE TABLE "Teacher" (
     "indexNumber" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "role" "TeacherRole" NOT NULL DEFAULT 'TEACHER',
+    "subject" "Subject" NOT NULL DEFAULT 'COMMON',
     "userID" TEXT NOT NULL,
 
     CONSTRAINT "Teacher_pkey" PRIMARY KEY ("teacherID")
@@ -39,9 +49,8 @@ CREATE TABLE "Student" (
     "studentID" TEXT NOT NULL,
     "indexNumber" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "role" "StudentRole" NOT NULL DEFAULT 'STUDENT',
     "grade" INTEGER NOT NULL,
-    "class" TEXT NOT NULL,
+    "class" "StudentClass" NOT NULL,
     "userID" TEXT NOT NULL,
     "myParent" TEXT NOT NULL,
 
@@ -61,15 +70,16 @@ CREATE TABLE "Parent" (
 CREATE TABLE "Activity" (
     "activityID" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "coverImageUrl" TEXT NOT NULL,
+    "topic" TEXT,
     "instructions" TEXT NOT NULL,
-    "activityData" TEXT NOT NULL,
+    "activityData" JSONB NOT NULL,
+    "status" "ActivityStatus" NOT NULL DEFAULT 'UNPUBLISHED',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "isGraded" BOOLEAN NOT NULL DEFAULT false,
-    "timeLimit" INTEGER NOT NULL DEFAULT 0,
-    "grade" INTEGER NOT NULL,
-    "difficulty" INTEGER NOT NULL,
+    "isScored" BOOLEAN NOT NULL DEFAULT false,
+    "difficulty" "ActivityDifficulty",
+    "grade" INTEGER,
+    "subject" "Subject" NOT NULL DEFAULT 'COMMON',
     "templateCode" TEXT NOT NULL,
     "createdBy" TEXT NOT NULL,
 
@@ -91,7 +101,13 @@ CREATE TABLE "Template" (
 -- CreateTable
 CREATE TABLE "Progress" (
     "progressID" TEXT NOT NULL,
+    "baseScore" INTEGER NOT NULL DEFAULT 0,
+    "maxScore" INTEGER NOT NULL DEFAULT 100,
+    "summery" TEXT NOT NULL,
+    "data" JSONB NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "progressFor" TEXT NOT NULL,
+    "progressOf" TEXT NOT NULL,
 
     CONSTRAINT "Progress_pkey" PRIMARY KEY ("progressID")
 );
@@ -146,3 +162,6 @@ ALTER TABLE "Activity" ADD CONSTRAINT "Activity_createdBy_fkey" FOREIGN KEY ("cr
 
 -- AddForeignKey
 ALTER TABLE "Progress" ADD CONSTRAINT "Progress_progressFor_fkey" FOREIGN KEY ("progressFor") REFERENCES "Student"("studentID") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Progress" ADD CONSTRAINT "Progress_progressOf_fkey" FOREIGN KEY ("progressOf") REFERENCES "Activity"("activityID") ON DELETE RESTRICT ON UPDATE CASCADE;

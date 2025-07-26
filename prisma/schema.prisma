@@ -65,12 +65,21 @@ model Teacher {
   activity Activity[] @relation("activityCreator")
 }
 
+enum StudentClass {
+  A
+  B
+  C
+  D
+  E
+  F
+}
+
 model Student {
   studentID   String @id @default(uuid())
   indexNumber String @unique
   email       String
   grade       Int
-  class       String
+  class       StudentClass
 
   userID String @unique
   user   User   @relation("student", fields: [userID], references: [userID])
@@ -106,16 +115,17 @@ enum ActivityStatus {
 model Activity {
   activityID   String             @id @default(uuid())
   title        String
+  topic        String?
   instructions String
   activityData Json
   status       ActivityStatus     @default(UNPUBLISHED)
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
+
   isScored     Boolean            @default(false)
-  difficulty   ActivityDifficulty @default(EASY)
-  grade        Int                @default(0)
+  difficulty   ActivityDifficulty?
+  grade        Int?    
   subject      Subject            @default(COMMON)
-  topic        String?
 
   templateCode String
   template     Template @relation("activityTemplate", fields: [templateCode], references: [templateCode])
