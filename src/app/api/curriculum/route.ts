@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     const cookies = req.cookies;
     const searchParams = req.nextUrl.searchParams;
 
-    const parsed = curriculumValidator(cookies);
+    const parsed = curriculumValidator(cookies, searchParams);
     if (!parsed.status) return NextResponse.json(
       {status: false, responseType: "log", data: parsed.data},
       { status: 401 }

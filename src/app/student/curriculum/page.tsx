@@ -84,7 +84,7 @@ export default function Curriculum() {
 
   const [dbData] = useState<any>(mockDbData);
   
-  // For collapsible subjects ections
+  // For collapsible subject sections
   const [openSubjects, setOpenSubjects] = useState<{ [subject: string]: boolean }>({});
 
   function handleToggleSubject(subject: string) {
@@ -119,14 +119,15 @@ export default function Curriculum() {
               <SubjectSection title={subject.charAt(0) + subject.slice(1).toLowerCase()}
                 open={!!openSubjects[subject]} onToggle={() => handleToggleSubject(subject)} key={subject}>
                 <div className="flex flex-col gap-4">
-                { topics.length <= 0 ?
+                { topics.length <= 0 ? (
 
                   // Empty topic list
-                  <p>Nothing here yet</p> : 
+                  <p>Nothing here yet</p>
+                  
+                ) : ( 
 
                   // Topic list
-                  <>
-                  {topics.map((topic) => (
+                  topics.map((topic) => (
 
                     // Topic section
                     <TopicSection title={topic} open={!!openTopics[subject + "-" + topic]}
@@ -139,10 +140,10 @@ export default function Curriculum() {
                       </div>
                     </TopicSection>
 
-                  ))}
-                  </>
+                  ))
 
-                }
+                )}
+
                 </div>
                 
               </SubjectSection>

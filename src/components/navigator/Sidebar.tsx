@@ -59,6 +59,7 @@ export default function Sidebar(props: SidebarProps) {
               <SideBarLink link="/teacher/users?userListType=teacher" icon={faUser} isOpen={isOpen}>Teachers</SideBarLink>
               <SideBarLink link="/teacher/users?userListType=parent" icon={faUserFriends} isOpen={isOpen}>Parents</SideBarLink>
               <SideBarLink link="/teacher/templates" icon={faFileAlt} isOpen={isOpen}>Templates</SideBarLink>
+              <SideBarLink link="/teacher/curriculum" icon={faBox} isOpen={isOpen}>Curriculum</SideBarLink>
               <SideBarLink link="/teacher/activities" icon={faBox} isOpen={isOpen}>Activities</SideBarLink>
               <SideBarLink link="/teacher/profile" icon={faUser} isOpen={isOpen}>Profile</SideBarLink>
               <SideBarLink link="/teacher/system-settings" icon={faCog} isOpen={isOpen}>System Settings</SideBarLink>
