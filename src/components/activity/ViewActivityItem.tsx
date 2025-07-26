@@ -74,7 +74,9 @@ export default function ViewActivityItem(props: ViewActivityItemProps) {
           {itemData.status === "UNPUBLISHED" && (
             <InfoBadge text={itemData.status} colorTheme="indigo" />
           )}
-          <InfoBadge text={itemData.topic} colorTheme="yellow" />
+          {itemData.topic && (
+            <InfoBadge text={itemData.topic} colorTheme="yellow" />
+          )}
         </div>
 
       </div>
