@@ -40,7 +40,8 @@ export default async function activitiesService(data: any): Promise<ResType> {
     take: data.limit,
   });
 
-  // For students include a "Completed" filed
+  // For students include a "Completed" field
+  // ISSUE: Not correctly counting total values with completed attribute
   if (data.userType === "STUDENT") {
 
     // Find studentID from userID

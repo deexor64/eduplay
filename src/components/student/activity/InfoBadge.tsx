@@ -24,4 +24,4 @@ export default function InfoBadge(props: InfoBadgeProps) {
       {text}
     </span>
   );
-} 
+}

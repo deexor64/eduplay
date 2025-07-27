@@ -1,125 +1,84 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import SubjectSection from "@/components/curriculum/SubjectSection";
 import TopicSection from "@/components/curriculum/TopicSection";
 import ViewActivityItem from "@/components/activity/ViewActivityItem";
 import Title from "@/components/shared/headings/Title";
-import { Grade, GradeEnum, SubjectEnum } from "@/lib/utils/types";
-
-const SUBJECTS = ["MATHEMATICS", "SCIENCE", "ENGLISH", "HISTORY"];
-const GRADES = [1, 2, 3, 4, 5];
-
-// Mock curriculum data grouped by subject and topic
-const mockDbData = {
-  MATHEMATICS: {
-    "Addition": [
-      {
-        activityID: "1",
-        title: "Simple Addition",
-        subject: "MATHEMATICS",
-        grade: 3,
-        difficulty: "EASY",
-        status: "PUBLISHED",
-        isScored: true,
-        topic: "Addition",
-        completed: false,
-      },
-      {
-        activityID: "2",
-        title: "Addition with Carry",
-        subject: "MATHEMATICS",
-        grade: 3,
-        difficulty: "MEDIUM",
-        status: "UNPUBLISHED",
-        isScored: false,
-        topic: "Addition",
-        completed: true,
-        progressID: "p1"
-      }
-    ],
-    "Subtraction": [
-      {
-        activityID: "3",
-        title: "Simple Subtraction",
-        subject: "MATHEMATICS",
-        grade: 3,
-        difficulty: "EASY",
-        status: "PUBLISHED",
-        isScored: false,
-        topic: "Subtraction",
-        completed: false,
-      }
-    ]
-  },
-  SCIENCE: {
-    "Plants": [
-      {
-        activityID: "4",
-        title: "Parts of a Plant",
-        subject: "SCIENCE",
-        grade: 3,
-        difficulty: "EASY",
-        status: "PUBLISHED",
-        isScored: true,
-        topic: "Plants",
-        completed: true,
-        progressID: "p2"
-      }
-    ]
-  },
-  ENGLISH: {
-    "Grammar": [
-      {
-        activityID: "5",
-        title: "Nouns and Pronouns",
-        subject: "ENGLISH",
-        grade: 3,
-        difficulty: "MEDIUM",
-        status: "PUBLISHED",
-        isScored: false,
-        topic: "Grammar",
-        completed: false,
-      }
-    ]
-  },
-  COMMON: {}
-};
-
-// Placeholder for future data fetching
-async function fetchCurriculum(grade: number) {
-  console.log("fetch: grade " + grade)
-}
+import { ActivityDifficulty, ActivityStatus, Subject } from "@prisma/client";
+import cleanParams from "@/lib/utils/cleanParams";
+import { updateActivityStatus } from "@/actions/activity/updateActivityStatus";
+import toast from "react-hot-toast";
 
 export default function Curriculum() {
 
-  const [dbData] = useState<any>(mockDbData);
+  const [dbData, setDbData] = useState<{
+    [Sb in Subject]: {
+      [key: string]: Array<{
+        activityID: string,
+        title: string,
+        subject: Subject,
+        grade?: 1 | 2 | 3 | 4 | 5,
+        difficulty: ActivityDifficulty,
+        status: ActivityStatus,
+        isScored: boolean,
+        topic?: string,
+      }>
+    }
+  }>({
+    MATHEMATICS: {},
+    SCIENCE: {},
+    ENGLISH: {},
+    COMMON: {}
+  });
+
+  function curriculumQuery(): URLSearchParams {
+    // params
+    const params = cleanParams({
+      gradeListType: currentGrade,
+    });
+    return new URLSearchParams(params);
+  }
+
+  async function fetchCurriculum() {
+
+    const params = curriculumQuery();
+    const url = `/api/curriculum?${params}`;
+    const res = await fetch(url);
+
+    const resData = await res.json();
+    setDbData(resData.data);
+
+  }
   
   // For collapsible grade-subject sections
   const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({});
-  const [currentGrade, setCurrentGrade] = useState<number | null>(null);
+  const [currentGrade, setCurrentGrade] = useState<number>(1);
 
   function handleToggleSubject(subject: string, grade: number) {
+
     setOpenSections((prev) => {
       const key = `${subject}-${grade}`;
       const isCurrentlyOpen = !!prev[key];
       if (isCurrentlyOpen) {
         const newState = { ...prev };
         delete newState[key];
-        setCurrentGrade(null);
         return newState;
       }
       // When opening, close all others and open only this one
       if (currentGrade !== null && currentGrade !== grade) {
         setCurrentGrade(grade);
-        fetchCurriculum(grade);
         return { [key]: true };
       }
       setCurrentGrade(grade);
       return { [key]: true };
     });
   }
+
+  useEffect(() => { 
+    fetchCurriculum();
+  }, [currentGrade]);
   
   // For collapsible topic sections
   const [openTopics, setOpenTopics] = useState<{ [key: string]: boolean }>({});
@@ -127,6 +86,19 @@ export default function Curriculum() {
   function handleToggleTopic(subject: string, grade: number, topic: string) {
     const key = subject + "-" + topic;
     setOpenTopics((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
+
+  async function handleUpdateActivityStatus(activityID: string, status: ActivityStatus) {
+
+    toast.promise(updateActivityStatus(activityID, status), {
+      loading: "Updating activity...",
+      success: () => {
+        fetchCurriculum();
+        return "Activity updated successfully";
+      },
+      error: "Failed to update activity",
+    })
+
   }
 
   return (
@@ -141,49 +113,49 @@ export default function Curriculum() {
           <div key={grade} className="mb-8">
             <h2 className="text-xl font-semibold mb-4 text-green-800">Grade {grade}</h2>
             <div className="flex flex-col gap-1">
-              {Object.values(SubjectEnum).map((subject) => {
+            {Object.values(Subject).map((subject) => {
 
-                const subjectData = dbData[subject as SubjectEnum];
-                const topics = Object.keys(subjectData || {});
+              const subjectData = dbData[subject as Subject];
+              const topics = Object.keys(subjectData || {});
 
-                return (
+              return (
 
-                  // Subject section
-                  <SubjectSection key={subject} subject={subject.charAt(0) + subject.slice(1).toLowerCase()}
-                    grade={grade} open={openSections[`${subject}-${grade}`]} onToggle={() => handleToggleSubject(subject, grade)}>
-                    <div className="flex flex-col gap-4">
-                    {topics.length <= 0 ? (
+                // Subject section
+                <SubjectSection key={subject} subject={subject.charAt(0) + subject.slice(1).toLowerCase()}
+                  grade={grade} open={openSections[`${subject}-${grade}`]} onToggle={() => handleToggleSubject(subject, grade)}>
+                  <div className="flex flex-col gap-4">
+                  {topics.length <= 0 ? (
 
-                      // Empty topic list
-                      <p>No activities available for this subject</p> 
-                      
-                    ) : (
+                    // Empty topic list
+                    <p>No activities available for this subject</p> 
+                    
+                  ) : (
 
-                      // Topic list
-                      topics.map((topic) => (
+                    // Topic list
+                    topics.map((topic) => (
 
-                        // Topic section
-                        <TopicSection key={topic} title={topic} open={!!openTopics[subject + "-" + topic]}
-                          onToggle={() => handleToggleTopic(subject, parseInt(grade.toString()), topic)}>
-                          <div className="flex flex-col gap-2">
-                          {subjectData[topic].map((activity: any) => (
-                            // Activity item
-                            <ViewActivityItem key={activity.activityID} itemData={activity}
-                              onUpdateActivityStatus={() => fetchCurriculum(parseInt(grade.toString()))} />
-                          ))}
-                          </div>
-                        </TopicSection>
+                      // Topic section
+                      <TopicSection key={topic} title={topic} open={!!openTopics[subject + "-" + topic]}
+                        onToggle={() => handleToggleTopic(subject, parseInt(grade.toString()), topic)}>
+                        <div className="flex flex-col gap-2">
+                        {subjectData[topic].map((activity: any) => (
+                          // Activity item
+                          <ViewActivityItem key={activity.activityID} itemData={activity}
+                          handleUpdateActivityStatus={handleUpdateActivityStatus} />
+                        ))}
+                        </div>
+                      </TopicSection>
 
-                      ))
+                    ))
 
-                    )}
-                    </div>
+                  )}
+                  </div>
 
-                  </SubjectSection>
+                </SubjectSection>
 
-                );
+              );
 
-              })}
+            })}
             </div>
           </div>
         ))}

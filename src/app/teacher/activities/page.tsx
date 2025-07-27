@@ -63,8 +63,6 @@ export default function Activities() {
     const resData = await res.json();
     setDbData(resData.data);
 
-    console.log(resData.data);
-
   }
 
   useEffect(() => { 

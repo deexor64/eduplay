@@ -1,9 +1,6 @@
-'use client';
-
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
-import { ReactNode } from 'react';
 
 type Props = {
   href: string;

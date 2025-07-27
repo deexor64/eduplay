@@ -14,9 +14,9 @@ export default function Progress() {
     averageScore: 0,
     bestSubject: "-",
     subjectStats: [
-      { subject: "-", score: 0 },
-      { subject: "-", score: 0 },
-      { subject: "-", score: 0 },
+      { subject: "sub1", score: 0 },
+      { subject: "sub2", score: 0 },
+      { subject: "sub3", score: 0 },
     ],
     recent: [
       { title: "-", score:0, maxScore: 0 },

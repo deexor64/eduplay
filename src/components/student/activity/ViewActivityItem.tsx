@@ -1,30 +1,31 @@
 // This list item is specially made for viewing lessons
 // Attributes are predefined and cannot be changed
-import { ActivityDifficultyEnum, SubjectEnum } from "@/lib/utils/types";
 import Link from "next/link";
 import InfoBadge from "./InfoBadge";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { ActivityDifficulty, Subject } from "@prisma/client";
 
-interface StudentViewActivityItemProps {
+type ViewActivityItemProps = {
   itemData: {
-    activityID: string;
-    title: string;
-    subject: string;
-    grade: number;
-    isScored: boolean;
-    difficulty: string;
-    completed: boolean;
-    progressID?: string;
+    activityID: string,
+    title: string,
+    topic?: string,
+    subject: Subject,
+    grade?: 1 | 2 | 3 | 4 | 5,
+    isScored: boolean,
+    difficulty: ActivityDifficulty,
+    completed: boolean,
+    progressID?: string,
   }
 }
 
-export default function StudentViewActivityItem(props: StudentViewActivityItemProps) {
+export default function StudentViewActivityItem(props: ViewActivityItemProps) {
   
   const itemData = props.itemData;
 
   // Generate a fun emoji based on subject
-  function getSubjectEmoji(subject: SubjectEnum): string {
+  function getSubjectEmoji(subject: Subject): string {
     switch(subject) {
       case 'MATHEMATICS': return '🔢';
       case 'SCIENCE': return '🔬';
@@ -34,7 +35,7 @@ export default function StudentViewActivityItem(props: StudentViewActivityItemPr
   }
 
   // Get color theme classes based on subject
-  function getSubjectTheme(subject: SubjectEnum): { border: string; bg: string; text: string; badge: string; cardBg: string; subjectTag: string } {
+  function getSubjectTheme(subject: Subject): { border: string; bg: string; text: string; badge: string; cardBg: string; subjectTag: string } {
     switch(subject) {
       case 'SCIENCE':
         return {
@@ -75,10 +76,10 @@ export default function StudentViewActivityItem(props: StudentViewActivityItemPr
     }
   }
 
-  const theme = getSubjectTheme(itemData.subject as SubjectEnum);
+  const theme = getSubjectTheme(itemData.subject as Subject);
 
   // Generate difficulty emoji
-  function getDifficultyEmoji(difficulty: ActivityDifficultyEnum): string {
+  function getDifficultyEmoji(difficulty: ActivityDifficulty): string {
     switch(difficulty) {
       case 'EASY': return '😊';
       case 'MEDIUM': return '🤔';
@@ -108,11 +109,13 @@ export default function StudentViewActivityItem(props: StudentViewActivityItemPr
         {/* Header with emoji and title */}
         <div className="flex items-center mb-3">
           <div className="text-4xl mr-3 group-hover:scale-110 transition-transform duration-300">
-            {getSubjectEmoji(itemData.subject as SubjectEnum)}
+            {getSubjectEmoji(itemData.subject as Subject)}
           </div>
           <div className="flex-1">
             <h3 className={`font-bold text-base leading-tight group-hover:text-purple-900 transition-colors ${theme.text}`}>
-              {itemData.title}
+              {itemData.topic ? 
+              itemData.topic + ": " + itemData.title 
+              : itemData.title}
             </h3>
           </div>
 
@@ -131,9 +134,11 @@ export default function StudentViewActivityItem(props: StudentViewActivityItemPr
 
         {/* Attribute badges  */}
         <div className="flex flex-wrap gap-2 mb-3">
-          <InfoBadge type="grade" text={itemData.grade === 0 ? 'Grade All' : 'Grade ' + itemData.grade.toString()} />
-          <InfoBadge type="difficulty" text={itemData.difficulty} emoji={getDifficultyEmoji(itemData.difficulty as ActivityDifficultyEnum)} />
-          <InfoBadge type="subject" text={itemData.subject} emoji={getSubjectEmoji(itemData.subject as SubjectEnum)} />
+          {itemData.grade && (
+            <InfoBadge type="grade" text={"GRADE " + String(itemData.grade)} />
+          )}
+          <InfoBadge type="difficulty" text={itemData.difficulty} emoji={getDifficultyEmoji(itemData.difficulty as ActivityDifficulty)} />
+          <InfoBadge type="subject" text={itemData.subject} emoji={getSubjectEmoji(itemData.subject as Subject)} />
           {itemData.isScored && (
             <InfoBadge type="scored" text="Scored" emoji="🏆" />
           )}

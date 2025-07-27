@@ -5,11 +5,11 @@ import FilterWrapper from "@/components/shared/filter/FilterWrapper";
 import InputFilter from "@/components/shared/filter/InputFilter";
 import OptionFilter from "@/components/shared/filter/OptionFilter";
 import Paginator from "@/components/shared/pagination/Paginator";
-import StudentViewActivityItem from "@/components/student/activity/StudentViewActivityItem";
+import StudentViewActivityItem from "@/components/student/activity/ViewActivityItem";
 import React, { useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
-import { ActivityDifficultyEnum, ActivityGradeEnum, ActivityStatusEnum, SubjectEnum } from "@/lib/utils/types";
 import StudentNavigatorLayout from "@/components/student/StudentNavigatorLayout";
+import { ActivityDifficulty, Subject } from "@prisma/client";
 
 export default function Activities() {
 
@@ -17,17 +17,19 @@ export default function Activities() {
     activities: Array<{
       activityID: string,
       title: string,
-      subject: string,
-      grade: number,
+      subject: Subject,
+      topic?: string,
+      grade?: 1 | 2 | 3 | 4 | 5,
       isScored: boolean,
-      difficulty: string,
-      completed: boolean, // Not a raw db field
-      progressID?: string, // Only if activity is completed
+      difficulty: ActivityDifficulty,
+      completed: boolean,
+      progressID?: string,
     }>,
     total: number;
   }>({ activities: [], total: 0 });
 
   const [filter, setFilter] = useState({
+    topic: undefined,
     title: undefined,
     grade: undefined,
     difficulty: undefined,
@@ -76,26 +78,31 @@ export default function Activities() {
 
       {/* Filters */}
       <FilterWrapper>
+      <InputFilter
+          filterKey="topic"
+          setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
+        >Topic</InputFilter>
         <InputFilter
           filterKey="title"
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
-        >Search Activities</InputFilter>
+        >Title</InputFilter>
         <OptionFilter
           filterKey="subject"
-          values={Object.values(SubjectEnum)}
+          values={Object.values(Subject)}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Subject</OptionFilter>
         <OptionFilter
           filterKey="grade"
-          values={Object.values(ActivityGradeEnum)}
+          values={["1", "2", "3", "4", "5"]}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Grade Level</OptionFilter>
         <OptionFilter
           filterKey="difficulty"
-          values={Object.values(ActivityDifficultyEnum)}
+          values={Object.values(ActivityDifficulty)}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Difficulty</OptionFilter>

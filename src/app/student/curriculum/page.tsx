@@ -1,88 +1,49 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import StudentNavigatorLayout from "@/components/student/StudentNavigatorLayout";
 import Title from "@/components/shared/headings/Title";
 import SubjectSection from "@/components/student/curriculum/SubjectSection";
 import TopicSection from "@/components/student/curriculum/TopicSection";
-import StudentViewActivityItem from "@/components/student/activity/StudentViewActivityItem";
-import { SubjectEnum } from "@/lib/utils/types";
-
-// Mock curriculum data grouped by subject and topic
-const mockDbData = {
-  MATHEMATICS: {
-    "Addition": [
-      {
-        activityID: "1",
-        title: "Simple Addition",
-        subject: "MATHEMATICS",
-        grade: 3,
-        difficulty: "EASY",
-        isScored: true,
-        topic: "Addition",
-        completed: false,
-      },
-      {
-        activityID: "2",
-        title: "Addition with Carry",
-        subject: "MATHEMATICS",
-        grade: 3,
-        difficulty: "MEDIUM",
-        isScored: false,
-        topic: "Addition",
-        completed: true,
-        progressID: "p1"
-      }
-    ],
-    "Subtraction": [
-      {
-        activityID: "3",
-        title: "Simple Subtraction",
-        subject: "MATHEMATICS",
-        grade: 3,
-        difficulty: "EASY",
-        isScored: false,
-        topic: "Subtraction",
-        completed: false,
-      }
-    ]
-  },
-  SCIENCE: {
-    "Plants": [
-      {
-        activityID: "4",
-        title: "Parts of a Plant",
-        subject: "SCIENCE",
-        grade: 3,
-        difficulty: "EASY",
-        isScored: true,
-        topic: "Plants",
-        completed: true,
-        progressID: "p2"
-      }
-    ]
-  },
-  ENGLISH: {
-    "Grammar": [
-      {
-        activityID: "5",
-        title: "Nouns and Pronouns",
-        subject: "ENGLISH",
-        grade: 3,
-        difficulty: "MEDIUM",
-        isScored: false,
-        topic: "Grammar",
-        completed: false,
-      }
-    ]
-  },
-  COMMON: {}
-};
+import StudentViewActivityItem from "@/components/student/activity/ViewActivityItem";
+import { ActivityDifficulty, Subject, SubjectEnum } from "@/lib/utils/types";
 
 export default function Curriculum() {
 
+  const [dbData, setDbData] = useState<{
+    [Sb in Subject]: {
+      [key: string]: Array<{
+        activityID: string,
+        title: string,
+        topic?: string,
+        subject: Subject,
+        grade?: 1 | 2 | 3 | 4 | 5,
+        difficulty: ActivityDifficulty,
+        isScored: boolean,
+        completed: boolean,
+        progressID?: string,
+      }>
+    }
+  }>({
+    MATHEMATICS: {},
+    SCIENCE: {},
+    ENGLISH: {},
+    COMMON: {}
+  });
 
-  const [dbData] = useState<any>(mockDbData);
+  async function fetchCurriculum() {
+
+    const url = `/api/curriculum`;
+    const res = await fetch(url);
+
+    const resData = await res.json();
+    setDbData(resData.data);
+
+  }
+
+  useEffect(() => { 
+    fetchCurriculum();
+  }, []);
   
   // For collapsible subject sections
   const [openSubjects, setOpenSubjects] = useState<{ [subject: string]: boolean }>({});

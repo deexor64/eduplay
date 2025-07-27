@@ -1,35 +1,39 @@
 import { prisma } from '@/lib/prisma';
-import { Achievements, AchievementsEnum, ResType } from '@/lib/utils/types';
+import { ResType } from '@/lib/utils/types';
 
 export default async function progressService(data: any): Promise<ResType> {
 
-  // In here the student data is analysed and a comprehensive 
-  // progress analysis is generated
-
-  // Find the studentID for the user
-  const student = await prisma.student.findUnique({
+  // Find student by userID if userType is student
+  // Progress which is relevent to student will be generated
+  const student = (data.userType === "STUDENT" ? await prisma.student.findUnique({
     where: { userID: data.userID },
     select: { studentID: true, grade: true }
-  });
-  if (!student) {
-    return { status: false, resDataType: "error", data: "Student not found" };
-  }
+  }) : null);
 
   // Fetch all progress records for this student
-  const progresses = await prisma.progress.findMany({
-    where: { progressFor: student.studentID },
-    include: { activity: true }
-  });
+  let progresses: any = {};
+
+  if (data.userType === "STUDENT" && student) {
+    progresses = await prisma.progress.findMany({
+      where: { progressFor: student.studentID },
+      include: { activity: true }
+    });
+  } else {
+    progresses = await prisma.progress.findMany({
+      where: { progressFor: data.studentID },
+      include: { activity: true }
+    });
+  }
 
   // Aggregate data
   const totalCompleted = progresses.length;
-  const totalScore = progresses.reduce((sum, p) => sum + (p.baseScore || 0), 0);
-  const totalMaxScore = progresses.reduce((sum, p) => sum + (p.maxScore || 0), 0);
+  const totalScore = progresses.reduce((sum: any, p: any) => sum + (p.baseScore || 0), 0);
+  const totalMaxScore = progresses.reduce((sum: any, p: any) => sum + (p.maxScore || 0), 0);
   const averageScore = totalCompleted > 0 ? Math.round((totalScore / totalMaxScore) * 100) : 0;
 
   // Subject breakdown
   const subjectMap: { [subject: string]: { total: number, score: number } } = {};
-  progresses.forEach((p) => {
+  progresses.forEach((p: any) => {
     const subject = p.activity.subject;
     if (!subjectMap[subject]) subjectMap[subject] = { total: 0, score: 0 };
     subjectMap[subject].total += 1;
@@ -43,29 +47,30 @@ export default async function progressService(data: any): Promise<ResType> {
 
   // Recent activities (last 5)
   const recent = progresses
-    .sort((a, b) => (b.activity.updatedAt as any) - (a.activity.updatedAt as any))
+    .sort((a: any, b: any) => (b.activity.updatedAt as any) - (a.activity.updatedAt as any))
     .slice(0, 5)
-    .map((p) => ({
+    .map((p: any) => ({
       title: p.activity.title,
       score: p.baseScore,
       maxScore: p.maxScore
     }));
 
   // Achievements
+  type Achievements = "Student" | "First Activity" | "Consistent Learner" | "Math Whiz" | "Science Whiz" | "English Whiz";
   const achievements: Array<Achievements> = [];
   // Just being a student in the site
-  achievements.push(AchievementsEnum.STUDENT);
+  achievements.push("Student");
   // Complete the first activity
-  if (totalCompleted > 0) achievements.push(AchievementsEnum.FIRST_ACTIVITY);
+  if (totalCompleted > 0) achievements.push("First Activity");
   // Recent activity within 2 weeks
   const twoWeeksAgo = new Date();
   twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-  const hasRecent = progresses.some(p => p.createdAt && new Date(p.createdAt) >= twoWeeksAgo);
-  if (hasRecent) achievements.push(AchievementsEnum.CONSISTENT_LEARNER);
+  const hasRecent = progresses.some((p: any) => p.createdAt && new Date(p.createdAt) >= twoWeeksAgo);
+  if (hasRecent) achievements.push("Consistent Learner");
   // Get marks greater than 90 for any subject
-  if (subjectStats.some(s => s.subject === "MATHEMATICS" && s.score >= 90)) achievements.push(AchievementsEnum.MATH_WHIZ);
-  if (subjectStats.some(s => s.subject === "SCIENCE" && s.score >= 90)) achievements.push(AchievementsEnum.SCIENCE_WHIZ);
-  if (subjectStats.some(s => s.subject === "ENGLISH" && s.score >= 90)) achievements.push(AchievementsEnum.ENGLISH_WHIZ);
+  if (subjectStats.some(s => s.subject === "MATHEMATICS" && s.score >= 90)) achievements.push("Math Whiz");
+  if (subjectStats.some(s => s.subject === "SCIENCE" && s.score >= 90)) achievements.push("Science Whiz");
+  if (subjectStats.some(s => s.subject === "ENGLISH" && s.score >= 90)) achievements.push("English Whiz");
 
   return {
     status: true,
