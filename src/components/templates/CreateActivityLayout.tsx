@@ -8,6 +8,8 @@ import { useRef, useState } from "react";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 import { useParams } from "next/navigation";
 import { lazy, Suspense, useMemo } from "react";
+import toast from "react-hot-toast";
+import ActivityTopic from "@/components/templates/create/ActivityTopic";
 
 export interface CreateActivityProps {
   setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
@@ -65,15 +67,14 @@ export default function CreateActivityLayout() {
     title: "",
     instructions: "",
     activityData: {},
+    topic: null,
     options: {
       isScored: false,
-      grade: "ALL",
-      difficulty: "EASY",
+      grade: null,
+      difficulty: null,
       subject: "COMMON",
-      topic: "",
     }
   });
-  
   
   // Common fields like title, instructions are validated as well as 
   // the activity specific fields
@@ -120,8 +121,10 @@ export default function CreateActivityLayout() {
     
     // validate
     const valid = validateActivityForm();
-    console.log(valid);
-    if (!valid.status) return; // display message
+    if (!valid.status) {
+      toast.error(valid.message);
+      return;
+    }
     
     // set progress to pending
     setUploadProgress({ progress: 0, status: "PENDING"});
@@ -179,6 +182,9 @@ export default function CreateActivityLayout() {
         {/* template title */}
         <TemplateTitle templateCode={templateCode}>{templateCode}</TemplateTitle>
         
+        {/* activity topic */}
+        <ActivityTopic options={formData.options} setFormData={setFormData} />
+
         {/* activity title */}
         <ActivityTitle setFormData={setFormData} />
         

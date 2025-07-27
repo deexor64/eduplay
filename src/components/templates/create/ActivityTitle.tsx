@@ -16,7 +16,7 @@ export default function ActivityTitle(props: ActivityTitleProps) {
   return (
     <section className="mb-4 bg-white/40 backdrop-blur p-6 rounded-xl shadow-md">
       <label htmlFor="lesson-title" className="block text-lg font-semibold mb-3 text-gray-800">
-        Activity Title
+        Title
       </label>
       <input
         id="lesson-title"

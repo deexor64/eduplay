@@ -1,11 +1,12 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { Grade, ResType, Subject, TeacherRoleEnum } from "@/lib/utils/types";
 import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { prisma } from "@/lib/prisma";
+import { Subject } from "@prisma/client";
 
-export async function getTopicList(): Promise<ResType> {
+export async function getTopicList(): 
+Promise<Array<{subject: Subject, grade: number | null, topic: string | null}> | Error> {
 
   try {
 
@@ -13,19 +14,26 @@ export async function getTopicList(): Promise<ResType> {
     
     const userToken = cookieStore.get("userInfo")?.value;
     const valid = userTokenChecker(userToken, ["TEACHER"], 
-      [TeacherRoleEnum.MASTER, TeacherRoleEnum.ADMIN]);
+      ["MASTER", "ADMIN", "TEACHER"]);
 
-    if (!valid) return {status: false, resDataType: "error", data: "Unauthorized"};
+    if (!valid) throw new Error("Unauthorized");
 
     const topics = await prisma.activity.findMany({
+      where: {
+        grade: { not: null },
+        topic: {
+          not: null,
+          notIn: [""],
+        },
+      },
       select: {
         subject: true,
         grade: true,
         topic: true,
       },
-      distinct: ["topic"],
+      distinct: ["subject", "grade", "topic"],
     });
-
+    
     // Flatten to array of objects
     const topicList = topics.map(item => {
       return {
@@ -35,12 +43,12 @@ export async function getTopicList(): Promise<ResType> {
       }
     });
 
-    return {status: true, resDataType: "data", data: topicList};
+    return topicList;
 
   } catch(e) {
 
-    return {status: false, resDataType: "error", data: "Internal server error"};
-  
+    throw new Error("Server error");  
+    
   }
  
 } 

@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { ResType, UserType } from '@/lib/utils/types';
+import { ResType } from '@/lib/utils/types';
 
 export default async function createActivityService(data: any): Promise<ResType> {
 
@@ -15,13 +15,13 @@ export default async function createActivityService(data: any): Promise<ResType>
   const existing = await prisma.activity.create({
     data: {
       title: data.title,
+      topic: data.topic,
       instructions: data.instructions,
       activityData: data.activityData,
       isScored: data.options.isScored,
       grade: data.options.grade,
       difficulty: data.options.difficulty,
       subject: data.options.subject,
-      topic: data.options.topic,
       template: {
         connect: { templateCode: data.templateCode },
       },
