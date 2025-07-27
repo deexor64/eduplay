@@ -10,8 +10,11 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 import cleanParams from "@/lib/utils/cleanParams";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
+import { StudentClass, TeacherRole, UserStatus } from "@prisma/client";
+import toast from "react-hot-toast";
+import { updateUserStatus } from "@/actions/user/updateUserStatus";
 
-export default function UserList() {
+export default function Users() {
   
   const searchParams = useSearchParams();
   const userListType = searchParams.get("userListType");
@@ -21,12 +24,14 @@ export default function UserList() {
       indexNumber?: string,
       grade?: number,
       class?: string,
+      role?: string,
+      subject?: string,
       user: {
         userID: string,
         firstName: string,
         lastName: string,
         displayPicUrl: string,
-        status: string
+        status: UserStatus
       }
     }>,
     total: number;
@@ -35,6 +40,10 @@ export default function UserList() {
   const [filter, setFilter] = useState({
     indexNumber: undefined,
     fullName: undefined,
+    grade: undefined,
+    class: undefined,
+    role: undefined,
+    email: undefined,
     status: undefined
   });
   
@@ -75,14 +84,27 @@ export default function UserList() {
     setTriggerFilter(false);
     fetchUsers();
   }, [pagination, triggerFilter, userListType]);
+
+  function handleUpdateUserStatus(userID: string, status: UserStatus) {
+
+    toast.promise(updateUserStatus(userID, status), {
+      loading: "Updating user...",
+      success: () => {
+        fetchUsers();
+        return "User updated successfully";
+      },
+      error: "Failed to update user",
+    })
+
+  }
   
   return (
     <NavigatorLayout>
       
       {/* Title */}
-      {(userListType === "teacher") && <Title title="Manage Teachers" />}
-      {(userListType === "student") && <Title title="Manage Students" />}
-      {(userListType === "parent") && <Title title="Manage Parents" />}
+      {(userListType === "teacher") && <Title title="Teachers" />}
+      {(userListType === "student") && <Title title="Students" />}
+      {(userListType === "parent") && <Title title="Parents" />}
 
       {/* Filters */}
       <FilterWrapper>
@@ -99,6 +121,32 @@ export default function UserList() {
             setTriggerFilter={setTriggerFilter}
           >Index NUmber</InputFilter>
         }
+        {
+          userListType === "student" && 
+          <>
+            <OptionFilter
+            filterKey="grade"
+            values={["1", "2", "3", "4", "5"]}
+            setFilter={setFilter}
+            setTriggerFilter={setTriggerFilter}
+          >Grade</OptionFilter>
+          <OptionFilter
+            filterKey="class"
+            values={Object.values(StudentClass)}
+            setFilter={setFilter}
+            setTriggerFilter={setTriggerFilter}
+          >Class</OptionFilter>
+        </>
+        }
+        {
+          userListType === "teacher" && 
+          <OptionFilter
+            filterKey="role"
+            values={Object.values(TeacherRole)}
+            setFilter={setFilter}
+            setTriggerFilter={setTriggerFilter}
+          >Role</OptionFilter>
+        }
         <InputFilter
           filterKey="email"
           setFilter={setFilter}
@@ -106,7 +154,7 @@ export default function UserList() {
         >Email</InputFilter>
         <OptionFilter
           filterKey="status"
-          values={["PENDING", "ACTIVE", "INACTIVE", "SUSPENDED"]}
+          values={Object.values(UserStatus)}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Status</OptionFilter>
@@ -118,7 +166,8 @@ export default function UserList() {
           <div className="text-center text-gray-500 py-8">Nothing to display</div>
         ) : (
           dbData.users.map(function (item) {
-            return <ViewUserItem itemData={item} onUpdateUserStatus={fetchUsers} key={item.user.userID}/>;
+            return <ViewUserItem itemData={item} handleUpdateUserStatus={handleUpdateUserStatus} 
+            key={item.user.userID}/>;
           })
         )}
       </div>
@@ -129,4 +178,5 @@ export default function UserList() {
     </NavigatorLayout>
     
   );
+
 }

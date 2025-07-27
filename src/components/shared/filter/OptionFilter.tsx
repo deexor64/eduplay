@@ -9,11 +9,13 @@ interface OptionFilterProps {
 }
 
 export default function OptionFilter(props: OptionFilterProps) {
-  const { filterKey, values, setFilter, setTriggerFilter } = props;
 
+  const { filterKey, values, setFilter, setTriggerFilter } = props;
+  
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
+
     let newValue: string | undefined = e.target.value;
     newValue = newValue === "All" ? undefined : newValue;
 

@@ -3,40 +3,25 @@
 import Link from "next/link";
 import InfoBadge from "@/components/shared/badges/InfoBadge";
 import ViewItemActionButton from "@/components/shared/buttons/ViewItemActionButton";
-import { ActivityStatus } from "@prisma/client";
-import { updateActivityStatus } from "@/actions/activity/updateActivityStatus";
-import toast from "react-hot-toast";
+import { ActivityDifficulty, Subject, ActivityStatus } from "@prisma/client";
 
 interface ViewActivityItemProps {
   itemData: {
     activityID: string;
     title: string;
-    status: string;
-    subject: string;
-    grade: number;
+    status: ActivityStatus;
+    subject: Subject;
+    grade?: 1 | 2 | 3 | 4 | 5;
     isScored: boolean;
-    difficulty: string;
-    topic: string;
+    difficulty?: ActivityDifficulty;
+    topic?: string;
   };
-  onUpdateActivityStatus: Function;
+  handleUpdateActivityStatus: (activityID: string, status: ActivityStatus) => void;
 }
 
 export default function ViewActivityItem(props: ViewActivityItemProps) {
 
   const itemData = props.itemData;
-
-  function handleUpdateActivityStatus(status: ActivityStatus) {
-
-    toast.promise(updateActivityStatus(itemData.activityID, status), {
-      loading: "Updating activity status...",
-      success: () => {
-        props.onUpdateActivityStatus();
-        return "Activity status updated successfully";
-      },
-      error: "Failed to update activity status",
-    })
-
-  }
 
   return (
     <div className="border border-blue-200 bg-white rounded-xl p-4 flex items-center shadow hover:shadow-lg transition 
@@ -51,66 +36,57 @@ export default function ViewActivityItem(props: ViewActivityItemProps) {
             href={`/teacher/activities/${itemData.activityID}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-lg font-semibold text-purple-800 truncate focus:outline-none focus:ring-2 focus:ring-blue-200 cursor-pointer no-underline hover:text-purple-900"
+            className="text-lg font-semibold text-gray-600 truncate focus:outline-none focus:ring-2 focus:ring-blue-200 
+            cursor-pointer no-underline hover:text-gray-800"
             style={{ textDecoration: 'none' }}
           >
-            {itemData.title}
+            {itemData.topic ? itemData.topic + ": " + itemData.title 
+            : itemData.title}
           </Link>
-          <InfoBadge text={itemData.activityID.slice(0, 8) + "..."} colorTheme="default" />
+          <InfoBadge text={itemData.activityID.slice(0, 23) + "..."} colorTheme="default" />
         </div>
 
         {/* Badges and description */}
         <div className="flex items-center gap-2 mt-1 text-xs flex-wrap">
-          {itemData.grade === 0 ? (
-            <InfoBadge text="ALL GRADES" colorTheme="blue" />
-          ) : (
+          {itemData.grade ? (
             <InfoBadge text={"GRADE " + String(itemData.grade)} colorTheme="blue" />
+          ) : (
+            <InfoBadge text="ALL GRADES" colorTheme="blue" />
           )}
           <InfoBadge text={itemData.subject} colorTheme="green" />
-          <InfoBadge text={itemData.difficulty} colorTheme="yellow" />
+          {itemData.difficulty && (
+            <InfoBadge text={itemData.difficulty} colorTheme="yellow" />
+          )}
           {itemData.isScored && (
             <InfoBadge text="SCORED" colorTheme="purple" />
           )}
-          {itemData.status === "UNPUBLISHED" && (
-            <InfoBadge text={itemData.status} colorTheme="indigo" />
-          )}
-          {itemData.topic && (
-            <InfoBadge text={itemData.topic} colorTheme="yellow" />
-          )}
+          <InfoBadge text={itemData.status} colorTheme="indigo" />
         </div>
 
       </div>
 
       {/* Action buttons */}
       <div className="flex flex-row items-end gap-2 ml-4">
-        {
-          itemData.status === "UNPUBLISHED" && (
-            <>
-              <ViewItemActionButton text="Publish" colorTheme="blue"
-                onAction={() => handleUpdateActivityStatus("PUBLISHED")} />
-              <ViewItemActionButton text="Delete" colorTheme="red" 
-                onAction={() => handleUpdateActivityStatus("DELETED")} />
-            </>
-          )
-        }
-        {
-          itemData.status === "PUBLISHED" && (
-            <>
-              <ViewItemActionButton text="Unpublish" colorTheme="yellow"
-                onAction={() => handleUpdateActivityStatus("UNPUBLISHED")} />
-              <ViewItemActionButton text="Delete" colorTheme="red" 
-                onAction={() => handleUpdateActivityStatus("DELETED")} />
-            </>
-          )
-        }
-        {
-          itemData.status === "DELETED" && (
-            <>
-              <ViewItemActionButton text="Restore" colorTheme="green"
-                onAction={() => handleUpdateActivityStatus("UNPUBLISHED")} />
-            </>
-          )
-        }
+        {itemData.status === "UNPUBLISHED" && (
+          <>
+            <ViewItemActionButton text="Publish" colorTheme="blue"
+              onAction={() => props.handleUpdateActivityStatus(itemData.activityID, "PUBLISHED")} />
+            <ViewItemActionButton text="Delete" colorTheme="red" 
+              onAction={() => props.handleUpdateActivityStatus(itemData.activityID, "DELETED")} />
+          </>
+        )}
+        {itemData.status === "PUBLISHED" && (
+          <>
+            <ViewItemActionButton text="Unpublish" colorTheme="yellow"
+              onAction={() => props.handleUpdateActivityStatus(itemData.activityID, "UNPUBLISHED")} />
+            <ViewItemActionButton text="Delete" colorTheme="red" 
+              onAction={() => props.handleUpdateActivityStatus(itemData.activityID, "DELETED")} />
+          </>
+        )}
+        {itemData.status === "DELETED" && (
+          <ViewItemActionButton text="Restore" colorTheme="green"
+            onAction={() => props.handleUpdateActivityStatus(itemData.activityID, "UNPUBLISHED")} />
+        )}
       </div>
 
     </div>

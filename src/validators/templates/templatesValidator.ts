@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { TeacherRoleEnum } from "@/lib/utils/types";
 import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import userTokenChecker from "../../lib/utils/userTokenChecker";
+import userTokenChecker from "@/lib/utils/userTokenChecker";
+import { JwtPayload } from "jsonwebtoken";
 
 export default function templatesValidator(cookies: RequestCookies, searchParams: URLSearchParams):
 { status: boolean, data: any }  {
@@ -9,9 +9,10 @@ export default function templatesValidator(cookies: RequestCookies, searchParams
   // User token validation
   const userToken = cookies.get("userInfo")?.value;
   const valid = userTokenChecker(userToken, ["TEACHER"],
-    [TeacherRoleEnum.MASTER, TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER]);
-  
+    ["MASTER", "ADMIN", "TEACHER"]);
   if (!valid.status) return valid;
+
+  const jwtPayload = valid.data as JwtPayload;
   
   // constraints
   const zsearchParams = z.object({
@@ -25,6 +26,6 @@ export default function templatesValidator(cookies: RequestCookies, searchParams
   const parsed_s = zsearchParams.safeParse(Object.fromEntries(searchParams.entries()));
   if (!parsed_s.success) return { status: false, data: parsed_s.error.message }
 
-  return { status: true, data: parsed_s.data}
+  return { status: true, data: {...parsed_s.data, ...jwtPayload} }
   
 }

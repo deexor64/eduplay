@@ -8,8 +8,10 @@ import Paginator from "@/components/shared/pagination/Paginator";
 import ViewActivityItem from "@/components/activity/ViewActivityItem";
 import React, { useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
-import { ActivityDifficultyEnum, ActivityGradeEnum, ActivityStatusEnum, SubjectEnum } from "@/lib/utils/types";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
+import toast from "react-hot-toast";
+import { ActivityDifficulty, ActivityStatus, Subject } from "@prisma/client";
+import { updateActivityStatus } from "@/actions/activity/updateActivityStatus";
 
 export default function Activities() {
 
@@ -17,17 +19,18 @@ export default function Activities() {
     activities: Array<{
       activityID: string,  
       title: string,
-      status: string,
-      subject: string,
-      grade: number,
+      status: ActivityStatus,
+      subject: Subject,
+      grade?: 1 | 2 | 3 | 4 | 5,
       isScored: boolean,
-      difficulty: string,
-      topic: string,
+      difficulty?: ActivityDifficulty,
+      topic?: string,
     }>,
     total: number;
   }>({ activities: [], total: 0 });
 
   const [filter, setFilter] = useState({
+    topic: undefined,
     title: undefined,
     status: undefined,
     grade: undefined,
@@ -69,39 +72,58 @@ export default function Activities() {
     fetchActivities();
   }, [triggerFilter, pagination]);
 
+  async function handleUpdateActivityStatus(activityID: string, status: ActivityStatus) {
+
+    toast.promise(updateActivityStatus(activityID, status), {
+      loading: "Updating activity...",
+      success: () => {
+        fetchActivities();
+        return "Activity updated successfully";
+      },
+      error: "Failed to update activity",
+    })
+
+  }
+
   return (
     <NavigatorLayout>
+
       {/* Title */}
       <Title title="Manage Activities" />
 
       {/* Filters */}
       <FilterWrapper>
+      <InputFilter
+          filterKey="topic"
+          setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
+        >Topic</InputFilter>
         <InputFilter
           filterKey="title"
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
-        >Activity Title</InputFilter>
+        >Title</InputFilter>
         <OptionFilter
           filterKey="subject"
-          values={Object.values(SubjectEnum)}
+          values={Object.values(Subject)}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Subject</OptionFilter>
         <OptionFilter
           filterKey="grade"
-          values={Object.values(ActivityGradeEnum)}
+          values={["1", "2", "3", "4", "5"]}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Grade</OptionFilter>
         <OptionFilter
           filterKey="difficulty"
-          values={Object.values(ActivityDifficultyEnum)}
+          values={Object.values(ActivityDifficulty)}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Difficulty</OptionFilter>
         <OptionFilter
           filterKey="status"
-          values={Object.values(ActivityStatusEnum)}
+          values={Object.values(ActivityStatus)}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Status</OptionFilter>
@@ -113,7 +135,8 @@ export default function Activities() {
           <div className="text-center text-gray-500 py-8">Nothing to display</div>
         ) : (
           dbData.activities.map(function (item) {
-            return <ViewActivityItem itemData={item} onUpdateActivityStatus={fetchActivities} key={item.activityID}/>;
+            return <ViewActivityItem itemData={item} handleUpdateActivityStatus={handleUpdateActivityStatus} 
+            key={item.activityID}/>;
           })
         )}
       </div>
@@ -123,4 +146,5 @@ export default function Activities() {
    
     </NavigatorLayout>
   );
+
 } 

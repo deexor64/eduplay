@@ -8,14 +8,14 @@ import Paginator from "@/components/shared/pagination/Paginator";
 import ViewTemplateItem from "@/components/templates/ViewTemplateItem";
 import SyncTemplateButton from "@/components/templates/SyncTemplatesButton";
 import React, { useEffect, useState } from "react";
-import { TeacherRoleEnum } from "@/lib/utils/types";
 import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import { syncTemplates } from "@/actions/templates/syncTemplates";
 import toast from "react-hot-toast";
+import { TeacherRole } from "@prisma/client";
 
-export default function TemplateList() {
+export default function Templates() {
   
   const { userType, teacherRole } = useAuth();
   
@@ -26,8 +26,9 @@ export default function TemplateList() {
       description: string,
       templateType: string
     }>,
-    total: number;
-  }>({ templates: [], total: 0 });
+    templateTypes: Array<string>,
+    total: number,
+  }>({ templates: [], templateTypes: [], total: 0 });
 
   const [filter, setFilter] = useState({
     templateType: undefined,
@@ -71,7 +72,18 @@ export default function TemplateList() {
     fetchTemplates();
   }, [triggerFilter, pagination]);
 
-  console.log(teacherRole)
+  function handleSyncTemplates() {
+
+    toast.promise(syncTemplates(), {
+      loading: "Syncing Templates...",
+      success: () => {
+        fetchTemplates();
+        return "Templates synced successfully";
+      },
+      error: "Failed to sync Templates",
+    })
+
+  }
 
   return (
     <NavigatorLayout>
@@ -83,7 +95,7 @@ export default function TemplateList() {
       <FilterWrapper>
         <OptionFilter
           filterKey="templateType"
-          values={["Drag and Drop", "Match", "Fill Blanks"]}
+          values={dbData.templateTypes}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Type</OptionFilter>
@@ -94,8 +106,8 @@ export default function TemplateList() {
         >Title</InputFilter>
         {/* sync button. shown only to admins */}
         {
-          [TeacherRoleEnum.MASTER, TeacherRoleEnum.ADMIN].includes(teacherRole as TeacherRoleEnum)  && (
-            <SyncTemplateButton onSyncTemplates={fetchTemplates} />
+          ["MASTER", "ADMIN"].includes(teacherRole as TeacherRole)  && (
+            <SyncTemplateButton handleSyncTemplates={handleSyncTemplates} />
           )
         }
       </FilterWrapper>

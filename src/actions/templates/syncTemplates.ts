@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { TeacherRoleEnum } from "@/lib/utils/types";
 import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { prisma } from "@/lib/prisma";
 import fs from "fs";
@@ -12,31 +11,33 @@ export async function syncTemplates() {
   const cookieStore = await cookies();
   
   const userToken = cookieStore.get("userInfo")?.value;
-  const valid = userTokenChecker(userToken, ["TEACHER"],
-    [TeacherRoleEnum.ADMIN, TeacherRoleEnum.MASTER]);
-
+  const valid = userTokenChecker(userToken, ["TEACHER"], ["ADMIN", "MASTER"]);
   if (!valid) throw new Error("Unauthorized");
 
   try {
-
+    
+    // Templates are dynamically listed 
     const templateDir = path.join(process.cwd(), "src/templates");
     const folders = fs.readdirSync(templateDir);
     
     for (const folder of folders) {
       
-      if (folder.split("-")[2] !== "tmpl") continue; // skip non template folders
+      // skip non template folders
+      if (folder.split("-")[2] !== "tmpl") continue;
       
       const metaPath = path.join(templateDir, folder, "meta.json");
       const raw = fs.readFileSync(metaPath, "utf-8");
       const meta = JSON.parse(raw);
-  
-      const exists = await prisma.template.findUnique({
+      
+      // Check is template already synced
+      const template = await prisma.template.findUnique({
         where: { templateCode: meta.templateCode },
       });
   
-      if (exists) continue;
-  
-      const existing = await prisma.template.create({
+      if (template) continue;
+      
+      // Repeated db query inside a for loop is one time
+      await prisma.template.create({
         data: {
           templateCode: meta.templateCode,
           title: meta.title,

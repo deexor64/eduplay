@@ -1,47 +1,30 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSync } from "@fortawesome/free-solid-svg-icons";
-import toast from "react-hot-toast";
-import { syncTemplates } from "@/actions/templates/syncTemplates";
 
 type SyncTemplatesButtonProps = {
-  onSyncTemplates: Function;
+  handleSyncTemplates: Function;
 }
 
 export default function SyncTemplateButton(props: SyncTemplatesButtonProps) {
 
   const [isSyncing, setIsSyncing] = useState(false);
 
-  async function handleSyncTemplates() {
-
+  async function syncIconAnimation() {
     setIsSyncing(true);
-
-    toast.promise(syncTemplates(), {
-      loading: "Syncing Templates...",
-      success: () => {
-        props.onSyncTemplates();
-        setIsSyncing(false);
-        return "Templates synced successfully";
-      },
-      error: "Failed to sync Templates",
-    })
-
-  };
+    props.handleSyncTemplates();
+    setIsSyncing(false);
+  }
 
   return (
-    <button
-      onClick={handleSyncTemplates}
-      disabled={isSyncing}
-      title="Sync Templates"
+    <button  onClick={syncIconAnimation} disabled={isSyncing} title="Sync Templates"
       className={`ml-auto h-fit p-2 rounded-md text-white transition-all duration-200 ${
-        isSyncing 
-          ? "bg-gray-500 cursor-not-allowed" 
-          : "bg-green-600 hover:bg-green-700"
-      }`}>
-      <FontAwesomeIcon 
-        icon={faSync} 
-        className={`${isSyncing ? "animate-spin" : ""}`}
-      />
+      isSyncing 
+        ? "bg-gray-500 cursor-not-allowed" 
+        : "bg-green-600 hover:bg-green-700"
+    }`}>
+      <FontAwesomeIcon icon={faSync} 
+      className={`${isSyncing ? "animate-spin" : ""}`} />
     </button>
   );
 }

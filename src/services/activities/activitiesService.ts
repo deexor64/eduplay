@@ -3,38 +3,44 @@ import { ResType } from '@/lib/utils/types';
 
 export default async function activitiesService(data: any): Promise<ResType> {
   
-  let whereClause: any = { // undefined values are ignored in where clause
-    title: data.title,
-    status: (data.userType === "STUDENT" ? "PUBLISHED" : data.status),
+  let whereActivities: any = {
+    topic: data.topic ? { contains: data.topic, mode: 'insensitive' } : undefined,
+    title: data.title ? { contains: data.title, mode: 'insensitive' } : undefined,
+    status: data.status,
     subject: data.subject,
     grade: data.grade,
     difficulty: data.difficulty,
   };
+
+  if (data.userType === "STUDENT") {
+    // status: Only published actiivities are shown
+    whereActivities.status = "PUBLISHED";
+  }
   
-  let selectClause: any = {
+  let selectActivities: any = {
     activityID: true,
+    topic: true,
     title: true,
     status: true,
     subject: true,
     grade: true,
     difficulty: true,
     isScored: true,
-    topic: true,
   }
 
   if (data.userType === "STUDENT") {
-    delete selectClause.status;
+    // status: Status is not shown to students
+    delete selectActivities.status;
   }
 
-  let activities: any = await prisma.activity.findMany({
-    where: whereClause,
-    select: selectClause,
+  let activities = await prisma.activity.findMany({
+    where: whereActivities,
+    select: selectActivities,
     skip: (data.page - 1) * data.limit,
     take: data.limit,
   });
 
-  // For students, always include 'completed' field 
-  // if the student has done the activity before
+  // For students include a "Completed" filed
   if (data.userType === "STUDENT") {
 
     // Find studentID from userID
@@ -42,7 +48,8 @@ export default async function activitiesService(data: any): Promise<ResType> {
       where: { userID: data.userID },
       select: { studentID: true }
     });
-    let studentID = student?.studentID;
+
+    const studentID = student?.studentID;
 
     // Get all progress records for this student
     const progresses = await prisma.progress.findMany({
@@ -67,7 +74,7 @@ export default async function activitiesService(data: any): Promise<ResType> {
         : { ...a, completed: false };
     });
     
-    // filter if filter is set
+    // Filter if filter is set
     if (data.completed === "Completed") {
       activities = activities.filter((a: any) => a.completed);
     } else if (data.completed === "Not Completed") {
@@ -75,14 +82,12 @@ export default async function activitiesService(data: any): Promise<ResType> {
     }
 
   }
-
-  const existing = {
-    activities,
-    total: await prisma.activity.count({
-      where: whereClause,
-    })
-  }
   
-  return { status: true, resDataType: "success", data: existing };
+  // Total records
+  const total = await prisma.activity.count({
+    where: whereActivities,
+  })
+  
+  return { status: true, resDataType: "success", data: { activities, total } };
   
 }
