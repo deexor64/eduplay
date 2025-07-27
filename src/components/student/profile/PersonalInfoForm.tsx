@@ -1,6 +1,5 @@
 "use client"
 
-import { updateStudentInfo } from "@/actions/student/updateStudentInfo";
 import React, { useState, useEffect } from "react";
 
 interface PersonalInfoData {

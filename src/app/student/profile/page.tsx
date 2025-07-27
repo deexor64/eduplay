@@ -5,10 +5,12 @@ import PersonalInfoForm from "@/components/student/profile/PersonalInfoForm";
 import AcademicInfoForm from "@/components/student/profile/AcademicInfoForm";
 import ProfilePictureUpload from "@/components/student/profile/ProfilePictureUpload";
 import PasswordChangeForm from "@/components/student/profile/PasswordChangeForm";
+import ParentInfoCard from "@/components/student/profile/ParentInfoCard";
 import { useEffect, useState } from "react";
-import { EdgeStoreProvider } from "@/lib/edgestore";
 import { updateStudentInfo } from "@/actions/student/updateStudentInfo";
 import Assistant from "@/components/student/Assistant";
+import { StudentClass, UserStatus } from "@prisma/client";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 
 export default function StudentProfile() {
 
@@ -24,36 +26,65 @@ export default function StudentProfile() {
 
   // State for student data
   const [dbData, setDbData] = useState<{
+    userID: string,
     firstName: string,
     lastName: string,
     phoneNumber?: string,
     dateOfBirth?: string,
     displayPicUrl: string,
+    status: UserStatus,
     student: {
-      email: string,
-      grade?: number,
-      class?: string,
+      studentID: string,
       indexNumber: string,
+      email: string,
+      grade: 1 | 2 | 3 | 4 | 5,
+      class: StudentClass,
+      parent: {
+        parentID: string,
+        email: string,
+        user: {
+          userID: string,
+          firstName: string,
+          lastName: string,
+          displayPicUrl: string,
+        }
+      }
     }
   }>({
+    userID: "",
     firstName: "-",
     lastName: "-",
     phoneNumber: "-",
     dateOfBirth: "-",
     displayPicUrl: "-",
+    status: "INACTIVE",
     student: {
-      email: "-",
-      grade: 0,
-      class: "-",
-      indexNumber: "-",
+      studentID: "",
+      indexNumber: "",
+      email: "",
+      grade: 1,
+      class: "A",
+      parent: {
+        parentID: "",
+        email: "",
+        user: {
+          userID: "",
+          firstName: "",
+          lastName: "",
+          displayPicUrl: "/images/avatar.png",
+        }
+      }
     }
   });
 
   // Fetch student data
-  async function fetchStudent() {   
+  async function fetchStudent() {  
+
     const res = await fetch("/api/profile");
+
     const resData = await res.json();
     setDbData(resData.data);
+
   }
 
   async function updateStudentInfoHandler(update: any) {
@@ -76,11 +107,10 @@ export default function StudentProfile() {
     fetchStudent();
   }, []);
 
-
   return (
     <>
+    <EdgeStoreProvider>
     <StudentNavigatorLayout>
-      <EdgeStoreProvider>
       <div className="p-4 space-y-6">
 
         <div className="text-center mb-6">
@@ -88,19 +118,28 @@ export default function StudentProfile() {
           <p className="text-gray-600">Update your personal information</p>
         </div>
         
+        {/* ISSUE: Image selection window doesn't open */}
         <ProfilePictureUpload 
           currentImage={dbData.displayPicUrl}
           studentName={`${dbData.firstName} ${dbData.lastName}`}
           updateStudentInfo={updateStudentInfoHandler}
+          studentInfo={{
+            indexNumber: dbData.student.indexNumber,
+            email: dbData.student.email,
+            grade: dbData.student.grade,
+            class: dbData.student.class,
+            status: dbData.status
+          }}
         />
         <PersonalInfoForm data={dbData} updateStudentInfo={updateStudentInfoHandler} />
         <AcademicInfoForm data={dbData.student} updateStudentInfo={updateStudentInfoHandler} />
+        <ParentInfoCard parent={dbData.student.parent} />
+        {/* TODO: implement password change */}
         <PasswordChangeForm />
 
       </div>
-    
-      </EdgeStoreProvider>
     </StudentNavigatorLayout>
+    </EdgeStoreProvider>
 
     {/* Assistant */}
     <Assistant assistantMessage={assistantMessage} setAssistantMessage={setAssistantMessage} />

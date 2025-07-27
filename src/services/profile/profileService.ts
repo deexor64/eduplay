@@ -49,9 +49,10 @@ export default async function profileService(data: any): Promise<ResType> {
             class: true,
             user: {
               select: {
+                userID: true,
                 firstName: true,
                 lastName: true,
-                userID: true,
+                displayPicUrl: true,
               }
             }
           }
@@ -73,11 +74,13 @@ export default async function profileService(data: any): Promise<ResType> {
         parent: {
           select: {
             parentID: true,
+            email: true,
             user: {
               select: {
+                userID: true,
                 firstName: true,
                 lastName: true,
-                userID: true,
+                displayPicUrl: true,
               }
             }
           }
