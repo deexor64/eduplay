@@ -13,8 +13,8 @@ export default function useFileStoreUploader() {
   const { edgestore } = useEdgeStore();
   
   // using edge store as file server
-  async function fileStoreUplaoder(files: Map<string, File>, abortSave: RefObject<boolean>,
-    onProgress: (progress: number) => void): Promise<Map<string, string>> {
+  async function fileStoreUplaoder(files: Map<string, File>, abortSave?: RefObject<boolean>,
+    onProgress?: (progress: number) => void): Promise<Map<string, string>> {
       
     const fileUrlMap = new Map<string, string>();
     const abortController = new AbortController();
@@ -25,8 +25,8 @@ export default function useFileStoreUploader() {
       const res = await edgestore.publicFiles.upload({
         file,
         onProgressChange: (progress) => {
-          if (abortSave.current) abortController.abort(); // abort if saving is aborted
-          onProgress(progress); // upload progress
+          if (abortSave && abortSave.current) abortController.abort(); // abort if saving is aborted
+          onProgress && onProgress(progress); // upload progress
         },
         signal: abortController.signal,
       });

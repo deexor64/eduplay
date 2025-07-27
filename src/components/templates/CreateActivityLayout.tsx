@@ -3,8 +3,7 @@ import ActivityTitle from "@/components/templates/create/ActivityTitle";
 import Instructions from "@/components/templates/create/Instructions";
 import ActivityOptions from "@/components/templates/create/ActivityOptions";
 import Footer from "@/components/templates/create/Footer";
-import ActivityUploadProgress from "@/components/templates/ActivityUploadProgress";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 import { useParams } from "next/navigation";
 import { lazy, Suspense, useMemo } from "react";
@@ -106,14 +105,6 @@ export default function CreateActivityLayout() {
     return JSON.stringify(form);
     
   }
-  
-  // Needed by the uploader component
-  const [uploadProgress, setUploadProgress] = useState({
-    progress: 0,
-    status: "NONE",
-  });
-  const abortSave = useRef(true);
-  
 
   // Validations are called inside
   // If validations fails user is notified and the form is not submitted
@@ -126,47 +117,38 @@ export default function CreateActivityLayout() {
       return;
     }
     
-    // set progress to pending
-    setUploadProgress({ progress: 0, status: "PENDING"});
-    abortSave.current = false;
-    
     // send any media files from the state to the edge store
     // then take their urls and pass it to the activityFinerlizer
-    const mediaFileUrls = await fileStoreUploader(mediaFiles, abortSave, (progress) => {
-      setUploadProgress((prev) => ({...prev, progress}));
-    });
-    
-    // Detect if upload was finished by completion or abort
-    if (abortSave.current) {
-      setUploadProgress((prev) => ({ ...prev, status: "ABORTED" }));
-      return;
-    }
-    
-    // send the form data
-    const finalizedActivityData = activityFinalizer(mediaFileUrls)
-    const form = activityForm(finalizedActivityData);
-    
-    const url = `/api/activities`;
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-      },
-      body: form
-    })
-    
-    const resData = await res.json();
-    
-    if (!resData.status) {
-      setUploadProgress((prev) => ({ ...prev, status: "ERROR" }));
-      return;
-    }
+    toast.promise(async () => {
+      
+      // Upload media files
+      const mediaFileUrls = await fileStoreUploader(mediaFiles);
 
-    setUploadProgress({ progress: 100, status: "COMPLETED" });
-    abortSave.current = true;
-    
-    // navigate to newly made activity
-    window.open(`/teacher/activities/${resData.data}`, "_blank");
+      // Send the form data
+      const finalizedActivityData = activityFinalizer(mediaFileUrls);
+      const form = activityForm(finalizedActivityData);
+      
+      const url = `/api/activities`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+        },
+        body: form
+      })
+      
+      const resData = await res.json();
+      if (!resData.status) throw Error(resData.data);
+      
+      // Redirect to created activity
+      window.open(`/teacher/activities/${resData.data}`, "_blank");
+
+    }, 
+    {
+      loading: "Saving activity...",
+      success: "Activity saved successfully",
+      error: "Failed to save activity",
+    })
     
   };
   
@@ -207,10 +189,6 @@ export default function CreateActivityLayout() {
         <Footer handleSubmit={handleSubmit}></Footer>
         
       </div>
-      
-      {/* upload progress */}
-      <ActivityUploadProgress uploadProgress={uploadProgress} setUploadProgress={setUploadProgress}
-      abortSave={abortSave}/>
       
     </div>
     
