@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 
 export default async function getProgressService(data: any): Promise<ResType> {
   
-  const existing = await prisma.progress.findUnique({
+  const progress = await prisma.progress.findUnique({
     where: {
       progressID: data.progressID,
     },
@@ -15,6 +15,7 @@ export default async function getProgressService(data: any): Promise<ResType> {
       activity: {
         select: {
           title: true,
+          topic: true,
           instructions: true,
           difficulty: true,
           subject: true,
@@ -26,18 +27,20 @@ export default async function getProgressService(data: any): Promise<ResType> {
       }
     }
   })
+
+  if (!progress) return { status: false, resDataType: "error", data: "Progress not found" };
   
   return { status: true, resDataType: "success", 
     data: {
       score: {
-        baseScore: existing?.baseScore,
-        maxScore: existing?.maxScore,
-        summery: existing?.summery,
+        baseScore: progress.baseScore,
+        maxScore: progress.maxScore,
+        summery: progress.summery,
       },
-      data: existing?.data,
+      data: progress.data,
       activity: {
-        ...existing?.activity,
-        activityData: existing?.data
+        ...progress.activity,
+        activityData: progress?.data
       },
     } 
   };

@@ -7,7 +7,6 @@ import Instructions from "@/components/templates/view/Instructions";
 import Guide from "@/components/templates/view/Guide";
 import Celebration from "@/components/templates/view/Celebration";
 import GuideButton from "@/components/templates/view/GuideButton";
-import { ActivityViewMode } from "@/lib/utils/types";
 import { useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
 import useAuth from "@/hooks/useAuth";
@@ -16,7 +15,7 @@ import { useParams } from "next/navigation";
 import { lazy, Suspense, useMemo } from "react";
 
 type ViewActivityLayoutProps = {
-  viewMode: ActivityViewMode
+  viewMode: "VIEW" | "SAMPLE" | "PROGRESS" | "PREVIEW"
 }
 
 export interface ViewActivityProps {
@@ -100,7 +99,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
     // view mode is "SAMPLE"
     if (props.viewMode === "SAMPLE") {
-      const res = await fetch(`/api/activities/sample?${params}`);
+      const res = await fetch(`/api/templates/sample?${params}`);
       const resData = await res.json();
       setDbData(resData.data.sampleActivity);
     } 
@@ -201,22 +200,25 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   
   // Submit is invoked from footer
   async function handleSubmit () {
-    
-    // progress or sample or preview cannot be submitted back
-    // TODO: validate this at backend
-    if (props.viewMode === "PROGRESS" || props.viewMode === "SAMPLE" || props.viewMode === "PREVIEW") {
-      // Assistant is set to true from footer before invoking submit
-      // so it must be closed, then celebrate
-      setAssistantMessage({show: false, text: ""});
-      setShowCelebration(true);
-      return;
-    }
-  
+
     // validate and show assistant message
     const valid = validateResultForm();
     if (!valid.status) {
       // Assitant opened from footer is used here 
       setAssistantMessage({show: true, text: valid.message});
+      return;
+    }
+    
+    // progress or sample or preview cannot be submitted back
+    // If forcefully submitted backend validation fails because,
+    // Progress and Sample: doesn't contain activityID
+    // Preview: is used by teacher and teacher usertype is rejected for progress
+    // Also an acitivty cannot be submitted twice regardless of view mode
+    if (props.viewMode !== "VIEW") {
+      // Assistant is set to true from footer before invoking submit
+      // so it must be closed, then celebrate
+      setAssistantMessage({show: false, text: ""});
+      setShowCelebration(true);
       return;
     }
     
@@ -271,7 +273,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           <CoverImage templateCode={dbData.templateCode}>
             {/* activity title */}
             <ActivityTitle viewMode={props.viewMode} templateCode={templateCode || dbData.templateCode}>
-              { dbData.title }
+              { `${dbData.topic ? `${dbData.topic}:` : ""} ${dbData.title}` }
             </ActivityTitle>
             {/* description */}
             <Instructions infoTags={dbData}>{ dbData.instructions }</Instructions>

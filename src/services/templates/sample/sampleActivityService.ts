@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { ResType, UserType } from '@/lib/utils/types';
+import { ResType } from '@/lib/utils/types';
 
 export default async function sampleActivityService(data: any): Promise<ResType> {
   

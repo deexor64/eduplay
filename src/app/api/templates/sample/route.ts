@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sampleActivityValidator from '@/validators/activities/sample/sampleActivityValidator';
-import sampleActivityService from '@/services/activities/sample/sampleActivityService';
-import { UserType } from '@/lib/utils/types';
+import sampleActivityValidator from '@/validators/templates/sample/sampleActivityValidator';
+import sampleActivityService from '@/services/templates/sample/sampleActivityService';
 
 export async function GET(req: NextRequest) {
   
@@ -10,7 +9,7 @@ export async function GET(req: NextRequest) {
     const cookies = req.cookies;
     const searchParams = req.nextUrl.searchParams;
     
-    const parsed = await sampleActivityValidator(cookies, searchParams);
+    const parsed = sampleActivityValidator(cookies, searchParams);
     if (!parsed.status) return NextResponse.json(
       {status: false, responseType: "log", data: parsed.data},
       { status: 401 }

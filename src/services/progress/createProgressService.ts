@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { ResType, UserType } from '@/lib/utils/types';
+import { ResType } from '@/lib/utils/types';
 
 export default async function createProgressService(data: any): Promise<ResType> {
 
@@ -11,8 +11,19 @@ export default async function createProgressService(data: any): Promise<ResType>
       studentID: true,
     }
   });
+
+  // Check if student already has progress for this activity
+  const existingProgress = await prisma.progress.findFirst({
+    where: {
+      progressFor: student?.studentID,
+      progressOf: data.activityID,
+    },
+  });
+
+  if (existingProgress) return { status: false, resDataType: "error", 
+    data: "Sorry kid, You cannot save your work twice. but you're free to try without saving. Just head back to activites and find the same actiivity. You will find your progress there..." };
   
-  const existing = await prisma.progress.create({
+  const progress = await prisma.progress.create({
     data: {
       baseScore: data.score.baseScore,
       maxScore: data.score.maxScore,
@@ -27,6 +38,6 @@ export default async function createProgressService(data: any): Promise<ResType>
     },
   })
   
-  return { status: true, resDataType: "success", data: "Progress saved" };
+  return { status: true, resDataType: "success", data: "Great, your work is saved" };
   
 }

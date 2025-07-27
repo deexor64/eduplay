@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { TeacherRoleEnum } from "@/lib/utils/types";
 import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import userTokenChecker from "../../lib/utils/userTokenChecker";
+import userTokenChecker from "@/lib/utils/userTokenChecker";
+import { JwtPayload } from "jsonwebtoken";
 
 export default function getActivityValidator(cookies: RequestCookies, slugParam: any):
 { status: boolean, data: any }  {
@@ -9,10 +9,11 @@ export default function getActivityValidator(cookies: RequestCookies, slugParam:
   // User token validation
   const userToken = cookies.get("userInfo")?.value;
   const valid = userTokenChecker(userToken, ["TEACHER", "STUDENT"],
-    [TeacherRoleEnum.MASTER, TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER]);
-  
+    ["MASTER", "ADMIN", "TEACHER"]);
   if (!valid.status) return valid;
-  
+
+  const jwtPayload = valid.data as JwtPayload;
+
   // constraints
   const zslugParams = z.object({
     activityID: z.string(),
@@ -22,6 +23,6 @@ export default function getActivityValidator(cookies: RequestCookies, slugParam:
   const parsed_s = zslugParams.safeParse(slugParam);
   if (!parsed_s.success) return { status: false, data: parsed_s.error.message }
 
-  return { status: true, data: parsed_s.data}
+  return { status: true, data: { ...parsed_s.data, ...jwtPayload}}
   
 }

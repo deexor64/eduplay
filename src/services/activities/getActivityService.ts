@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 
 export default async function getActivityService(data: any): Promise<ResType> {
   
-  const existing = await prisma.activity.findUnique({
+  const activity = await prisma.activity.findUnique({
     where: {
       activityID: data.activityID,
     },
@@ -21,6 +21,6 @@ export default async function getActivityService(data: any): Promise<ResType> {
     }
   })
   
-  return { status: true, resDataType: "success", data: existing };
+  return { status: true, resDataType: "success", data: activity };
   
 }

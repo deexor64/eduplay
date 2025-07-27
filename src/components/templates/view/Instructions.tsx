@@ -15,13 +15,15 @@ export default function Instructions(props: InstructionsProps) {
         <h2 className="text-base font-semibold text-gray-800 select-none">Instructions</h2>
         {/* Info tags */}
         <div className="flex items-center gap-2 mt-1 text-xs flex-wrap ml-4">
-          {props.infoTags.grade === 0 ? (
-            <InfoBadge text="ALL GRADES" colorTheme="blue" />
-          ) : (
+          {props.infoTags.grade ? (
             <InfoBadge text={"GRADE " + String(props.infoTags.grade)} colorTheme="blue" />
+          ) : (
+            <InfoBadge text="ALL GRADES" colorTheme="blue" />
           )}
           <InfoBadge text={props.infoTags.subject} colorTheme="green" />
-          <InfoBadge text={props.infoTags.difficulty} colorTheme="yellow" />
+          {props.infoTags.difficulty && (
+            <InfoBadge text={props.infoTags.difficulty} colorTheme="yellow" />
+          )}
           {props.infoTags.isScored && (
             <InfoBadge text="SCORED" colorTheme="purple" />
           )}
