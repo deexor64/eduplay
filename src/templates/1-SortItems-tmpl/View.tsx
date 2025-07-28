@@ -6,13 +6,14 @@ import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-k
 import { ActivityDataType, Basket, BasketItemType } from "./Create";
 
 /*
-Activity input example
+Activity input example - Fresh activity
 
 {
   "box": [
     { "basket": "Fruits", "type": "text", "value": "Apple" },
     { "basket": "Fruits", "type": "image", "value": "https://example.com/apple.jpg", "label": "Apple" },
-    { "basket": "Vegetables", "type": "image", "value": "https://example.com/carrot.jpg", "label": "Carrot" }
+    { "basket": "Vegetables", "type": "image", "value": "https://example.com/carrot.jpg", "label": "Carrot" },
+    { "basket": "Vegetables", "type": "text", "value": "Carrot" }
   ],
   "baskets": [
     { 
@@ -21,7 +22,31 @@ Activity input example
     },
     {
       "basket": "Vegetables",
-      "items": [{ "basket": "Vegetables", "type": "text", "value": "Carrot" }]
+      "items": []
+    }
+  ]
+}
+*/
+
+/*
+Activity input example - Student progress
+
+{
+  "box": [],
+  "baskets": [
+    { 
+      "basket": "Fruits",
+      "items": [
+        { "basket": "Fruits", "type": "image", "value": "https://example.com/apple.jpg", "label": "Apple" },
+        { "basket": "Vegetables", "type": "image", "value": "https://example.com/carrot.jpg", "label": "Carrot" }
+      ]
+    },
+    {
+      "basket": "Vegetables",
+      "items": [
+        { "basket": "Vegetables", "type": "text", "value": "Carrot" },
+        { "basket": "Fruits", "type": "text", "value": "Apple" }
+      ]
     }
   ]
 }

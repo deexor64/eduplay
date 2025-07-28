@@ -1,0 +1,21 @@
+{
+  "templateCode": "2-FillWords-tmpl",
+  "title": "Fill Words",
+  "description": "Fill in the missing words in the paragraph",
+  "templateType": "Text Completion",
+  "sampleActivity": {
+    "templateCode": "2-FillWords-tmpl",
+    "title": "Complete the Story",
+    "instructions": "🧠 Read the paragraph carefully and fill in the missing words with the correct options provided below.",
+    "activityData": {
+      "paragraph": "The quick brown fox jumps over the lazy [[[dog]]]. The [[[fox]]] was very fast and the [[[dog]]] was very [[[slow]]]. They lived in a beautiful [[[forest]]] near the river.",
+      "options": ["dog", "fox", "dog", "slow", "forest", "fast", "lazy", "city", "cave"],
+      "used": []
+    },
+    "difficulty": null,
+    "subject": "COMMON",
+    "grade": null,
+    "isGraded": false,
+    "status": "UNPUBLISHED"
+  }
+} 

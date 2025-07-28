@@ -26,11 +26,10 @@
         }
       ]
     },
-    "timeLimit": 0,
-    "difficulty": "EASY",
+    "difficulty": null,
     "subject": "COMMON",
-    "grade": 0,
+    "grade": null,
     "isGraded": false,
-    "status": "PUBLISHED"
+    "status": "UNPUBLISHED"
   }
 }
