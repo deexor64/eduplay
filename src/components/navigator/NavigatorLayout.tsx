@@ -27,7 +27,7 @@ export default function NavigatorLayout(props: any) {
         <Sidebar isOpen={isOpen } setIsOpen={setIsOpen}/>
         {/* layout content */}
         <section className={`flex-grow transition-all duration-300
-          w-full h-full p-6  ${isOpen ? "ml-50" : "ml-16"}`}>
+          w-full p-6 ${isOpen ? "ml-50" : "ml-16"}`}>
           {props.children}
         </section>
       </div>

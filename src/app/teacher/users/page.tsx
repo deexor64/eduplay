@@ -161,7 +161,7 @@ export default function Users() {
       </FilterWrapper>
       
       {/* Info */}
-      <div className="w-full table-auto text-left">
+      <div className="w-full min-h-[calc(100vh-350px)] table-auto text-left">
         {dbData.users.length === 0 ? (
           <div className="text-center text-gray-500 py-8">Nothing to display</div>
         ) : (

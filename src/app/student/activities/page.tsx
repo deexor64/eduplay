@@ -115,7 +115,7 @@ export default function Activities() {
       </FilterWrapper>
 
       {/* Activity List */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="w-full min-h-[calc(100vh-350px)] grid grid-cols-1 md:grid-cols-2 gap-4">
         {dbData.activities.length === 0 ? (
           <div className="col-span-full text-center py-12">
             <div className="text-6xl mb-4">😴</div>

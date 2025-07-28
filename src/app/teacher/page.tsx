@@ -4,7 +4,7 @@ export default function Dashboard(props: any) {
 
   return (
     <NavigatorLayout>
-      <div >
+      <div className="min-h-[calc(100vh-0px)]">
         teacher dash
       </div>
     </NavigatorLayout>

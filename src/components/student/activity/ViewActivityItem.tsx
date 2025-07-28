@@ -97,7 +97,7 @@ export default function StudentViewActivityItem(props: ViewActivityItemProps) {
       className={`group relative border-2 ${theme.border} rounded-xl p-4 
         shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer 
         ${theme.cardBg} hover:border-purple-300 hover:bg-gradient-to-br ${theme.bg}
-        transform hover:scale-101 hover:-translate-y-1 overflow-hidden`}
+        transform hover:scale-101 hover:-translate-y-1 overflow-hidden h-fit`}
     >
       {/* Animated background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-100/50 to-purple-100/50 
