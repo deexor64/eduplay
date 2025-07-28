@@ -133,6 +133,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
   // dynamically load template using template code
   const ViewActivityComponent = useMemo(() => {
+    if (!dbData.templateCode) return null;
     return lazy(() => import(`@/templates/${dbData.templateCode}/View.tsx`));
   }, [dbData.templateCode]);
   
@@ -281,7 +282,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
           {/* Activity content */}
           <Suspense>
-          {activityData ? <ViewActivityComponent
+          {activityData && ViewActivityComponent ? <ViewActivityComponent
             activityData={activityData}
             resetActivity={resetActivity}
             setResetActivity={setResetActivity}

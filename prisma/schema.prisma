@@ -14,10 +14,10 @@ datasource db {
 }
 
 enum Subject {
+  COMMON
   MATHEMATICS
   SCIENCE
   ENGLISH
-  COMMON
 }
 
 enum UserStatus {

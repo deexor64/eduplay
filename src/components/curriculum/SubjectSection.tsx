@@ -33,7 +33,7 @@ export default function SubjectSection(props: SubjectSectionProps) {
       </button>
 
       {/* Content */}
-      <div className={`overflow-hidden transition-all duration-500 ${open ? "max-h-[1000px] py-2 px-4" : "max-h-0 py-0 px-4"}`}
+      <div className={`overflow-hidden transition-all duration-500 ${open ? "py-2 px-4" : "max-h-0 py-0 px-4"}`}
         style={{ background: open ? "rgba(255,255,255,0.7)" : undefined }}>
         {open && (
           <div className="pt-2">{children}</div>
