@@ -14,20 +14,12 @@ export default function NavigatorLayout(props: any) {
       {/* Nav bar and Spacer for Navbar height */}
       <Navbar/>
       {/* main content */}
-      <div className="flex flex-grow" 
-        style={{
-          backgroundImage: 'url(/images/navigator-background.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed',
-        }}
-      >
+      <div className="flex flex-grow bg-blue-100">
         {/* Sidebar with passed toggle function */}
         <Sidebar isOpen={isOpen } setIsOpen={setIsOpen}/>
         {/* layout content */}
         <section className={`flex-grow transition-all duration-300
-          w-full p-6 ${isOpen ? "ml-50" : "ml-16"}`}>
+          w-full p-6 ${isOpen ? "ml-50" : "ml-20"}`}>
           {props.children}
         </section>
       </div>
