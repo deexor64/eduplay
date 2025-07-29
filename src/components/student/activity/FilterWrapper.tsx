@@ -1,0 +1,9 @@
+
+export default function FilterWrapper(props: any) {
+  return (
+    <div className="bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl shadow-lg p-4 mb-6 flex gap-4 border-2 border-blue-200 
+      sticky top-20 z-100">
+      {props.children}
+    </div> 
+  );
+} 

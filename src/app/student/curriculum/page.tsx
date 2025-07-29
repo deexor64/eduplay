@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import StudentNavigatorLayout from "@/components/student/StudentNavigatorLayout";
-import Title from "@/components/shared/headings/Title";
+import Title from "@/components/student/Title";
 import SubjectSection from "@/components/student/curriculum/SubjectSection";
 import TopicSection from "@/components/student/curriculum/TopicSection";
 import StudentViewActivityItem from "@/components/student/activity/ViewActivityItem";

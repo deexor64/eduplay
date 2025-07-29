@@ -1,11 +1,11 @@
 "use client";
 
-import Title from "@/components/shared/headings/Title";
-import FilterWrapper from "@/components/shared/filter/FilterWrapper";
-import InputFilter from "@/components/shared/filter/InputFilter";
-import OptionFilter from "@/components/shared/filter/OptionFilter";
-import Paginator from "@/components/shared/pagination/Paginator";
-import StudentViewActivityItem from "@/components/student/activity/ViewActivityItem";
+import Title from "@/components/student/Title";
+import FilterWrapper from "@/components/student/activity/FilterWrapper";
+import InputFilter from "@/components/student/activity/InputFilter";
+import OptionFilter from "@/components/student/activity/OptionFilter";
+import Paginator from "@/components/student/activity/Paginator";
+import ViewActivityItem from "@/components/student/activity/ViewActivityItem";
 import React, { useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
 import StudentNavigatorLayout from "@/components/student/StudentNavigatorLayout";
@@ -74,7 +74,7 @@ export default function Activities() {
     <StudentNavigatorLayout>
   
       {/* Title */}
-      <Title title="🎮 Fun Learning Activities" />
+      <Title title="🎮 Fun Learning Activities" emoji="🎮" color="purple" />
 
       {/* Filters */}
       <FilterWrapper>
@@ -82,35 +82,41 @@ export default function Activities() {
           filterKey="topic"
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
+          emoji="📚"
         >Topic</InputFilter>
         <InputFilter
           filterKey="title"
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
+          emoji="🎯"
         >Title</InputFilter>
         <OptionFilter
           filterKey="subject"
           values={Object.values(Subject)}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
+          emoji="📖"
         >Subject</OptionFilter>
         <OptionFilter
           filterKey="grade"
           values={["1", "2", "3", "4", "5"]}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
+          emoji="🎓"
         >Grade Level</OptionFilter>
         <OptionFilter
           filterKey="difficulty"
           values={Object.values(ActivityDifficulty)}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
+          emoji="⭐"
         >Difficulty</OptionFilter>
         <OptionFilter
           filterKey="completed"
           values={["Completed", "Not Completed"]}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
+          emoji="✅"
         >Completed</OptionFilter>
       </FilterWrapper>
 
@@ -124,7 +130,7 @@ export default function Activities() {
           </div>
         ) : (
           dbData.activities.map(function (item) {
-            return <StudentViewActivityItem itemData={item} key={item.activityID}/>;
+            return <ViewActivityItem itemData={item} key={item.activityID}/>;
           })
         )}
       </div>
