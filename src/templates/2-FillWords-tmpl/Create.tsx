@@ -190,7 +190,6 @@ export default function FillWords(props: CreateActivityProps) {
       
       {/* Word Input Section - Special and Extra words in one row */}
       <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <h3 className="text-md font-semibold mb-3 text-blue-800">Add Words</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Special Words Input - Words that get inserted into paragraph with brackets */}
           <div>
@@ -300,21 +299,20 @@ export default function FillWords(props: CreateActivityProps) {
         {/* Tab Content */}
         <div className="border border-gray-300 rounded-b-lg">
           {!showPreview ? (
+
             /* Editor Tab - Main text area for writing the paragraph */
-            <div className="p-4">
-              <textarea
-                className="w-full h-48 p-4 border border-gray-300 rounded-lg bg-white transition-colors duration-300 focus:border-blue-500 focus:outline-none resize-none"
-                placeholder="Write your paragraph here. Use the input above to add special words that students need to fill in..."
-                value={activityData.paragraph}
-                onChange={handleParagraphChange}
-                onSelect={(e) => setCursorPosition(e.currentTarget.selectionStart)}
-              />
-            </div>
+            <textarea
+              className="w-full h-60 p-4 bg-white transition-colors duration-300 focus:border-blue-500 focus:outline-none resize-none"
+              placeholder="Write your paragraph here. Use the input above to add special words that students need to fill in..."
+              value={activityData.paragraph}
+              onChange={handleParagraphChange}
+              onSelect={(e) => setCursorPosition(e.currentTarget.selectionStart)}
+            />
+            
           ) : (
             /* Preview Tab - Shows how students will see the paragraph */
-            <div className="p-4 bg-gray-50">
-              <h4 className="text-sm font-semibold mb-2 text-gray-700">Student View:</h4>
-              <div className="text-gray-800 leading-relaxed">
+            <div className="p-4 h-60 bg-gray-50 overflow-y-auto">
+              <div className="text-gray-800 leading-relaxed whitespace-pre-wrap">
                 {paragraphWords.length > 0 ? (
                   <div>
                     {paragraphWords.map((wordInfo, index) => {

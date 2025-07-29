@@ -3,7 +3,7 @@
 import { ViewActivityProps } from "@/components/templates/ViewActivityLayout";
 import { useEffect, useState } from "react";
 import { DndContext, rectIntersection, useDroppable, useDraggable } from "@dnd-kit/core";
-import { ActivityDataType, Basket, BasketItemType } from "./Create";
+import { ActivityDataType, BasketItemType } from "./Create";
 
 /*
 Activity input example - Fresh activity
@@ -113,13 +113,13 @@ function DraggableItem(props: {
   // Get styling based on result indicator
   function getItemStyling(): string {
     if (!props.resultIndicator) {
-      return "bg-yellow-100 text-amber-800 border-yellow-300";
+      return "bg-gray-100 text-gray-800 border-gray-600";
     }
     
     // When result indicator is active
     if (!props.currentBasket) {
       // Items in the box (unsorted) - show gray styling
-      return "bg-gray-100 text-gray-600 border-gray-400";
+      return "bg-gray-100 text-gray-800 border-gray-600";
     } else if (isCorrect) {
       // Items in correct baskets - show green styling
       return "bg-green-100 text-green-800 border-green-500";

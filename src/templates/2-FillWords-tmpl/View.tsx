@@ -180,7 +180,7 @@ export default function FillWords(props: ViewActivityProps) {
     if (filledCount === 0) {
       setResultValidation({ status: false, message: "Please fill in all the missing words." });
     } else if (filledCount < totalBlanks) {
-      setResultValidation({ status: false, message: `Please fill in ${totalBlanks - filledCount} more word(s).` });
+      setResultValidation({ status: false, message: `You still have ${totalBlanks - filledCount} words left, complete them first.` });
     } else {
       setResultValidation({ status: true, message: "All words have been filled! You can submit your answer." });
     }
@@ -263,7 +263,7 @@ export default function FillWords(props: ViewActivityProps) {
       {/* Paragraph Display with Input Boxes */}
       <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
         <h3 className="text-lg font-semibold mb-3 text-gray-800">Paragraph</h3>
-        <div className="text-gray-800 leading-10 text-lg">
+        <div className="text-gray-800 leading-10 text-lg whitespace-pre-wrap">
           {blanks.length > 0 ? (
             <div>
               {blanks.map((blank, index) => {
