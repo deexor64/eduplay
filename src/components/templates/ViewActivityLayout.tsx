@@ -21,6 +21,7 @@ type ViewActivityLayoutProps = {
 export interface ViewActivityProps {
   activityData: any;
   resetActivity: boolean;
+  resultIndicator: boolean;
   setResetActivity: React.Dispatch<React.SetStateAction<boolean>>;
   setResultValidation: React.Dispatch<React.SetStateAction<{ status: boolean, message: string}>>,
   setResultData: React.Dispatch<React.SetStateAction<{
@@ -152,6 +153,9 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   const [resultValidation, setResultValidation] = useState<{ status: boolean, message: string}>(
     {status: false, message: ""}
   );
+  
+  // When toggled this enables visual indication in activity elements
+  const [resultIndicator, setResultIndicator] = useState<boolean>(false);
 
   // This function just give the current state of the activity and the scoring
   // It is used to restore the activity state for viewing progress
@@ -200,6 +204,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   }
   
   // Submit is invoked from footer
+  // TODO: Implement result indicator for submit
   async function handleSubmit () {
 
     // validate and show assistant message
@@ -219,6 +224,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
       // Assistant is set to true from footer before invoking submit
       // so it must be closed, then celebrate
       setAssistantMessage({show: false, text: ""});
+      setResultIndicator(true);
       setShowCelebration(true);
       return;
     }
@@ -244,6 +250,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
       const resData = await res.json();
 
       if (resData.status) {
+        setResultIndicator(true);
         setShowCelebration(true);
         setTimeout(() => {
           setShowCelebration(false);
@@ -258,6 +265,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     }
     
     // Celebration is shown regardless of graded or not
+    setResultIndicator(true); 
     setShowCelebration(true);
     
   };
@@ -287,6 +295,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
             resetActivity={resetActivity}
             setResetActivity={setResetActivity}
             setResultValidation={setResultValidation}
+            resultIndicator={resultIndicator}
             setResultData={setResultData} /> 
             : (
               <div className="flex items-center justify-center p-8">
@@ -298,7 +307,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
           {/* footer */}
           <Footer viewMode={props.viewMode} setResetActivity={setResetActivity} 
-          setAssistantMessage={setAssistantMessage} handleSubmit={handleSubmit} />
+          setResultIndicator={setResultIndicator} setAssistantMessage={setAssistantMessage} handleSubmit={handleSubmit} />
         
         </div>
 

@@ -90,7 +90,14 @@ function ImageItem(props: { src: string; alt: string }) {
 }
 
 // draggble
-function DraggableItem(props: { id: string; type: string; value: string }) {
+function DraggableItem(props: { 
+  id: string; 
+  type: string; 
+  value: string; 
+  intendedBasket: string;
+  currentBasket?: string;
+  resultIndicator?: boolean;
+}) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: props.id,
   });
@@ -99,15 +106,38 @@ function DraggableItem(props: { id: string; type: string; value: string }) {
       ? `translate(${transform.x}px, ${transform.y}px)`
       : undefined,
   };
+
+  // Check if item is in correct basket
+  const isCorrect = props.currentBasket ? props.intendedBasket === props.currentBasket : true;
+  
+  // Get styling based on result indicator
+  function getItemStyling(): string {
+    if (!props.resultIndicator) {
+      return "bg-yellow-100 text-amber-800 border-yellow-300";
+    }
+    
+    // When result indicator is active
+    if (!props.currentBasket) {
+      // Items in the box (unsorted) - show gray styling
+      return "bg-gray-100 text-gray-600 border-gray-400";
+    } else if (isCorrect) {
+      // Items in correct baskets - show green styling
+      return "bg-green-100 text-green-800 border-green-500";
+    } else {
+      // Items in wrong baskets - show red styling
+      return "bg-red-100 text-red-800 border-red-500";
+    }
+  }
+
   return (
     <div
       ref={setNodeRef}
       style={style}
       {...listeners}
       {...attributes}
-      className="h-fit inline-flex items-center justify-center bg-yellow-100 text-amber-800 font-semibold 
-      rounded-xl border border-yellow-300 shadow-sm cursor-grab select-none 
-      touch-none hover:scale-105 p-2"
+      className={`h-fit inline-flex items-center justify-center font-semibold 
+      rounded-xl border shadow-sm cursor-grab select-none 
+      touch-none hover:scale-105 p-2 ${getItemStyling()}`}
     >
       {props.type === "image" ? (
         <ImageItem src={props.value} alt={props.id} />
@@ -135,7 +165,7 @@ function DroppableZone(props: { id: string; children: any }) {
 
 function SortItems(props: ViewActivityProps) {
 
-  const { activityData, resetActivity, setResetActivity, setResultValidation, setResultData } = props;
+  const { activityData, resetActivity, resultIndicator, setResetActivity, setResultValidation, setResultData } = props;
 
   // Central state for all activity data
   const [basketData, setBasketData] = useState<ActivityDataType>(
@@ -269,6 +299,8 @@ function SortItems(props: ViewActivityProps) {
                   id={item.basket + '-' + (item.label || item.value)}
                   type={item.type}
                   value={item.value}
+                  intendedBasket={item.basket}
+                  resultIndicator={resultIndicator}
                 />
               ))}
           </div>
@@ -290,6 +322,9 @@ function SortItems(props: ViewActivityProps) {
                     id={item.basket + '-' + (item.label || item.value)}
                     type={item.type}
                     value={item.value}
+                    intendedBasket={item.basket}
+                    currentBasket={basket.basket}
+                    resultIndicator={resultIndicator}
                   />
                 ))}
             </DroppableZone>

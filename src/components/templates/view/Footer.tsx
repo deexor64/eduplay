@@ -3,6 +3,7 @@ import { ActivityViewMode, ActivityViewModeEnum, UserType } from "@/lib/utils/ty
 type FooterProps = {
   viewMode: ActivityViewMode,
   setResetActivity: React.Dispatch<React.SetStateAction<boolean>>,
+  setResultIndicator: React.Dispatch<React.SetStateAction<boolean>>,
   setAssistantMessage: React.Dispatch<React.SetStateAction<{
     show: boolean,
     text: string,
@@ -39,7 +40,10 @@ export default function Footer(props: FooterProps) {
       text: "Are you sure you want to reset activity ? ",
       question: true,
       onAnswer: (answer: boolean) => {
-        if (answer) props.setResetActivity(true);
+        if (answer) {
+          props.setResetActivity(true);
+          props.setResultIndicator(false);
+        }
         props.setAssistantMessage({show: false, text: ""});
       }
     })

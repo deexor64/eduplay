@@ -31,7 +31,7 @@ Activity output example - Same format as input
 
 export default function FillWords(props: ViewActivityProps) {
 
-  const { activityData, resetActivity, setResetActivity, setResultValidation, setResultData } = props;
+  const { activityData, resetActivity, resultIndicator, setResetActivity, setResultValidation, setResultData } = props;
 
   // Central state for all activity data
   const [fillData, setFillData] = useState<ActivityDataType>({
@@ -229,6 +229,33 @@ export default function FillWords(props: ViewActivityProps) {
     return Math.max(minWidth, textLength * charWidth + padding);
   };
 
+  // Check if a filled word is correct for a specific blank
+  function isAnswerCorrect(blankIndex: number, filledWord: string): boolean {
+    const blanks = extractBlanks();
+    if (blankIndex >= blanks.length) return false;
+    
+    const expectedWord = blanks[blankIndex].word;
+    return filledWord.toLowerCase() === expectedWord.toLowerCase();
+  }
+
+  // Get input styling based on result indicator state
+  function getInputStyling(blankIndex: number, filledWord: string): string {
+    if (!filledWord) {
+      return 'bg-white border-gray-300 text-gray-800';
+    }
+    
+    if (resultIndicator) {
+      // Show red border for wrong answers when result indicator is active
+      const isCorrect = isAnswerCorrect(blankIndex, filledWord);
+      return isCorrect 
+        ? 'border-green-500 bg-green-50 text-green-800' 
+        : 'border-red-500 bg-red-50 text-red-800';
+    }
+    
+    // Normal state - blue border for filled inputs
+    return 'border-blue-300';
+  }
+
   return (
     <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
       <h2 className="text-xl font-semibold mb-4">Fill in the Missing Words</h2>
@@ -252,8 +279,8 @@ export default function FillWords(props: ViewActivityProps) {
                     <input
                       type="text"
                       aria-label={`Blank ${index + 1} for word ${blank.word}`}
-                      className={`inline-block px-2 mx-1 h-8 rounded border-2 text-center font-medium focus:outline-none ${
-                        filledWord ? 'border-blue-300' : 'bg-white border-gray-300 text-gray-800'
+                      className={`inline-block px-1 mx-1 h-8 rounded border-2 text-center font-medium focus:outline-none ${
+                        getInputStyling(index, filledWord)
                       }`}
                       style={{ width: `${getInputWidth(filledWord)}px` }}
                       value={filledWord}
