@@ -1,6 +1,4 @@
-import Link from "next/link";
-
-interface FooterProps {
+type FooterProps = {
   handleSubmit: React.MouseEventHandler<HTMLButtonElement>,
 }
 

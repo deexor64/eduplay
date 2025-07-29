@@ -1,4 +1,4 @@
-interface InstructionsProps {
+type InstructionsProps = {
   setFormData: Function;
 }
 
@@ -20,8 +20,9 @@ export default function Instructions(props: InstructionsProps) {
       </label>
       <textarea
         id="lesson-desc"
-        className="w-full p-3 border border-gray-300 rounded-lg bg-white/80 backdrop-blur transition-all duration-300 focus:border-blue-500 focus:outline-none focus:bg-white focus:shadow-md min-h-[100px] resize-vertical"
-        placeholder="From the box drag all the animals to the correct box."
+        className="w-full p-3 border border-gray-300 rounded-lg bg-white/80 backdrop-blur transition-all duration-300 focus:border-blue-500 
+        focus:outline-none focus:bg-white focus:shadow-md min-h-[100px] resize-vertical"
+        placeholder="e.g. Choose the correct option for all the questions."
         onChange={function (e) { setInstructions(e.target.value) }}
       />
     </section>

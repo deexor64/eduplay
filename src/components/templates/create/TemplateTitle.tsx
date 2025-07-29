@@ -1,11 +1,11 @@
-interface TemplateTitleProps {
+type TemplateTitleProps = {
   templateCode: string,
   children: React.ReactNode
 }
 
 export default function TemplateTitle(props: TemplateTitleProps) {
   return (
-    <header className="mb-4 bg-white/40 backdrop-blur p-4 rounded-xl shadow-md sticky top-2 flex items-center gap-3">
+    <header className="mb-4 bg-white/60 backdrop-blur p-4 rounded-xl shadow-md sticky top-2 flex items-center gap-3 z-1000">
       <h2 className="text-xl font-bold text-gray-800">
         {props.children}
       </h2>

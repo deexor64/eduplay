@@ -21,46 +21,41 @@ export default function CreateActivityLayout() {
   const params = useParams();
   const templateCode = params.templateCode as string;
 
-  // dynamically load template using template code
+  // FileStore handler
+  const fileStoreUploader = useFileStoreUploader();
+
+  // Dynamically load template using template code
   const CreateActivityComponent = useMemo(() => {
+    if (!templateCode) return null;
     return lazy(() => import(`@/templates/${templateCode}/Create.tsx`));
   }, [templateCode]);
 
   // For template -----------------------------------
 
-  // Context is not passed to template because it is vibe coded and isolated as possible from
-  // the template layout
-
   // As we are using edge store, the template cannot get a valid url while
   // editing the template. Urls are only generated after submitting the files
-  // So the template just save their files temporaly in the state
+  // So the template just save their files temporarily in the state
   const [mediaFiles, setMediaFiles] = useState<Map<string, File>>(new Map());
 
   // Only the particular template knows how to validate the activity
-  // template should validate the activity as it wish and just return the status
+  // Template should validate the activity with it's own logic and just return the status
   const [activityValidation, setActivityValidation] = useState<{ status: boolean, message: string}>(
     {status: false, message: ""}
   );
 
-  // But only the template knows how to replace the file hashes with the actual urls
+  // Only the template knows how to replace the file hashes with the actual urls
   // So we need to upload files first and then pass the media files urls 
   // back to the template and let it replace the file hashes with the actual urls
   // Then it sends the valid activity info as json string (json structure depends on 
   // implementation of individual template)
-  // If set false activity data is output without replacing filehashes
+  // If set false activity data is output without replacing filehashes (no media files)
   const [activityFinalizer, setActivityFinalizer] = useState<((fileUrlMap: Map<string, string> | false) => Object)>(
     (fileUrlMap: Map<string, string> | false): Object => {return {}}
   );
 
   // ------------------------------------------------
   
-  // fileStore handler
-  const fileStoreUploader = useFileStoreUploader();
-  
-  // Activity is stored in this format.
-  // Options have default values unless changed by the user 
-  // and they get flattend to the top level at the server
-  // This object is used by subcomponents to add their values
+  // Activity is stored in this format
   const [formData, setFormData] = useState({
     templateCode: templateCode,
     title: "",
@@ -75,11 +70,10 @@ export default function CreateActivityLayout() {
     }
   });
   
-  // Common fields like title, instructions are validated as well as 
-  // the activity specific fields
   function validateActivityForm(): { status: boolean, message: string } {
+    // Both common fields and activity specific fields are validated
   
-    // validate common fields
+    // Validate common fields
     if (!formData.title) {
       return { status: false, message: "Title is required." };
     }
@@ -87,13 +81,12 @@ export default function CreateActivityLayout() {
       return { status: false, message: "Instructions are required." };
     }
     
-    // validate activity
+    // Validate activity
     return activityValidation;
     
   }
   
   // Create the final form combining the common and activity specific fields
-  // Then return the combined form as a json string
   function activityForm(finalizedActivityData: any): string {
       
     // form
@@ -106,19 +99,17 @@ export default function CreateActivityLayout() {
     
   }
 
-  // Validations are called inside
-  // If validations fails user is notified and the form is not submitted
   async function handleSubmit () {
     
-    // validate
+    // Validate
     const valid = validateActivityForm();
     if (!valid.status) {
       toast.error(valid.message);
       return;
     }
     
-    // send any media files from the state to the edge store
-    // then take their urls and pass it to the activityFinerlizer
+    // Send any media files from the state to the edge store
+    // then take their urls and pass it to the activityFinalizer
     toast.promise(async () => {
       
       // Upload media files
@@ -140,7 +131,7 @@ export default function CreateActivityLayout() {
       const resData = await res.json();
       if (!resData.status) throw Error(resData.data);
       
-      // Redirect to created activity
+      // Redirect to newly created activity
       window.open(`/teacher/activities/${resData.data}`, "_blank");
 
     }, 
@@ -161,31 +152,38 @@ export default function CreateActivityLayout() {
       <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-4 backdrop-blur-xs 
         bg-transparent">
         
-        {/* template title */}
-        <TemplateTitle templateCode={templateCode}>{templateCode}</TemplateTitle>
-        
-        {/* activity topic */}
-        <ActivityTopic options={formData.options} setFormData={setFormData} />
+        {/* Template title */}
+        {/* ISSUE: No where to properly get the template name from the template code */}
+        <TemplateTitle templateCode={templateCode}>{templateCode.split("-")[1]}</TemplateTitle>
 
-        {/* activity title */}
+        {/* Activity title */}
         <ActivityTitle setFormData={setFormData} />
         
-        {/* instructions */}
+        {/* Activity topic */}
+        <ActivityTopic options={formData.options} setFormData={setFormData} />
+
+        {/* Instructions */}
         <Instructions setFormData={setFormData} />
         
-        {/* template content */}
+        {/* Template content */}
         <Suspense>
-          <CreateActivityComponent
+          {CreateActivityComponent ? <CreateActivityComponent
             setMediaFiles={setMediaFiles}
             setActivityValidation={setActivityValidation}
             setActivityFinalizer={setActivityFinalizer}
           />
+            : (
+              <div className="flex items-center justify-center p-8">
+                <div className="text-lg text-gray-600">Loading activity...</div>
+              </div>
+            )
+          }
         </Suspense>
 
-        {/* activity options */}
+        {/* Activity options */}
         <ActivityOptions setFormData={setFormData} />
         
-        {/* footer */}
+        {/* Footer */}
         <Footer handleSubmit={handleSubmit}></Footer>
         
       </div>

@@ -9,13 +9,14 @@ import Celebration from "@/components/templates/view/Celebration";
 import GuideButton from "@/components/templates/view/GuideButton";
 import { useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
-import useAuth from "@/hooks/useAuth";
 import Assistant from "@/components/student/Assistant";
 import { useParams } from "next/navigation";
 import { lazy, Suspense, useMemo } from "react";
 
+export type ActivityViewMode = "VIEW" | "SAMPLE" | "PROGRESS" | "PREVIEW";
+
 type ViewActivityLayoutProps = {
-  viewMode: "VIEW" | "SAMPLE" | "PROGRESS" | "PREVIEW"
+  viewMode: ActivityViewMode,
 }
 
 export interface ViewActivityProps {
@@ -35,10 +36,9 @@ export interface ViewActivityProps {
 }
 
 export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
-  
-  const { userType, teacherRole } = useAuth();
 
   const params = useParams();
+  // only one of these 3 available depending on viewMode
   const templateCode = params.templateCode as string;
   const activityID = params.activityID as string;
   const progressID = params.progressID as string;
@@ -59,8 +59,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   // Celebration
   const [showCelebration, setShowCelebration] = useState(false);
   
-  // Data recieved from server
-  // This object is used by subcomponents to display the data
+  // Activity data recieved from server
   const [dbData, setDbData] = useState<{
     title: string,
     instructions: string,
@@ -76,8 +75,8 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
      status: "", templateCode: "", topic: ""});
   
 
-  // Only used for fetching a sample activity
   function activityQuery(): URLSearchParams {
+    // Currently only used for fetching a sample activity
 
     // params
     const params = cleanParams({
@@ -88,12 +87,13 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     
   }
   
-  // Fetch activity data from server
-  // Activity can be a smaple activity included in Template itself
-  // or an activity created by teacher
-  // or a progress of an activity made by student
-  // or a preview activiy stored in sessionStorage for temporary view
   async function fetchActivity () {
+    // Activity can be a,
+    // Sample activity: stored in template,
+    // Preview activity: created by teacher
+    // Progress activity: worked activity of a student
+    // View activity: fresh activity created by teacher
+    // depending on viewMode
 
     // fetch
     const params = activityQuery();
@@ -132,33 +132,32 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     fetchActivity();
   }, []);
 
-  // dynamically load template using template code
+  // Dynamically load template using template code
   const ViewActivityComponent = useMemo(() => {
     if (!dbData.templateCode) return null;
     return lazy(() => import(`@/templates/${dbData.templateCode}/View.tsx`));
   }, [dbData.templateCode]);
   
-  
   // For activity -----------------------------------
 
-  // This is the data that is used by the viewActivityComponent
+  // Data used by the viewActivityComponent
   const [activityData, setActivityData] = useState<any>();
 
-  // This is used to reset the activity data
+  // When toggled true student's work is reset
   const [resetActivity, setResetActivity] = useState<boolean>(false);
 
-  // The function just returns the correct validation message
-  // Function doens't grade and score the activity
-  // Only validations like if the student have completed the activity before submission etc
+  // When toggled true a visual indication on correct and incorrect answers is shown
+  const [resultIndicator, setResultIndicator] = useState<boolean>(false);
+
+  // Gives a validation on the student's work at any time
+  // Function doens't grade and score the activity,
+  // only validations like if the student have completed the activity before submission etc
   const [resultValidation, setResultValidation] = useState<{ status: boolean, message: string}>(
     {status: false, message: ""}
   );
   
-  // When toggled this enables visual indication in activity elements
-  const [resultIndicator, setResultIndicator] = useState<boolean>(false);
-
-  // This function just give the current state of the activity and the scoring
-  // It is used to restore the activity state for viewing progress
+  // Gives the current state of the activity and the scoring
+  // Data is used to restore the activity state for viewing progress
   const [resultData, setResultData] = useState<{
     score: { baseScore: number, maxScore: number, summery: string },
     data: any
@@ -172,13 +171,12 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
   // ------------------------------------------------
 
-  // data sent to server
-  // under devlopment
+  // Common data
+  // Currently there is no common data is collected
   const [formData, setFormData] = useState({
     activityID: activityID,
   });
 
-  
   function validateResultForm(): { status: boolean, message: string } {
 
     // No validations for common template
@@ -191,9 +189,10 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     
   }
   
+  // Combine common data and result data
   function resultForm(): string {
     
-    // form
+    // Form
     const form = {
       ...formData,
       ...resultData,
@@ -203,40 +202,38 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     
   }
   
-  // Submit is invoked from footer
-  // TODO: Implement result indicator for submit
   async function handleSubmit () {
-
-    // validate and show assistant message
+    // Progress, Sample or Preview cannot be submitted back
+    // If forcefully submitted backend validation fails because,
+    // Progress and Sample: doesn't contain any valid activityID
+    // Preview: is used by teacher and teacher usertype is rejected for progress
+    // View: Only an student view of the acitivty can be submitted but only once,
+    // and non scored activites cannot be submitted
+    
+    // Activity is validated regardless of the viewMode
+    // Validate and show assistant message
     const valid = validateResultForm();
     if (!valid.status) {
-      // Assitant opened from footer is used here 
       setAssistantMessage({show: true, text: valid.message});
       return;
     }
+
+    // Close assistant
+    setAssistantMessage({show: false, text: ""});
     
-    // progress or sample or preview cannot be submitted back
-    // If forcefully submitted backend validation fails because,
-    // Progress and Sample: doesn't contain activityID
-    // Preview: is used by teacher and teacher usertype is rejected for progress
-    // Also an acitivty cannot be submitted twice regardless of view mode
+    // If viewMode is not student view the acitivty is not submitted
+    // Just indicate correct and incorrect answers,
+    // celebrate a bit and leave
     if (props.viewMode !== "VIEW") {
-      // Assistant is set to true from footer before invoking submit
-      // so it must be closed, then celebrate
-      setAssistantMessage({show: false, text: ""});
       setResultIndicator(true);
       setShowCelebration(true);
       return;
     }
     
-    // Assistant opened by footer is not required from here
-    setAssistantMessage({show: false, text: ""});
-    
-    // submit
-    const form = resultForm();
-    
-    // Progress is saved only for graded activities
+    // Progress is saved only for scored activities
     if (dbData.isScored) { 
+
+      const form = resultForm();
 
       const url = `/api/progress`;
       const res = await fetch(url, {
@@ -259,17 +256,14 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
       } else {
         setAssistantMessage({show: true, text: resData.data});
       }
-      
-      return;
 
     }
     
-    // Celebration is shown regardless of graded or not
-    setResultIndicator(true); 
-    setShowCelebration(true);
+    // // Celebration is shown regardless of graded or not
+    // setResultIndicator(true); 
+    // setShowCelebration(true);
     
   };
-
   
   return (
     <>
@@ -278,14 +272,14 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
         
         <div className="max-w-6xl mx-auto h-full overflow-y-auto p-4 pb-4 backdrop-blur-xs bg-transparent">
           
-          {/* cover image */}
+          {/* Cover image */}
           <CoverImage templateCode={dbData.templateCode}>
-            {/* activity title */}
+            {/* Activity title */}
             <ActivityTitle viewMode={props.viewMode} templateCode={templateCode || dbData.templateCode}>
-              { `${dbData.topic ? `${dbData.topic}:` : ""} ${dbData.title}` }
+              { `${dbData.topic ? `${dbData.topic}: ` : ""} ${dbData.title}` }
             </ActivityTitle>
-            {/* description */}
-            <Instructions infoTags={dbData}>{ dbData.instructions }</Instructions>
+            {/* Instructions */}
+            <Instructions instructions={dbData}>{ dbData.instructions }</Instructions>
           </CoverImage>
 
           {/* Activity content */}
@@ -305,7 +299,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           }
           </Suspense>
 
-          {/* footer */}
+          {/* Footer */}
           <Footer viewMode={props.viewMode} setResetActivity={setResetActivity} 
           setResultIndicator={setResultIndicator} setAssistantMessage={setAssistantMessage} handleSubmit={handleSubmit} />
         

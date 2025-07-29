@@ -2,7 +2,7 @@ import { getTopicList } from "@/actions/activity/getTopicList";
 import { Subject } from "@prisma/client";
 import { useEffect, useState } from "react";
 
-interface ActivityTopicProps {
+type ActivityTopicProps = {
   options: any;
   setFormData: Function;
 }
@@ -12,7 +12,8 @@ export default function ActivityTopic(props: ActivityTopicProps) {
   // Topic list
   const [topicList, setTopicList] = useState<Array<{
     subject: Subject, grade: number | null, topic: string | null}> | []>([]);
-
+  
+  // Get topic list from server
   async function handleGetTopicList() {
     const topicL = await getTopicList();
     topicL instanceof Error ?

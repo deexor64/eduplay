@@ -1,4 +1,5 @@
-import { ActivityViewMode, ActivityViewModeEnum, UserType } from "@/lib/utils/types";
+import { ActivityViewMode } from "@/components/templates/ViewActivityLayout";
+
 
 type FooterProps = {
   viewMode: ActivityViewMode,
@@ -21,7 +22,7 @@ export default function Footer(props: FooterProps) {
 
     props.setAssistantMessage({
       show: true,
-      text: "Are you sure you want to submit? ",
+      text: "Let's check your answers. Ready ?",
       question: true,
       onAnswer: (answer: boolean) => {
         if (answer) {
@@ -50,21 +51,23 @@ export default function Footer(props: FooterProps) {
   }
 
   return (
-    <footer className="sticky bottom-0 left-0 w-full flex flex-col items-center gap-2 p-3 bg-white/30 backdrop-blur-md shadow-2xl rounded-full z-20">
+    <footer className="sticky bottom-0 left-0 w-full flex flex-col items-center gap-2 p-3 bg-white/30 backdrop-blur-md 
+    shadow-2xl rounded-full z-20">
       <div className="flex gap-3">
         <button
-          className="flex items-center gap-2 font-semibold py-1.5 px-5 rounded-full transition bg-green-600 text-white hover:bg-green-700 shadow text-base"
+          className="flex items-center gap-2 font-semibold py-1.5 px-5 rounded-full transition bg-green-600 
+          text-white hover:bg-green-700 shadow text-base"
           onClick={() => handleSubmit()}
         >
-          {
-            props.viewMode === ActivityViewModeEnum.VIEW ? 
+          {props.viewMode === "VIEW" ? 
             <span>Submit</span>
             : 
             <span>Check</span>
           }
         </button>
         <button
-          className="flex items-center gap-2 font-semibold py-1.5 px-5 rounded-full transition bg-red-500 text-white hover:bg-red-600 shadow text-base"
+          className="flex items-center gap-2 font-semibold py-1.5 px-5 rounded-full transition bg-red-500 
+          text-white hover:bg-red-600 shadow text-base"
           onClick={() => handleActivityReset()}
         >
           <span>Reset</span>

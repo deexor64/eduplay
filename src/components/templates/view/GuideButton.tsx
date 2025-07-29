@@ -1,11 +1,5 @@
 import React from "react";
 
-/*
-
-  const [showGuide, setShowGuide] = useState(true);
-
-*/
-
 type GuideButtonProps = {
   setShowGuide: React.Dispatch<React.SetStateAction<boolean>>,
 }

@@ -10,9 +10,12 @@ interface ActivityTitleProps {
 export default function ActivityTitle(props: ActivityTitleProps) {
   return (
     <header className="mb-2 bg-white/40 backdrop-blur p-2 pb-3 rounded-xl shadow-md flex items-center gap-3">
+      
+      {/* Title */}
       <h1 className="text-xl font-bold text-gray-800">
         {props.children}
       </h1>
+
       {/* ViewMode tag (if not VIEW) */}
       {props.viewMode !== "VIEW" && (
         <span className="inline-flex items-center px-2 py-0.5 rounded-full border text-xs font-mono font-semibold 
@@ -20,8 +23,9 @@ export default function ActivityTitle(props: ActivityTitleProps) {
           {props.viewMode}
         </span>
       )}
+
       {/* Go to Template button (if SAMPLE) */}
-      {props.viewMode === "SAMPLE" && (
+      {props.viewMode === "SAMPLE" && props.templateCode && (
         <Link
           href={`/teacher/templates/${props.templateCode}/create`}
           className="ml-auto flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-medium shadow-sm 
@@ -35,6 +39,7 @@ export default function ActivityTitle(props: ActivityTitleProps) {
           <span className="hidden sm:inline">Template</span>
         </Link>
       )}
+
     </header>
   );
 }

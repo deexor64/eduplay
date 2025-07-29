@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-/*
-
-  const [showGuide, setShowGuide] = useState(true);
-
-*/
-
 type GuideProps = {
   showGuide: boolean,
   setShowGuide: React.Dispatch<React.SetStateAction<boolean>>,
