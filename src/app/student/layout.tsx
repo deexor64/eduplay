@@ -8,4 +8,6 @@ export default function StudentLayout(props: any) {
         {props.children}
     </AuthWrapper>
   );
+
+  
 }
