@@ -292,7 +292,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
             resultIndicator={resultIndicator}
             setResultData={setResultData} /> 
             : (
-              <div className="flex items-center justify-center p-8">
+              <div className="flex items-center justify-center p-8 h-full">
                 <div className="text-lg text-gray-600">Loading activity...</div>
               </div>
             )

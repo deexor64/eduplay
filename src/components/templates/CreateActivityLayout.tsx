@@ -173,7 +173,7 @@ export default function CreateActivityLayout() {
             setActivityFinalizer={setActivityFinalizer}
           />
             : (
-              <div className="flex items-center justify-center p-8">
+              <div className="flex items-center justify-center p-8 h-full">
                 <div className="text-lg text-gray-600">Loading activity...</div>
               </div>
             )
