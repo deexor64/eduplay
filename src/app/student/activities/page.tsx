@@ -74,7 +74,7 @@ export default function Activities() {
     <StudentNavigatorLayout>
   
       {/* Title */}
-      <Title title="🎮 Fun Learning Activities" emoji="🎮" color="purple" />
+      <Title title="Fun Learning Activities" imageUrl="/images/student/title-activities.png" />
 
       {/* Filters */}
       <FilterWrapper>

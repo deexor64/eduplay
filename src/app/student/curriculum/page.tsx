@@ -65,7 +65,7 @@ export default function Curriculum() {
       <div className=" mx-auto">
  
         {/* Title */}
-        <Title title="My Curriculum" />
+        <Title title="My Curriculum" imageUrl="/images/student/title-activities.png"/>
         
         {/* Subject list */}
         <div className="flex flex-col gap-6">
