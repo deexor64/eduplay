@@ -114,8 +114,8 @@ enum ActivityStatus {
 
 model Activity {
   activityID   String             @id @default(uuid())
+  section      String
   title        String
-  topic        String?
   instructions String
   activityData Json
   status       ActivityStatus     @default(UNPUBLISHED)
@@ -123,8 +123,8 @@ model Activity {
   updatedAt    DateTime           @updatedAt
 
   isScored     Boolean            @default(false)
-  difficulty   ActivityDifficulty?
-  grade        Int?    
+  difficulty   ActivityDifficulty @default(EASY)
+  grade        Int                @default(1)
   subject      Subject            @default(COMMON)
 
   templateCode String
