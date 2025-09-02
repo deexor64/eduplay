@@ -24,13 +24,13 @@ export default function Activities() {
       grade?: 1 | 2 | 3 | 4 | 5,
       isScored: boolean,
       difficulty?: ActivityDifficulty,
-      topic?: string,
+      section: string,
     }>,
     total: number;
   }>({ activities: [], total: 0 });
 
   const [filter, setFilter] = useState({
-    topic: undefined,
+    section: undefined,
     title: undefined,
     status: undefined,
     grade: undefined,
@@ -91,16 +91,6 @@ export default function Activities() {
 
       {/* Filters */}
       <FilterWrapper>
-      <InputFilter
-          filterKey="topic"
-          setFilter={setFilter}
-          setTriggerFilter={setTriggerFilter}
-        >Topic</InputFilter>
-        <InputFilter
-          filterKey="title"
-          setFilter={setFilter}
-          setTriggerFilter={setTriggerFilter}
-        >Title</InputFilter>
         <OptionFilter
           filterKey="subject"
           values={Object.values(Subject)}
@@ -113,6 +103,16 @@ export default function Activities() {
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Grade</OptionFilter>
+        <InputFilter
+          filterKey="section"
+          setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
+        >Section</InputFilter>
+        <InputFilter
+          filterKey="title"
+          setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
+        >Title</InputFilter>
         <OptionFilter
           filterKey="difficulty"
           values={Object.values(ActivityDifficulty)}
@@ -128,7 +128,7 @@ export default function Activities() {
       </FilterWrapper>
 
       {/* Info */}
-       <div className="w-full min-h-[calc(100vh-350px)] table-auto text-left">
+       <div className="w-full min-h-[calc(100vh-410px)] table-auto text-left">
         {dbData.activities.length === 0 ? (
           <div className="text-center text-gray-500 py-8">Nothing to display</div>
         ) : (

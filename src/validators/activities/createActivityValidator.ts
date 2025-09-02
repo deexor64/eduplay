@@ -18,17 +18,15 @@ export default function createActivityValidator(cookies: RequestCookies, formDat
   // constraints
   const zFormData = z.object({
     templateCode: z.string(),
-    topic: z.string().nullable(),
+    section: z.string(),
     title: z.string(),
     instructions: z.string(),
     activityData: z.any(),
     options: z.object({
       isScored: z.boolean(),
-      grade: z.enum(["1", "2", "3", "4", "5"]).nullable()
-      .transform(value => value === null ? null : parseInt(value)),
+      grade: z.enum(["1", "2", "3", "4", "5"]).transform(value => parseInt(value)),
       subject: z.enum(Object.values(Subject) as [string, ...string[]]),
-      difficulty: z.enum(Object.values(ActivityDifficulty) as [string, ...string[]])
-      .nullable(),
+      difficulty: z.enum(Object.values(ActivityDifficulty) as [string, ...string[]]),
     })
   }).strict();
   

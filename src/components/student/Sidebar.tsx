@@ -5,13 +5,13 @@ import Link from "next/link";
 // LeftSidebar: Book, Cup, and Wrench
 export default function Sidebar() {
   return (
-    <div className="fixed top-0 left-0 h-full w-28 flex flex-col items-center pt-30 gap-4 z-40">
+    <div className="fixed top-0 left-0 h-full w-28 flex flex-col items-center pt-30 gap-8 z-40">
       {/* Curriculum */}
-      <Link href="/student/curriculum" title="Curriculum">
+      {/*<Link href="/student/curriculum" title="Curriculum">
         <div className="transition-transform duration-200 hover:scale-110 hover:shadow-2xl cursor-pointer bg-transparent rounded-lg">
           <Image src="/images/curriculum-icon.png" alt="Settings" width={90} height={90} />
         </div>
-      </Link>
+      </Link>*/}
       {/* Activities */}
       <Link href="/student/activities" title="Activities">
         <div className="transition-transform duration-200 hover:scale-110 hover:shadow-2xl cursor-pointer bg-transparent rounded-lg">

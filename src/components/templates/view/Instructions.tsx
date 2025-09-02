@@ -19,12 +19,12 @@ export default function Instructions(props: InstructionsProps) {
         
         {/* Info tags */}
         <div className="flex items-center gap-2 mt-1 text-xs flex-wrap ml-4">
-          {props.instructions.grade ? (
+          {props.instructions.grade !== 0 && (
             <InfoBadge text={"GRADE " + String(props.instructions.grade)} colorTheme="blue" />
-          ) : (
-            <InfoBadge text="ALL GRADES" colorTheme="blue" />
           )}
-          <InfoBadge text={props.instructions.subject} colorTheme="green" />
+          {props.instructions.subject && (
+            <InfoBadge text={props.instructions.subject} colorTheme="green" />
+          )}
           {props.instructions.difficulty && (
             <InfoBadge text={props.instructions.difficulty} colorTheme="yellow" />
           )}

@@ -15,7 +15,7 @@ export default async function getProgressService(data: any): Promise<ResType> {
       activity: {
         select: {
           title: true,
-          topic: true,
+          section: true,
           instructions: true,
           difficulty: true,
           subject: true,

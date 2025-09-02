@@ -18,8 +18,8 @@ export default function Activities() {
       activityID: string,
       title: string,
       subject: Subject,
-      topic?: string,
-      grade?: 1 | 2 | 3 | 4 | 5,
+      section: string,
+      grade: 1 | 2 | 3 | 4 | 5,
       isScored: boolean,
       difficulty: ActivityDifficulty,
       completed: boolean,
@@ -29,7 +29,7 @@ export default function Activities() {
   }>({ activities: [], total: 0 });
 
   const [filter, setFilter] = useState({
-    topic: undefined,
+    section: undefined,
     title: undefined,
     grade: undefined,
     difficulty: undefined,
@@ -121,7 +121,7 @@ export default function Activities() {
       </FilterWrapper>
 
       {/* Activity List */}
-      <div className="w-full min-h-[calc(100vh-350px)] grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="w-full min-h-[calc(100vh-450px)] grid grid-cols-1 md:grid-cols-2 gap-4">
         {dbData.activities.length === 0 ? (
           <div className="col-span-full text-center py-12">
             <div className="text-6xl mb-4">😴</div>

@@ -8,7 +8,7 @@ import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 import { useParams } from "next/navigation";
 import { lazy, Suspense, useMemo } from "react";
 import toast from "react-hot-toast";
-import ActivityTopic from "@/components/templates/create/ActivityTopic";
+import ActivitySection from "@/components/templates/create/ActivitySection";
 
 export interface CreateActivityProps {
   setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
@@ -58,14 +58,14 @@ export default function CreateActivityLayout() {
   // Activity is stored in this format
   const [formData, setFormData] = useState({
     templateCode: templateCode,
+    section: "",
     title: "",
     instructions: "",
     activityData: {},
-    topic: null,
     options: {
       isScored: false,
-      grade: null,
-      difficulty: null,
+      grade: "1",
+      difficulty: "EASY",
       subject: "COMMON",
     }
   });
@@ -74,6 +74,9 @@ export default function CreateActivityLayout() {
     // Both common fields and activity specific fields are validated
   
     // Validate common fields
+    if (!formData.section) {
+      return { status: false, message: "Section is required." };
+    }
     if (!formData.title) {
       return { status: false, message: "Title is required." };
     }
@@ -156,12 +159,12 @@ export default function CreateActivityLayout() {
         {/* ISSUE: No where to properly get the template name from the template code */}
         <TemplateTitle templateCode={templateCode}>{templateCode.split("-")[1]}</TemplateTitle>
 
+        {/* Activity topic */}
+        <ActivitySection options={formData.options} setFormData={setFormData} />
+
         {/* Activity title */}
         <ActivityTitle setFormData={setFormData} />
         
-        {/* Activity topic */}
-        <ActivityTopic options={formData.options} setFormData={setFormData} />
-
         {/* Instructions */}
         <Instructions setFormData={setFormData} />
         

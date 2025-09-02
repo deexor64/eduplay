@@ -5,6 +5,7 @@
   "templateType": "Text Completion",
   "sampleActivity": {
     "templateCode": "2-FillWords-tmpl",
+    "section": "3. Essay writing",
     "title": "Complete the Story",
     "instructions": "🧠 Read the paragraph carefully and fill in the missing words with the correct options provided below.",
     "activityData": {
@@ -12,9 +13,9 @@
       "options": ["dog", "fox", "dog", "slow", "forest", "fast", "lazy", "city", "cave"],
       "used": []
     },
-    "difficulty": null,
+    "difficulty": "MEDIUM",
     "subject": "COMMON",
-    "grade": null,
+    "grade": 5,
     "isGraded": false,
     "status": "UNPUBLISHED"
   }

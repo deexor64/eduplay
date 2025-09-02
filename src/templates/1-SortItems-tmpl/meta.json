@@ -5,6 +5,7 @@
   "templateType": "Drag and Drop",
   "sampleActivity": {
     "templateCode": "1-SortItems-tmpl",
+    "section": "1. Environment",
     "title": "Sort Animals and Vegetables",
     "instructions":
       "🧠 Drag and drop each item into the correct basket below.\nMake sure every item is sorted before you submit.",
@@ -26,9 +27,9 @@
         }
       ]
     },
-    "difficulty": null,
+    "difficulty": "EASY",
     "subject": "COMMON",
-    "grade": null,
+    "grade": 1,
     "isGraded": false,
     "status": "UNPUBLISHED"
   }

@@ -5,8 +5,8 @@ import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { prisma } from "@/lib/prisma";
 import { Subject } from "@prisma/client";
 
-export async function getTopicList(): 
-Promise<Array<{subject: Subject, grade: number | null, topic: string | null}> | Error> {
+export async function getSectionList(): 
+Promise<Array<{subject: Subject, grade: number | null, section: string | null}> | Error> {
 
   try {
 
@@ -18,32 +18,36 @@ Promise<Array<{subject: Subject, grade: number | null, topic: string | null}> | 
 
     if (!valid) throw new Error("Unauthorized");
 
-    const topics = await prisma.activity.findMany({
+    const sections = await prisma.activity.findMany({
       where: {
         grade: { not: null },
-        topic: {
-          not: null,
+        section: {
           notIn: [""],
         },
       },
       select: {
         subject: true,
         grade: true,
-        topic: true,
+        section: true,
       },
-      distinct: ["subject", "grade", "topic"],
+      distinct: ["subject", "grade", "section"],
     });
     
     // Flatten to array of objects
-    const topicList = topics.map(item => {
+    const sectionList = sections.map(item => {
       return {
         subject: item.subject,
         grade: item.grade,
-        topic: item.topic,
+        section: item.section,
       }
     });
 
-    return topicList;
+    // return sectionList;
+    return {
+      subject: "ENGLISH",
+      grade: 4,
+      section: "3. Essay writing",
+    }
 
   } catch(e) {
 

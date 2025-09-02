@@ -61,6 +61,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
   
   // Activity data recieved from server
   const [dbData, setDbData] = useState<{
+    section: string,
     title: string,
     instructions: string,
     activityData: any,
@@ -70,9 +71,8 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     isScored: boolean,
     status: string,
     templateCode: string,
-    topic: string,
-  }>({title: "", instructions: "", activityData: {}, difficulty: "", subject: "", grade: 0, isScored: false,
-     status: "", templateCode: "", topic: ""});
+  }>({section: "Section", title: "Title", instructions: "", activityData: {}, difficulty: "", subject: "", grade: 0, isScored: false,
+     status: "", templateCode: ""});
   
 
   function activityQuery(): URLSearchParams {
@@ -276,7 +276,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           <CoverImage templateCode={dbData.templateCode}>
             {/* Activity title */}
             <ActivityTitle viewMode={props.viewMode} templateCode={templateCode || dbData.templateCode}>
-              { `${dbData.topic ? `${dbData.topic}: ` : ""} ${dbData.title}` }
+              {`${dbData.section}: ${dbData.title}`}
             </ActivityTitle>
             {/* Instructions */}
             <Instructions instructions={dbData}>{ dbData.instructions }</Instructions>

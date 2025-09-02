@@ -34,10 +34,10 @@ export default function ActivityOptions(props: ActivityOptionsProps) {
         <select
           className="flex-1 p-3 border border-gray-300 rounded-lg bg-white/80 backdrop-blur transition-all duration-300 focus:border-blue-500 focus:outline-none focus:bg-white focus:shadow-md"
           onChange={function (e) { 
-            setOptions("difficulty", e.target.value === "NONE" ? null : e.target.value);
+            setOptions("difficulty", e.target.value);
           }}
         >
-          {["NONE", ...Object.values(ActivityDifficulty)].map(function(value: string) {
+          {...Object.values(ActivityDifficulty).map(function(value: string) {
             return ( <option value={value} key={value}>{value}</option>);
           })}
         </select>
@@ -49,10 +49,10 @@ export default function ActivityOptions(props: ActivityOptionsProps) {
         <select
           className="flex-1 p-3 border border-gray-300 rounded-lg bg-white/80 backdrop-blur transition-all duration-300 focus:border-blue-500 focus:outline-none focus:bg-white focus:shadow-md"
           onChange={function (e) { 
-            setOptions("grade", e.target.value === "ALL" ? null : e.target.value);
+            setOptions("grade", e.target.value);
           }}
         >
-          {Object.values(["ALL", "1", "2", "3", "4", "5"]).map(function(value: string) {
+          {Object.values(["1", "2", "3", "4", "5"]).map(function(value: string) {
             return (
               <option value={value} key={value}>
                 {value}

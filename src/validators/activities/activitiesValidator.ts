@@ -17,7 +17,7 @@ export default function activitiesValidator(cookies: RequestCookies, searchParam
 
   // Input constraints
   const zSearchParams = z.object({
-    topic: z.string().optional(),
+    section: z.string().optional(),
     title: z.string().optional(),
     status: z.enum(Object.values(ActivityStatus) as [string, ...string[]]).optional(),
     subject: z.enum(Object.values(Subject) as [string, ...string[]]).optional(),

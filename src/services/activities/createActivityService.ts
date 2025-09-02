@@ -15,7 +15,7 @@ export default async function createActivityService(data: any): Promise<ResType>
   const existing = await prisma.activity.create({
     data: {
       title: data.title,
-      topic: data.topic,
+      section: data.section,
       instructions: data.instructions,
       activityData: data.activityData,
       isScored: data.options.isScored,

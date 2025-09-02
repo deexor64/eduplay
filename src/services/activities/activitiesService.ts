@@ -4,7 +4,7 @@ import { ResType } from '@/lib/utils/types';
 export default async function activitiesService(data: any): Promise<ResType> {
   
   let whereActivities: any = {
-    topic: data.topic ? { contains: data.topic, mode: 'insensitive' } : undefined,
+    section: data.section ? { contains: data.section, mode: 'insensitive' } : undefined,
     title: data.title ? { contains: data.title, mode: 'insensitive' } : undefined,
     status: data.status,
     subject: data.subject,
@@ -19,7 +19,7 @@ export default async function activitiesService(data: any): Promise<ResType> {
   
   let selectActivities: any = {
     activityID: true,
-    topic: true,
+    section: true,
     title: true,
     status: true,
     subject: true,
