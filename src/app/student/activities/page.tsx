@@ -79,49 +79,37 @@ export default function Activities() {
       {/* Filters */}
       <FilterWrapper>
       <InputFilter
-          filterKey="topic"
+          filterKey="section"
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
-          emoji="📚"
-        >Topic</InputFilter>
+        >Section</InputFilter>
         <InputFilter
           filterKey="title"
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
-          emoji="🎯"
         >Title</InputFilter>
         <OptionFilter
           filterKey="subject"
           values={Object.values(Subject)}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
-          emoji="📖"
         >Subject</OptionFilter>
-        <OptionFilter
-          filterKey="grade"
-          values={["1", "2", "3", "4", "5"]}
-          setFilter={setFilter}
-          setTriggerFilter={setTriggerFilter}
-          emoji="🎓"
-        >Grade Level</OptionFilter>
         <OptionFilter
           filterKey="difficulty"
           values={Object.values(ActivityDifficulty)}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
-          emoji="⭐"
         >Difficulty</OptionFilter>
         <OptionFilter
           filterKey="completed"
           values={["Completed", "Not Completed"]}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
-          emoji="✅"
         >Completed</OptionFilter>
       </FilterWrapper>
 
       {/* Activity List */}
-      <div className="w-full min-h-[calc(100vh-450px)] grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="w-full min-h-[calc(100vh-425px)] grid grid-cols-1 md:grid-cols-2 gap-4">
         {dbData.activities.length === 0 ? (
           <div className="col-span-full text-center py-12">
             <div className="text-6xl mb-4">😴</div>
