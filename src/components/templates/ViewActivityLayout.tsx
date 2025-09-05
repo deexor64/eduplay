@@ -259,9 +259,9 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
     }
     
-    // // Celebration is shown regardless of graded or not
-    // setResultIndicator(true); 
-    // setShowCelebration(true);
+    // Celebration is shown regardless of graded or not
+    setResultIndicator(true); 
+    setShowCelebration(true);
     
   };
   

@@ -30,7 +30,7 @@ export default function StudentPaginator(props: PaginatorProps) {
   const totalPages = Math.ceil(totalItems / pagination.limit);
 
   return (
-    <div className="z-100 sticky bottom-4 w-full left-0 mt-6 flex flex-col sm:flex-row justify-between items-center gap-4 p-3 
+    <div className="z-100 sticky bottom-4 w-full left-0 mt-6 flex flex-col sm:flex-row justify-between items-center gap-4 px-3 py-2 
       bg-gradient-to-r from-pink-100 to-purple-100/90 backdrop-blur-sm shadow-lg border-2 border-pink-200 rounded-2xl">
       <StudentPageNavigation
         currentPage={pagination.page}
@@ -77,7 +77,7 @@ function StudentPageNavigation(props: StudentPageNavigationProps) {
         <FontAwesomeIcon icon={faChevronLeft} className="text-lg" />
       </button>
 
-      <div className="flex items-center gap-2 px-6 py-2 bg-white/80 rounded-2xl border-2 border-purple-200">
+      <div className="flex items-center gap-2 px-6 py-1.5 bg-white/80 rounded-2xl border-2 border-purple-200">
         <span className="text-base text-purple-800 font-bold">
           📄 Page <span className="text-pink-600">{currentPage}</span> of <span className="text-pink-600">{totalPages}</span>
         </span>

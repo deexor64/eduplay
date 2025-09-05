@@ -41,7 +41,7 @@ export default function StudentOptionFilter(props: OptionFilterProps) {
       </label>
       <select
         id={filterKey}
-        className="border-2 border-purple-300 rounded-xl px-3 py-2 bg-white text-purple-800 shadow-md focus:border-pink-400 
+        className="border-2 border-purple-300 rounded-xl px-3 py-1 bg-white text-purple-800 shadow-md focus:border-pink-400 
         focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none text-sm font-medium"
         onChange={handleFilterChange}
       >

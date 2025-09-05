@@ -43,7 +43,7 @@ export default function StudentInputFilter(props: InputFilterProps) {
       <input
         id={filterKey}
         type="text"
-        className="border-2 border-purple-300 rounded-xl px-3 py-2 bg-white text-purple-800 shadow-md focus:border-pink-400 focus:ring-2 
+        className="border-2 border-purple-300 rounded-xl px-3 py-1 bg-white text-purple-800 shadow-md focus:border-pink-400 focus:ring-2 
         focus:ring-pink-200 transition-all duration-200 outline-none placeholder:text-purple-300 text-sm font-medium"
         onChange={handleInputChange}
         placeholder={`Search ${props.children}...`}
