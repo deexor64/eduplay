@@ -72,7 +72,6 @@ export default function Sidebar(props: SidebarProps) {
               <SideBarLink link="/teacher/users?userListType=teacher" icon={faUserFriends} isOpen={isOpen} isActive={openedLink === "/teacher/users?userListType=teacher"} onClick={() => setOpenedLink("/teacher/users?userListType=teacher")}>Teachers</SideBarLink>
               <SideBarLink link="/teacher/users?userListType=parent" icon={faPeopleGroup} isOpen={isOpen} isActive={openedLink === "/teacher/users?userListType=parent"} onClick={() => setOpenedLink("/teacher/users?userListType=parent")}>Parents</SideBarLink>
               <SideBarLink link="/teacher/templates" icon={faFileAlt} isOpen={isOpen} isActive={openedLink === "/teacher/templates"} onClick={() => setOpenedLink("/teacher/templates")}>Templates</SideBarLink>
-              {/*<SideBarLink link="/teacher/curriculum" icon={faBook} isOpen={isOpen} isActive={openedLink === "/teacher/curriculum"} onClick={() => setOpenedLink("/teacher/curriculum")}>Curriculum</SideBarLink>*/}
               <SideBarLink link="/teacher/activities" icon={faBox} isOpen={isOpen} isActive={openedLink === "/teacher/activities"} onClick={() => setOpenedLink("/teacher/activities")}>Activities</SideBarLink>
               <SideBarLink link="/teacher/profile" icon={faUser} isOpen={isOpen} isActive={openedLink === "/teacher/profile"} onClick={() => setOpenedLink("/teacher/profile")}>Profile</SideBarLink>
             </>

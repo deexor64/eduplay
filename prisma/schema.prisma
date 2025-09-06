@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserType {
+  TEACHER
+  PARENT
+  STUDENT
+}
+
 enum Subject {
   COMMON
   MATHEMATICS

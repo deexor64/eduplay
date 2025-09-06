@@ -6,7 +6,7 @@ type TextInputProps = {
 };
 
 export default function TextInput(props: TextInputProps) {
-  
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     props.setFormData(function (prev: any) {
       return {
@@ -14,7 +14,7 @@ export default function TextInput(props: TextInputProps) {
         [props.name]: e.target.value,}
     });
   }
-  
+
   return (
     <div className="mb-4">
       <label htmlFor={props.name} className="block text-gray-700 font-medium mb-1">
@@ -30,5 +30,5 @@ export default function TextInput(props: TextInputProps) {
       />
     </div>
   )
-  
+
 }

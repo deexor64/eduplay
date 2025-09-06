@@ -34,6 +34,7 @@ export default function Footer(props: FooterProps) {
     })
   }
   
+  // ISSUE: for progress, activity reset make it reset to progress data, not original activity data
   function handleActivityReset() {
 
     props.setAssistantMessage({

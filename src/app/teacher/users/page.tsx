@@ -102,8 +102,8 @@ export default function Users() {
     <NavigatorLayout>
       
       {/* Title */}
-      {(userListType === "teacher") && <Title title="Teachers" />}
-      {(userListType === "student") && <Title title="Students" />}
+      {(userListType === "teacher") && <Title title="Teachers" addUser="teacher"/>}
+      {(userListType === "student") && <Title title="Students" addUser="student"/>}
       {(userListType === "parent") && <Title title="Parents" />}
 
       {/* Filters */}
