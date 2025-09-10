@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { TeacherRole, UserType } from "@prisma/client";
+import { StudentClass, TeacherRole, UserType } from "@prisma/client";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import Title from "@/components/shared/headings/Title";
 import InputField from "@/components/register/InputField";
@@ -12,11 +12,14 @@ import FileUpload from "@/components/register/FileUpload";
 import RegisterLog from "@/components/register/RegisterLog";
 import cleanParams from "@/lib/utils/cleanParams";
 import parseExcel from "@/lib/utils/parseExcel";
+import toSentenceCase from "@/lib/utils/toSentenceCase";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Register() {
 
   const searchParams = useSearchParams();
-  const userType = searchParams.get("userType") as UserType;
+  const userRegisterType = searchParams.get("userType") as UserType;
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -25,6 +28,8 @@ export default function Register() {
     password: "",
     indexNumber: "",
     role: "",
+    grade: "",
+    class: "",
     parentFirstName: "",
     parentLastName: "",
     parentEmail: "",
@@ -67,12 +72,14 @@ export default function Register() {
 
     let form: any = { ...formData };
 
-    if (userType === "TEACHER") {
+    if (userRegisterType === "TEACHER") {
+      delete form.grade;
+      delete form.class;
       delete form.parentFirstName;
       delete form.parentLastName;
       delete form.parentEmail;
       delete form.parentPassword;
-    } else if (userType === "STUDENT") {
+    } else if (userRegisterType === "STUDENT") {
       delete form.role;
     }
 
@@ -91,23 +98,9 @@ export default function Register() {
     // Bulk register
     if (isBulk && bulkFile) {
 
-      // Excel parser checks the parsed data with this type
-      type SignupRecord = {
-        firstName: string;
-        lastName: string;
-        email: string;
-        password: string;
-        indexNumber: string;
-        role?: string;
-        parentFirstName?: string;
-        parentLastName?: string;
-        parentEmail?: string;
-        parentPassword?: string;
-      };
-
       // Use parser with SignupRecord
       // Array of records
-      form = JSON.stringify(await parseExcel<SignupRecord>(bulkFile));
+      form = JSON.stringify(await parseExcel(bulkFile));
 
       // Individual register
     } else {
@@ -122,16 +115,11 @@ export default function Register() {
       form = finalizeRegisterForm();
 
     }
-    
-    // !!!!!!!!!!!!!!!!!!!
-    console.log(form);
-    alert("submitted");
-    return;
 
     // Submit
     toast.promise(async () => {
 
-      const url = `/api/register?userType=${userType}&isBulk=${isBulk}`;
+      const url = `/api/register?userRegisterType=${userRegisterType}`;
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -140,9 +128,9 @@ export default function Register() {
 
       const resData = await res.json();
       if (!resData.status) {
-        addLog('error', `Registration was unsuccessful. View summary below. `);
+        addLog('error', `Registration was unsuccessful. Check the message below. `);
         addLog('info', resData.data);
-        throw Error(resData.data);
+        throw new Error("Registration was unsuccessful");
       }
 
       // Generate user summary
@@ -157,6 +145,8 @@ export default function Register() {
         password: "",
         indexNumber: "",
         role: "",
+        grade: "",
+        class: "",
         parentFirstName: "",
         parentLastName: "",
         parentEmail: "",
@@ -167,11 +157,11 @@ export default function Register() {
       setBulkFile(null);
 
     },
-      {
-        loading: "Processing...",
-        success: "Registration successful",
-        error: "Failed to register",
-      })
+    {
+      loading: "Processing...",
+      success: "Registration successful",
+      error: "Failed to register",
+    })
 
   }
 
@@ -180,17 +170,29 @@ export default function Register() {
     <NavigatorLayout>
 
       {/* Title */}
-      <Title title={`Add ${userType}s`} back={true} />
+      <Title title={`Add ${toSentenceCase(userRegisterType)}s`} back={true} />
 
       {/* Main */}
-      <div className="min-h-screen bg-blue-300 p-6 relative">
-        <div className="flex gap-6 max-w-7xl mx-auto">
+      <div className="min-h-[calc(100vh-500px)] bg-blue-300 p-6 relative">
+        <div className="flex gap-6 max-w-7xl mx-auto min-h-dvh">
 
           {/* Action log */}
           <div className="w-2/3 bg-gray-900 rounded-2xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-white mb-4">Action Log</h2>
-            <div className="h-96 overflow-y-auto space-y-2">
-
+            <div className="flex" >
+              <h2 className="text-xl font-bold text-white mb-4">Action Log</h2>
+              
+              {/*Clear log*/}
+              <button
+                onClick={() => setLogs([])}
+                className="text-red-600 hover:cursor-pointer hover:text-red-500 transition-colors ml-auto"
+                title="Clear Logs"
+              >
+                <FontAwesomeIcon icon={faTrash} className="text-xs w-4 h-4" />
+              </button>
+            </div>
+            
+            {/*Log*/}
+            <div className="h-full overflow-y-auto space-y-2">
               {logs.length === 0 ? (
                 <p className="text-gray-400 text-sm">No logs yet...</p>
               ) : (
@@ -220,7 +222,6 @@ export default function Register() {
               {!isBulk && (
                 <form onSubmit={handleSubmit} className="space-y-6">
 
-                  {/* Common to teacher and student */}
                   <h2 className="text-2xl font-bold mb-4 bg-emerald-200 rounded p-2">Personal Details</h2>
 
                   <InputField
@@ -255,6 +256,41 @@ export default function Register() {
                     required
                     placeholder="Enter the index number"
                   />
+                  
+                  {userRegisterType === "TEACHER" && (
+                    <OptionField
+                      label="Role"
+                      name="role"
+                      type="text"
+                      values={Object.values(TeacherRole).map(val => toSentenceCase(val)).reverse()}
+                      error={inputError}
+                      onChange={(e) => handleInputChange(e)}
+                      required
+                    />
+                  )}
+                  
+                  {userRegisterType === "STUDENT" && (
+                    <>
+                    <OptionField
+                      label="Grade"
+                      name="grade"
+                      type="text"
+                      values={Object.values(["1", "2", "3", "4", "5"])}
+                      error={inputError}
+                      onChange={(e) => handleInputChange(e)}
+                      required
+                    />
+                    <OptionField
+                      label="Class"
+                      name="class"
+                      type="text"
+                      values={Object.values(StudentClass)}
+                      error={inputError}
+                      onChange={(e) => handleInputChange(e)}
+                      required
+                    />
+                  </>
+                  )}
 
                   <InputField
                     label="Email"
@@ -278,71 +314,58 @@ export default function Register() {
                     placeholder="At least 6 characters"
                   />
 
-                  {/*Only for teacher*/}
-                  {userType === "TEACHER" && (
-                    <OptionField
-                      label="Role"
-                      name="role"
-                      type="text"
-                      values={Object.values(TeacherRole).reverse()}
-                      error={inputError}
-                      onChange={(e) => handleInputChange(e)}
-                      required
-                    />
-                  )}
-
-                  {/*Only for student*/}
+                  {/* Only for student */}
                   {
-                    userType === "STUDENT" && (
+                    userRegisterType === "STUDENT" && (
 
-                      <>
-                        <h2 className="text-2xl font-bold mb-4 bg-emerald-200 rounded p-2">Parent Details</h2>
+                    <>
+                      <h2 className="text-2xl font-bold mb-4 bg-emerald-200 rounded p-2">Parent Details</h2>
 
-                        <InputField
-                          label="First Name"
-                          name="parentFirstName"
-                          type="text"
-                          value={formData.firstName}
-                          error={inputError}
-                          onChange={(e) => handleInputChange(e)}
-                          required
-                          placeholder="Enter first name"
-                        />
+                      <InputField
+                        label="First Name"
+                        name="parentFirstName"
+                        type="text"
+                        value={formData.parentFirstName}
+                        error={inputError}
+                        onChange={(e) => handleInputChange(e)}
+                        required
+                        placeholder="Enter first name"
+                      />
 
-                        <InputField
-                          label="Last Name"
-                          name="parentLastName"
-                          type="text"
-                          value={formData.lastName}
-                          error={inputError}
-                          onChange={(e) => handleInputChange(e)}
-                          required
-                          placeholder="Enter last name"
-                        />
+                      <InputField
+                        label="Last Name"
+                        name="parentLastName"
+                        type="text"
+                        value={formData.parentLastName}
+                        error={inputError}
+                        onChange={(e) => handleInputChange(e)}
+                        required
+                        placeholder="Enter last name"
+                      />
 
-                        <InputField
-                          label="Email"
-                          name="parentEmail"
-                          type="email"
-                          value={formData.email}
-                          error={inputError}
-                          onChange={(e) => handleInputChange(e)}
-                          required
-                          placeholder="your.email@example.com"
-                        />
+                      <InputField
+                        label="Email"
+                        name="parentEmail"
+                        type="email"
+                        value={formData.parentEmail}
+                        error={inputError}
+                        onChange={(e) => handleInputChange(e)}
+                        required
+                        placeholder="your.email@example.com"
+                      />
 
-                        <InputField
-                          label="Password"
-                          name="parentPassword"
-                          type="password"
-                          value={formData.password}
-                          error={inputError}
-                          onChange={(e) => handleInputChange(e)}
-                          required
-                          placeholder="At least 6 characters"
-                        />
+                      <InputField
+                        label="Password"
+                        name="parentPassword"
+                        type="password"
+                        value={formData.parentPassword}
+                        error={inputError}
+                        onChange={(e) => handleInputChange(e)}
+                        required
+                        placeholder="At least 6 characters"
+                      />
 
-                      </>
+                    </>
                     )
                   }
 

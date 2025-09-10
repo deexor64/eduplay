@@ -27,7 +27,6 @@ enum Subject {
 }
 
 enum UserStatus {
-  PENDING
   ACTIVE
   INACTIVE
   SUSPENDED
@@ -41,7 +40,7 @@ model User {
   phoneNumber   String?
   dateOfBirth   DateTime?
   password      String
-  status        UserStatus @default(PENDING)
+  status        UserStatus @default(ACTIVE)
   displayPicUrl String     @default("/images/avatar.png")
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt

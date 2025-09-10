@@ -1,6 +1,6 @@
 import * as XLSX from "xlsx";
 
-export default async function parseExcel<T>(file: File): Promise<T[]> {
+export default async function parseExcel(file: File): Promise<[]> {
   
   // Reads an excel file
   // Return a TS object containing the parsed data
@@ -25,7 +25,7 @@ export default async function parseExcel<T>(file: File): Promise<T[]> {
         const sheet = workbook.Sheets[sheetName];
 
         // Convert to JSON
-        const jsonData = XLSX.utils.sheet_to_json(sheet) as T[];
+        const jsonData = XLSX.utils.sheet_to_json(sheet) as [];
         resolve(jsonData);
         
       } catch (err) {
