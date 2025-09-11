@@ -158,7 +158,7 @@ export default function Register() {
 
     },
     {
-      loading: "Processing...",
+      loading: "Processing...This may take some time",
       success: "Registration successful",
       error: "Failed to register",
     })

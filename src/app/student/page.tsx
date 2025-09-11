@@ -1,13 +1,5 @@
-import StudentNavigatorLayout from "@/components/student/StudentNavigatorLayout";
+import { redirect } from "next/navigation";
 
 export default function Dashboard(props: any) {
-  return (
-
-    <StudentNavigatorLayout>
-
-    
-  
-    </StudentNavigatorLayout>
- 
-  );
+  redirect("/student/activities");
 }

@@ -11,6 +11,7 @@ import { updateStudentInfo } from "@/actions/student/updateStudentInfo";
 import Assistant from "@/components/student/Assistant";
 import { StudentClass, UserStatus } from "@prisma/client";
 import { EdgeStoreProvider } from "@/lib/edgestore";
+import Title from "@/components/student/Title";
 
 export default function StudentProfile() {
 
@@ -113,10 +114,7 @@ export default function StudentProfile() {
     <StudentNavigatorLayout>
       <div className="p-4 space-y-6">
 
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-blue-800 mb-2">My Profile</h1>
-          <p className="text-gray-600">Update your personal information</p>
-        </div>
+        <Title title="Profile" imageUrl="/images/student/title-activities.png" />
         
         {/* ISSUE: Image selection window doesn't open */}
         <ProfilePictureUpload 

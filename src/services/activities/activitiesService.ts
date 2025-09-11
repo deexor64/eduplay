@@ -3,6 +3,12 @@ import { ResType } from '@/lib/utils/types';
 
 export default async function activitiesService(data: any): Promise<ResType> {
   
+  // Get grade if user is a student
+  const student = (data.userType === "STUDENT" ? await prisma.student.findUnique({
+    where: { userID: data.userID },
+    select: { studentID: true, grade: true }
+  }) : null);
+  
   let whereActivities: any = {
     section: data.section ? { contains: data.section, mode: 'insensitive' } : undefined,
     title: data.title ? { contains: data.title, mode: 'insensitive' } : undefined,
@@ -12,9 +18,11 @@ export default async function activitiesService(data: any): Promise<ResType> {
     difficulty: data.difficulty,
   };
 
-  if (data.userType === "STUDENT") {
+  if (data.userType === "STUDENT" && student) {
     // status: Only published actiivities are shown
+    // grade: Only activities for the student's grade or below are shown
     whereActivities.status = "PUBLISHED";
+    whereActivities.grade = (data.grade && data.grade <= student.grade ? data.grade : student.grade) || { lte: student.grade };
   }
   
   let selectActivities: any = {

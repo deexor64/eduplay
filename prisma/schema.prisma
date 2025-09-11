@@ -51,7 +51,6 @@ model User {
 }
 
 enum TeacherRole {
-  MASTER
   ADMIN
   TEACHER
   DEMONSTRATOR
