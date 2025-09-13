@@ -15,7 +15,6 @@ datasource db {
 
 enum UserType {
   TEACHER
-  PARENT
   STUDENT
 }
 
@@ -28,7 +27,6 @@ enum Subject {
 
 enum UserStatus {
   ACTIVE
-  INACTIVE
   SUSPENDED
   DELETED
 }
@@ -37,16 +35,13 @@ model User {
   userID        String     @id @default(uuid())
   firstName     String
   lastName      String
-  phoneNumber   String?
-  dateOfBirth   DateTime?
-  password      String
+  email         String     @unique 
   status        UserStatus @default(ACTIVE)
   displayPicUrl String     @default("/images/avatar.png")
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 
   teacher Teacher? @relation("teacher")
-  parent  Parent?  @relation("parent")
   student Student? @relation("student")
 }
 
@@ -59,9 +54,7 @@ enum TeacherRole {
 model Teacher {
   teacherID   String      @id @default(uuid())
   indexNumber String      @unique
-  email       String      @unique
   role        TeacherRole @default(TEACHER)
-  subject     Subject     @default(COMMON)
 
   userID String @unique
   user   User   @relation("teacher", fields: [userID], references: [userID])
@@ -69,39 +62,15 @@ model Teacher {
   activity Activity[] @relation("activityCreator")
 }
 
-enum StudentClass {
-  A
-  B
-  C
-  D
-  E
-  F
-}
-
 model Student {
   studentID   String @id @default(uuid())
   indexNumber String @unique
-  email       String
   grade       Int
-  class       StudentClass
 
   userID String @unique
   user   User   @relation("student", fields: [userID], references: [userID])
-
-  myParent String @unique
-  parent   Parent @relation("parent", fields: [myParent], references: [parentID])
-
+  
   progress Progress[] @relation("progress")
-}
-
-model Parent {
-  parentID String @id @default(uuid())
-  email    String @unique
-
-  userID String @unique
-  user   User   @relation("parent", fields: [userID], references: [userID])
-
-  myChildren Student[] @relation("parent")
 }
 
 enum ActivityDifficulty {
