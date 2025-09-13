@@ -1,3 +1,4 @@
+import { adminAuth } from '@/lib/firebaseAdmin';
 import { prisma } from '@/lib/prisma';
 import { ResType } from '@/lib/utils/types';
 import { UserType } from '@prisma/client';
@@ -12,110 +13,139 @@ export default async function registerService(data: any): Promise<ResType> {
   // Check for existing teachers
   if (userRegisterType === UserType.TEACHER) {
     for (const record of users) {
-      
       const existingTeacher = await prisma.teacher.findFirst({
         where: {
           OR: [
             { indexNumber: record.indexNumber },
-            { email: record.email },
+            { user: { email: record.email } },
           ],
         },
+        include: { user: true },
       });
-      
-      if (existingTeacher) registerSummery += `Teacher already exists: ${existingTeacher.indexNumber === record.indexNumber && existingTeacher.indexNumber} ${existingTeacher.email === record.email && existingTeacher.email }\n`;
-
+  
+      if (existingTeacher) {
+        registerSummery += `Teacher already exists: ${
+          existingTeacher.indexNumber === record.indexNumber ? ("Index: " + existingTeacher.indexNumber) : ""
+        } ${
+          existingTeacher.user.email === record.email ? ("Email: " + existingTeacher.user.email) : ""
+        }\n`;
+      }
     }
-        
   }
   
   // Check for existing students
   if (userRegisterType === UserType.STUDENT) {
     for (const record of users) {
-      
-      const existingStudent = await prisma.student.findUnique({
-        where: { indexNumber: record.indexNumber },
+      const existingStudent = await prisma.student.findFirst({
+        where: {
+          OR: [
+            { indexNumber: record.indexNumber },
+            { user: { email: record.email } },
+          ],
+        },
+        include: { user: true },
       });
-      
-      if (existingStudent) registerSummery += `Student already exists: ${existingStudent.indexNumber === record.indexNumber && existingStudent.indexNumber} \n`;
-      
+  
+      if (existingStudent) {
+        registerSummery += `Student already exists: ${
+          existingStudent.indexNumber === record.indexNumber ? ("Index: " + existingStudent.indexNumber) : ""
+        } ${
+          existingStudent.user.email === record.email ? ("Email: " + existingStudent.user.email) : ""
+        }\n`;
+      }
     }
-        
   }
   
   // Send existing record list
   if (registerSummery.length > 0) return { status: false, resDataType: "error", data: registerSummery };
   
   // Create users
-  for (const record of users) {
+  registerSummery = "";
   
-    const user = await prisma.user.create({
-      data: {
-        firstName: record.firstName,
-        lastName: record.lastName,
+  if (userRegisterType === UserType.TEACHER) {
+      
+    for (const record of users) {
+      
+      // Firebase record
+      const firebaseUser = await adminAuth.createUser({
+        email: record.email,
         password: record.password,
-        status: "ACTIVE",
-      },
-    });
-
-    let createdEntity: any = null;
-
-    if (userRegisterType === UserType.TEACHER) {
-      createdEntity = await prisma.teacher.create({
-        data: {
-          indexNumber: record.indexNumber,
-          email: record.email,
-          role: record.role,
-          user: { connect: { userID: user.userID } },
-        },
+        displayName: `${record.firstName} ${record.lastName}`,
       });
-    } else if (userRegisterType === UserType.STUDENT) {
-      
-      // Check exisiting parent records
-      let parent = await prisma.parent.findUnique({
-        where: { email: record.parentEmail },
+  
+      await adminAuth.setCustomUserClaims(firebaseUser.uid, {
+        userID: firebaseUser.uid,
+        userType: UserType.TEACHER,
+        role: record.role,
       });
       
-      // Create new parent if not exists
-      if (!parent) {
-        const parentUser = await prisma.user.create({
-          data: {
-            firstName: record.parentFirstName,
-            lastName: record.parentLastName,
-            password: record.parentPassword,
-          },
-        });
-        parent = await prisma.parent.create({
-          data: {
-            email: record.parentEmail,
-            user: { connect: { userID: parentUser.userID } },
-          },
-        });
-      }
-
-      createdEntity = await prisma.student.create({
+      // DB record
+      const teacher = await prisma.user.create({
         data: {
-          indexNumber: record.indexNumber,
+          userID: firebaseUser.uid,
+          firstName: record.firstName,
+          lastName: record.lastName,
           email: record.email,
-          grade: record.grade,
-          class: record.class,
-          user: { connect: { userID: user.userID } },
-          parent: { connect: { parentID: parent.parentID } },
+          teacher: {
+            create: {
+              indexNumber: record.indexNumber,
+              role: record.role,
+            },
+          },
+        },
+        include: {
+          teacher: true,
         },
       });
+      
+      registerSummery += `Teacher: ${record.firstName} ${record.lastName} | Email: ${record.email} | Index: ${record.indexNumber} | Password: ${record.password}\n`;
+      
     }
-    else if (userRegisterType === UserType.PARENT) {
-      createdEntity = await prisma.parent.create({
+    
+  } else if (userRegisterType === UserType.STUDENT) {
+      
+    for (const record of users) {
+      
+      // Firebase record
+      const firebaseUser = await adminAuth.createUser({
+        email: record.email,
+        password: record.password,
+        displayName: `${record.firstName} ${record.lastName}`,
+      });
+  
+      await adminAuth.setCustomUserClaims(firebaseUser.uid, {
+        userID: firebaseUser.uid,
+        userType: UserType.STUDENT,
+        role: record.role,
+      });
+      
+      // DB record
+      const student = await prisma.user.create({
         data: {
+          userID: firebaseUser.uid,
+          firstName: record.firstName,
+          lastName: record.lastName,
           email: record.email,
-          user: { connect: { userID: user.userID } },
+          status: "ACTIVE",  
+          student: {
+            create: {
+              indexNumber: record.indexNumber,
+              grade: record.grade,
+            },
+          },
+        },
+        include: {
+          student: true,
         },
       });
+  
+      registerSummery += `Student: ${record.firstName} ${record.lastName} | Email: ${record.email} | Index: ${record.indexNumber} | Password: ${record.password}\n`;
+  
     }
-    
-    registerSummery += `${userRegisterType === "STUDENT" ? "Student" : "Teacher"} created: ${record.firstName} | ${record.lastName} | ${record.email} | ${record.indexNumber}\n`;
-    
+   
   }
-
+  
+  // Return created users summery
   return { status: true, resDataType: "success", data: registerSummery };
 
 }

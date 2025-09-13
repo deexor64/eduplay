@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { StudentClass, TeacherRole, UserType } from "@prisma/client";
+import { TeacherRole, UserType } from "@prisma/client";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import Title from "@/components/shared/headings/Title";
 import InputField from "@/components/register/InputField";
@@ -15,6 +15,7 @@ import parseExcel from "@/lib/utils/parseExcel";
 import toSentenceCase from "@/lib/utils/toSentenceCase";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { z } from "zod";
 
 export default function Register() {
 
@@ -27,13 +28,8 @@ export default function Register() {
     email: "",
     password: "",
     indexNumber: "",
-    role: "",
-    grade: "",
-    class: "",
-    parentFirstName: "",
-    parentLastName: "",
-    parentEmail: "",
-    parentPassword: "",
+    role: "Demonstrator",
+    grade: "1",
   });
 
   const [isBulk, setIsBulk] = useState(false);
@@ -59,9 +55,9 @@ export default function Register() {
     }
 
     // Password strength validation
-    if (formData.password && formData.password.length < 6) {
+    if (formData.password && formData.password.length < 8) {
       setInputError("password");
-      return { status: false, message: "Password must be at least 6 characters long" };
+      return { status: false, message: "Password must be at least 8 characters long" };
     }
 
     return { status: true, message: "" };
@@ -74,11 +70,6 @@ export default function Register() {
 
     if (userRegisterType === "TEACHER") {
       delete form.grade;
-      delete form.class;
-      delete form.parentFirstName;
-      delete form.parentLastName;
-      delete form.parentEmail;
-      delete form.parentPassword;
     } else if (userRegisterType === "STUDENT") {
       delete form.role;
     }
@@ -97,11 +88,17 @@ export default function Register() {
 
     // Bulk register
     if (isBulk && bulkFile) {
-
-      // Use parser with SignupRecord
+      
+      // Use parser with Signup Record
       // Array of records
-      form = JSON.stringify(await parseExcel(bulkFile));
-
+      try {
+        form = userRegisterType === "TEACHER" ? JSON.stringify(await parseExcel(bulkFile)) 
+          : JSON.stringify(await parseExcel(bulkFile));
+      } catch (err: any) {
+        addLog('error', err.toString());
+        return;
+      }
+      
       // Individual register
     } else {
 
@@ -144,13 +141,8 @@ export default function Register() {
         email: "",
         password: "",
         indexNumber: "",
-        role: "",
-        grade: "",
-        class: "",
-        parentFirstName: "",
-        parentLastName: "",
-        parentEmail: "",
-        parentPassword: "",
+        role: "Demonstrator",
+        grade: "1",
       });
 
       // Remove file
@@ -270,7 +262,6 @@ export default function Register() {
                   )}
                   
                   {userRegisterType === "STUDENT" && (
-                    <>
                     <OptionField
                       label="Grade"
                       name="grade"
@@ -280,16 +271,6 @@ export default function Register() {
                       onChange={(e) => handleInputChange(e)}
                       required
                     />
-                    <OptionField
-                      label="Class"
-                      name="class"
-                      type="text"
-                      values={Object.values(StudentClass)}
-                      error={inputError}
-                      onChange={(e) => handleInputChange(e)}
-                      required
-                    />
-                  </>
                   )}
 
                   <InputField
@@ -313,61 +294,6 @@ export default function Register() {
                     required
                     placeholder="At least 6 characters"
                   />
-
-                  {/* Only for student */}
-                  {
-                    userRegisterType === "STUDENT" && (
-
-                    <>
-                      <h2 className="text-2xl font-bold mb-4 bg-emerald-200 rounded p-2">Parent Details</h2>
-
-                      <InputField
-                        label="First Name"
-                        name="parentFirstName"
-                        type="text"
-                        value={formData.parentFirstName}
-                        error={inputError}
-                        onChange={(e) => handleInputChange(e)}
-                        required
-                        placeholder="Enter first name"
-                      />
-
-                      <InputField
-                        label="Last Name"
-                        name="parentLastName"
-                        type="text"
-                        value={formData.parentLastName}
-                        error={inputError}
-                        onChange={(e) => handleInputChange(e)}
-                        required
-                        placeholder="Enter last name"
-                      />
-
-                      <InputField
-                        label="Email"
-                        name="parentEmail"
-                        type="email"
-                        value={formData.parentEmail}
-                        error={inputError}
-                        onChange={(e) => handleInputChange(e)}
-                        required
-                        placeholder="your.email@example.com"
-                      />
-
-                      <InputField
-                        label="Password"
-                        name="parentPassword"
-                        type="password"
-                        value={formData.parentPassword}
-                        error={inputError}
-                        onChange={(e) => handleInputChange(e)}
-                        required
-                        placeholder="At least 6 characters"
-                      />
-
-                    </>
-                    )
-                  }
 
                   <button type="submit" className="inline-flex items-center justify-center font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2
                     transition-colors duration-200 w-full  px-4 py-3 text-sm bg-blue-600 text-white  hover:bg-blue-700  focus:ring-blue-500 mb-3"

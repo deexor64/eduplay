@@ -10,7 +10,7 @@ type TitleProps = {
 
 export default function Title(props: TitleProps) {
   return (
-    <div className="mb-8">
+    <div className="mb-4">
       <div className="flex items-center justify-between p-4 border-l-4 border-blue-700 bg-white rounded shadow-sm">
         
         {/*Text*/}

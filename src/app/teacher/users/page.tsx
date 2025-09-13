@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 import cleanParams from "@/lib/utils/cleanParams";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
-import { StudentClass, TeacherRole, UserStatus } from "@prisma/client";
+import { TeacherRole, UserStatus } from "@prisma/client";
 import toast from "react-hot-toast";
 import { updateUserStatus } from "@/actions/user/updateUserStatus";
 
@@ -23,13 +23,14 @@ export default function Users() {
     users: Array<{
       indexNumber?: string,
       grade?: number,
-      class?: string,
       role?: string,
       subject?: string,
       user: {
         userID: string,
         firstName: string,
         lastName: string,
+        email: string,
+        verified: boolean,
         displayPicUrl: string,
         status: UserStatus
       }
@@ -41,9 +42,9 @@ export default function Users() {
     indexNumber: undefined,
     fullName: undefined,
     grade: undefined,
-    class: undefined,
     role: undefined,
     email: undefined,
+    verified: undefined,
     status: undefined
   });
   
@@ -104,7 +105,6 @@ export default function Users() {
       {/* Title */}
       {(userListType === "teacher") && <Title title="Teachers" addUser="teacher"/>}
       {(userListType === "student") && <Title title="Students" addUser="student"/>}
-      {(userListType === "parent") && <Title title="Parents" />}
 
       {/* Filters */}
       <FilterWrapper>
@@ -113,14 +113,16 @@ export default function Users() {
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Full Name</InputFilter>
-        {
-          userListType !== "parent" && 
-          <InputFilter
-            filterKey="indexNumber"
-            setFilter={setFilter}
-            setTriggerFilter={setTriggerFilter}
-          >Index NUmber</InputFilter>
-        }
+        <InputFilter
+          filterKey="indexNumber"
+          setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
+        >Index NUmber</InputFilter>
+        <InputFilter
+          filterKey="email"
+          setFilter={setFilter}
+          setTriggerFilter={setTriggerFilter}
+        >Email</InputFilter>
         {
           userListType === "student" && 
           <>
@@ -130,12 +132,6 @@ export default function Users() {
             setFilter={setFilter}
             setTriggerFilter={setTriggerFilter}
           >Grade</OptionFilter>
-          <OptionFilter
-            filterKey="class"
-            values={Object.values(StudentClass)}
-            setFilter={setFilter}
-            setTriggerFilter={setTriggerFilter}
-          >Class</OptionFilter>
         </>
         }
         {
@@ -147,11 +143,12 @@ export default function Users() {
             setTriggerFilter={setTriggerFilter}
           >Role</OptionFilter>
         }
-        <InputFilter
-          filterKey="email"
+        <OptionFilter
+          filterKey="verified"
+          values={["Verified", "Unverified"]}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
-        >Email</InputFilter>
+        >Verified</OptionFilter>
         <OptionFilter
           filterKey="status"
           values={Object.values(UserStatus)}

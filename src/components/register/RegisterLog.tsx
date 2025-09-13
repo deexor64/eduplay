@@ -28,7 +28,8 @@ export default function RegisterLog(props: RegisterLogProps) {
 
   // Open large logs in a new tab
   const handleOpenInNewTab = () => {
-
+    
+    // ISSUE: Text wrap long logs not working
     const html = `
       <html>
         <head>

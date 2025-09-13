@@ -35,7 +35,7 @@ export default function OptionFilter(props: OptionFilterProps) {
   };
 
   return (
-    <div className="flex flex-col gap-1 min-w-[120px]">
+    <div className="ml-8 flex flex-col gap-1 min-w-[120px]">
       <label htmlFor={filterKey} className="font-semibold text-blue-900 mb-0.5 text-sm">
         {props.children}
       </label>

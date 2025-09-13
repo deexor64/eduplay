@@ -36,14 +36,15 @@ export default function InputFilter(props: InputFilterProps) {
   };
 
   return (
-    <div className="flex flex-col gap-1 min-w-[120px]">
+    <div className="ml-8 flex flex-col gap-1 w-40">
       <label htmlFor={filterKey} className="font-semibold text-blue-900 mb-0.5 text-sm">
         {props.children}
       </label>
       <input
         id={filterKey}
         type="text"
-        className="border border-gray-300 rounded-lg px-2 py-1 bg-white text-purple-800 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-150 outline-none placeholder:text-gray-400 text-sm"
+        className="border border-gray-300 rounded-lg px-2 py-1 bg-white text-purple-800 shadow-sm focus:border-blue-500 focus:ring-2
+        focus:ring-blue-200 transition-all duration-150 outline-none placeholder:text-gray-400 text-sm"
         onChange={handleInputChange}
       />
     </div>
