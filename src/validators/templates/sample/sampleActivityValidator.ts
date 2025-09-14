@@ -1,14 +1,13 @@
 import { z } from "zod";
-import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import userTokenChecker from "@/lib/utils/userTokenChecker";
+import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
-export default function sampleActivityValidator(cookies: RequestCookies, searchParams: URLSearchParams): 
-{ status: boolean, data: any } {
+export default async function sampleActivityValidator(headers: Headers, searchParams: URLSearchParams): 
+Promise<{ status: boolean; data: any }> {
   
-  // User token validation
-  const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenChecker(userToken, ["TEACHER"], ["ADMIN", "TEACHER", "MASTER"]);
-  if (!valid.status) return valid;
+  // Verify session
+  const token = headers.get("authorization")?.split("Bearer ")[1];
+  const userPermissions = await userPermissionCheck(token, ["TEACHER"], ["TEACHER", "ADMIN"], ["ACTIVE"]);
+  if (!userPermissions.status) return userPermissions;
 
   // constraints
   const zSearchParams = z.object({

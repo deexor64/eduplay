@@ -7,8 +7,8 @@ Promise<{ status: boolean; data: any; }> {
 
   // Verify session
   const token = headers.get("authorization")?.split("Bearer ")[1];
-  const userPermission = await userPermissionCheck(token, ["TEACHER"], ["TEACHER", "ADMIN"], ["ACTIVE"]);
-  if (!userPermission.status) return userPermission;
+  const userPermissions = await userPermissionCheck(token, ["TEACHER"], ["ADMIN"], ["ACTIVE"]);
+  if (!userPermissions.status) return userPermissions;
 
   // Input validation
   const zSearchParams = z.object({
@@ -28,6 +28,6 @@ Promise<{ status: boolean; data: any; }> {
   const parsed_s = zSearchParams.safeParse(Object.fromEntries(searchParams.entries()));
   if (!parsed_s.success) return { status: false, data: parsed_s.error.message }
 
-  return { status: true, data: {...parsed_s.data, userPermission} }
+  return { status: true, data: {...parsed_s.data} }
   
 }

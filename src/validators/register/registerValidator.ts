@@ -1,22 +1,17 @@
 import { z } from "zod";
-import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import userTokenChecker from "@/lib/utils/userTokenChecker";
-import { JwtPayload } from "jsonwebtoken";
 import { TeacherRole, UserType } from "@prisma/client";
+import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
-export default function registerValidator(cookies: RequestCookies, formData: any, searchParams: URLSearchParams): 
-{ status: boolean, data: any } {
+export default async function registerValidator(headers: Headers, formData: any, searchParams: URLSearchParams): 
+Promise<{ status: boolean; data: any; }> {
   
-  // User token validation
-  // const userToken = cookies.get("userInfo")?.value;
-  // const valid = userTokenChecker(userToken, ["TEACHER"], 
-  //   ["ADMIN"]);
-  // if (!valid.status) return valid;
-
-  // const jwtPayload = valid.data as JwtPayload;
+  // Verify session
+  const token = headers.get("authorization")?.split("Bearer ")[1];
+  const userPermissions = await userPermissionCheck(token, ["TEACHER"], ["TEACHER", "ADMIN"], ["ACTIVE"]);
+  if (!userPermissions.status) return userPermissions;
   
   const zSearchParams = z.object({
-    userRegisterType: z.nativeEnum(UserType), // excluded parents
+    userRegisterType: z.nativeEnum(UserType),
   })
   .strict();
   

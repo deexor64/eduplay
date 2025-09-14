@@ -6,14 +6,17 @@ import InputFilter from "@/components/shared/filter/InputFilter";
 import OptionFilter from "@/components/shared/filter/OptionFilter";
 import Paginator from "@/components/shared/pagination/Paginator";
 import ViewActivityItem from "@/components/activity/ViewActivityItem";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import toast from "react-hot-toast";
 import { ActivityDifficulty, ActivityStatus, Subject } from "@prisma/client";
 import { updateActivityStatus } from "@/actions/activity/updateActivityStatus";
+import { AuthContext } from "@/contexts/AuthProvider";
 
 export default function Activities() {
+  
+  const { userID, email, userType, role, status, user } = useContext(AuthContext);
 
   const [dbData, setDbData] = useState<{
     activities: Array<{
@@ -58,7 +61,13 @@ export default function Activities() {
 
     const params = activitiesQuery();
     const url = `/api/activities?${params}`;
-    const res = await fetch(url);
+    const token = await user?.getIdToken();
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
 
     const resData = await res.json();
     setDbData(resData.data);
@@ -71,8 +80,10 @@ export default function Activities() {
   }, [triggerFilter, pagination]);
 
   async function handleUpdateActivityStatus(activityID: string, status: ActivityStatus) {
+    
+    const token = await user?.getIdToken();
 
-    toast.promise(updateActivityStatus(activityID, status), {
+    toast.promise(updateActivityStatus(activityID, status, token!), {
       loading: "Updating activity...",
       success: () => {
         fetchActivities();

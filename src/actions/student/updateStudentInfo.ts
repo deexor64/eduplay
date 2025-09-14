@@ -1,28 +1,20 @@
 "use server";
 
-import { cookies } from "next/headers";
-import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { prisma } from "@/lib/prisma";
-import { TeacherRoleEnum, UserTypeEnum } from "@/lib/utils/types";
-import { JwtPayload } from "jsonwebtoken";
+import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
 export async function updateStudentInfo(updateData: {
   firstName?: string,
   lastName?: string,
-  phoneNumber?: string,
-  dateOfBirth?: string,
   email?: string,
   grade?: number,
-  class?: string,
   displayPicUrl?: string,
-}) {
-  const cookieStore = await cookies();
-  const userToken = cookieStore.get("userInfo")?.value;
-  // Allow student to update own info, or teacher/admin
-  const valid = userTokenChecker(userToken, ["STUDENT", "TEACHER"], [TeacherRoleEnum.MASTER, TeacherRoleEnum.ADMIN]);
-  if (!valid) throw new Error("Unauthorized");
+}, token: string) {
+  
+  const userPermissions = await userPermissionCheck(token, ["TEACHER"], ["ADMIN"], ["ACTIVE"]);
+  if (!userPermissions.status) throw new Error("Unauthorized");
 
-  const userID = (valid.data as JwtPayload).userID as string;
+  const userID = userPermissions.data.uid;
 
   // Find student and user
   const student = await prisma.user.findUnique({
@@ -34,7 +26,6 @@ export async function updateStudentInfo(updateData: {
 
   if (updateData.email !== undefined) studentUpdate.email = updateData.email;
   if (updateData.grade !== undefined) studentUpdate.grade = updateData.grade;
-  if (updateData.class !== undefined) studentUpdate.class = updateData.class;
 
   const userUpdate: any = {
     student: {
@@ -47,12 +38,7 @@ export async function updateStudentInfo(updateData: {
   if (Object.keys(studentUpdate).length === 0) delete userUpdate.student;
   if (updateData.firstName !== undefined) userUpdate.firstName = updateData.firstName;
   if (updateData.lastName !== undefined) userUpdate.lastName = updateData.lastName;
-  if (updateData.phoneNumber !== undefined) userUpdate.phoneNumber = updateData.phoneNumber;
   if (updateData.displayPicUrl !== undefined) userUpdate.displayPicUrl = updateData.displayPicUrl;
-  if (updateData.dateOfBirth !== undefined) {
-    // Convert string to Date object for Prisma compatibility
-    userUpdate.dateOfBirth = new Date(updateData.dateOfBirth);
-  }
 
   // Update user
   await prisma.user.update({

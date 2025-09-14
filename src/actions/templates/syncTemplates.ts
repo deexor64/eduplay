@@ -1,18 +1,14 @@
 "use server";
 
-import { cookies } from "next/headers";
-import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { prisma } from "@/lib/prisma";
 import fs from "fs";
 import path from "path";
+import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
-export async function syncTemplates() {
+export async function syncTemplates(token: string) {
   
-  const cookieStore = await cookies();
-  
-  const userToken = cookieStore.get("userInfo")?.value;
-  const valid = userTokenChecker(userToken, ["TEACHER"], ["ADMIN", "MASTER"]);
-  if (!valid) throw new Error("Unauthorized");
+  const userPermissions = await userPermissionCheck(token, ["TEACHER"], ["ADMIN"], ["ACTIVE"]);
+  if (!userPermissions.status) throw new Error("Unauthorized");
 
   try {
     

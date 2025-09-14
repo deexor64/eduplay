@@ -94,9 +94,11 @@ export default function Users() {
     fetchUsers();
   }, [pagination, triggerFilter, userListType]);
 
-  function handleUpdateUserStatus(userID: string, status: UserStatus) {
+  async function handleUpdateUserStatus(userID: string, status: UserStatus) {
+    
+    const token = await user?.getIdToken();
 
-    toast.promise(updateUserStatus(userID, status), {
+    toast.promise(updateUserStatus(userID, status, token!), {
       loading: "Updating user...",
       success: () => {
         fetchUsers();

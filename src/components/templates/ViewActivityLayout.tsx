@@ -7,11 +7,12 @@ import Instructions from "@/components/templates/view/Instructions";
 import Guide from "@/components/templates/view/Guide";
 import Celebration from "@/components/templates/view/Celebration";
 import GuideButton from "@/components/templates/view/GuideButton";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
 import Assistant from "@/components/student/Assistant";
 import { useParams } from "next/navigation";
 import { lazy, Suspense, useMemo } from "react";
+import { AuthContext } from "@/contexts/AuthProvider";
 
 export type ActivityViewMode = "VIEW" | "SAMPLE" | "PROGRESS" | "PREVIEW";
 
@@ -36,6 +37,8 @@ export interface ViewActivityProps {
 }
 
 export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
+  
+  const { userID, email, userType, role, status, user } = useContext(AuthContext);
 
   const params = useParams();
   // only one of these 3 available depending on viewMode
@@ -97,22 +100,38 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
 
     // fetch
     const params = activityQuery();
+    const token = await user?.getIdToken();
 
     // view mode is "SAMPLE"
     if (props.viewMode === "SAMPLE") {
-      const res = await fetch(`/api/templates/sample?${params}`);
+      const res = await fetch(`/api/templates/sample?${params}`,{
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
       const resData = await res.json();
       setDbData(resData.data.sampleActivity);
     } 
     // view mode is "VIEW"
     else if (props.viewMode === "VIEW" || props.viewMode === "PREVIEW") {
-      const res = await fetch(`/api/activities/${activityID}`);
+      const res = await fetch(`/api/activities/${activityID}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
       const resData = await res.json();
       setDbData(resData.data);
     }
     // view mode is "PROGRESS"
     else {
-      const res = await fetch(`/api/progress/${progressID}`);
+      const res = await fetch(`/api/progress/${progressID}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
       const resData = await res.json();
       // Construct activity state for progress
       setDbData(resData.data.activity)

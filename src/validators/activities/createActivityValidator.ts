@@ -3,17 +3,15 @@ import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
 import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { JwtPayload } from "jsonwebtoken";
 import { ActivityDifficulty, Subject } from "@prisma/client";
+import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
-export default function createActivityValidator(cookies: RequestCookies, formData: any): 
-{ status: boolean, data: any } {
+export default async function createActivityValidator(headers: Headers, formData: any): 
+Promise<{ status: boolean; data: any; }> {
     
-  // User token validation
-  const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenChecker(userToken, ["TEACHER"], 
-    ["ADMIN", "MASTER", "TEACHER"]);
-  if (!valid.status) return valid;
-
-  const jwtPayload = valid.data as JwtPayload;
+  // Verify session
+  const token = headers.get("authorization")?.split("Bearer ")[1];
+  const userPermissions = await userPermissionCheck(token, ["TEACHER"], ["ADMIN", "TEACHER"], ["ACTIVE"]);
+  if (!userPermissions.status) return userPermissions;
   
   // constraints
   const zFormData = z.object({
@@ -36,6 +34,6 @@ export default function createActivityValidator(cookies: RequestCookies, formDat
     return { status: false, data: parsed_f.error.message }
   }
 
-  return { status: true, data: { ...parsed_f.data, ...jwtPayload}}
+  return { status: true, data: { ...parsed_f.data, userPermissions: userPermissions.data }}
   
 }

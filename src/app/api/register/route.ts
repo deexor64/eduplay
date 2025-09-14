@@ -6,11 +6,11 @@ export async function POST(req: NextRequest) {
   
   try {
     
-    const cookies = req.cookies;
+    const headers = req.headers;
     const formData = await req.json();
     const searchParams = req.nextUrl.searchParams;
     
-    const parsed = registerValidator(cookies, formData, searchParams);
+    const parsed = registerValidator(headers, formData, searchParams);
     if (!parsed.status) return NextResponse.json(
       {status: false, responseType: "log", data: parsed.data},
       { status: 401 }

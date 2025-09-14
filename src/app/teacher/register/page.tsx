@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useContext } from "react";
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { TeacherRole, UserType } from "@prisma/client";
@@ -15,9 +15,11 @@ import parseExcel from "@/lib/utils/parseExcel";
 import toSentenceCase from "@/lib/utils/toSentenceCase";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { z } from "zod";
+import { AuthContext } from "@/contexts/AuthProvider";
 
 export default function Register() {
+  
+  const { userID, email, userType, role, status, user } = useContext(AuthContext);
 
   const searchParams = useSearchParams();
   const userRegisterType = searchParams.get("userType") as UserType;
@@ -117,9 +119,13 @@ export default function Register() {
     toast.promise(async () => {
 
       const url = `/api/register?userRegisterType=${userRegisterType}`;
+      const token = await user?.getIdToken();
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json" 
+        },
         body: form,
       });
 

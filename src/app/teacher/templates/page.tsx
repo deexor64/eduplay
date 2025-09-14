@@ -7,17 +7,17 @@ import OptionFilter from "@/components/shared/filter/OptionFilter";
 import Paginator from "@/components/shared/pagination/Paginator";
 import ViewTemplateItem from "@/components/templates/ViewTemplateItem";
 import SyncTemplateButton from "@/components/templates/SyncTemplatesButton";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
-import useAuth from "@/hooks/useAuth";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import { syncTemplates } from "@/actions/templates/syncTemplates";
 import toast from "react-hot-toast";
 import { TeacherRole } from "@prisma/client";
+import { AuthContext } from "@/contexts/AuthProvider";
 
 export default function Templates() {
   
-  const { userType, teacherRole } = useAuth();
+  const { userID, email, userType, role, status, user } = useContext(AuthContext);
   
   const [dbData, setDbData] = useState<{
     templates: Array<{
@@ -58,9 +58,14 @@ export default function Templates() {
 
     // fetch
     const params = templatesQuery();
-    
     const url = `/api/templates?${params}`;
-    const res = await fetch(url);
+    const token = await user?.getIdToken();
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
     
     const resData = await res.json();
     setDbData(resData.data);
@@ -72,9 +77,11 @@ export default function Templates() {
     fetchTemplates();
   }, [triggerFilter, pagination]);
 
-  function handleSyncTemplates() {
+  async function handleSyncTemplates() {
+    
+    const token = await user?.getIdToken();
 
-    toast.promise(syncTemplates(), {
+    toast.promise(syncTemplates(token!), {
       loading: "Syncing Templates...",
       success: () => {
         fetchTemplates();
@@ -106,7 +113,7 @@ export default function Templates() {
         >Title</InputFilter>
         {/* sync button. shown only to admins */}
         {
-          ["MASTER", "ADMIN"].includes(teacherRole as TeacherRole)  && (
+          ["ADMIN"].includes(role as TeacherRole)  && (
             <SyncTemplateButton handleSyncTemplates={handleSyncTemplates} />
           )
         }

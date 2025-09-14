@@ -4,9 +4,12 @@ import StudentNavigatorLayout from "@/components/student/StudentNavigatorLayout"
 import SubjectBreakdownItem from "@/components/student/progress/SubjectBreakdownItem";
 import RecentActivityItem from "@/components/student/progress/RecentActivityItem";
 import Achievements from "@/components/student/progress/Achievements";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "@/contexts/AuthProvider";
 
 export default function Progress() {
+  
+  const { userID, email, userType, role, status, user } = useContext(AuthContext);
   
   // Analysed summery form the server
   const [dbData, setDbData] = useState({
@@ -27,7 +30,13 @@ export default function Progress() {
   async function fetchProgress() {
 
     const url = `/api/progress`;
-    const res = await fetch(url);
+    const token = await user?.getIdToken();
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
 
     const resData = await res.json();
     setDbData(resData.data);

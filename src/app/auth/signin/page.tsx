@@ -19,7 +19,7 @@ export default function Signin() {
   
   // Already logged in
   useEffect(() => {
-    if (user && userType && user.emailVerified) redirect("/" + userType.toLowerCase());
+    if (user && userType && status === "ACTIVE" && user.emailVerified) redirect("/" + userType.toLowerCase());
   }, [user]);
   
   // Google login

@@ -3,91 +3,43 @@ import { ResType } from '@/lib/utils/types';
 
 export default async function profileService(data: any): Promise<ResType> {
 
-  let whereUser: any = data.userID_s ? { 
-    userID: data.userID_s,
-  } : {
+  let whereUser: any = data.userID ? { 
     userID: data.userID,
+  } : {
+    userID: data.userPermissions.uid,
   };
 
   let selectUser: any = {
     userID: true,
     firstName: true,
     lastName: true,
-    phoneNumber: true,
-    dateOfBirth: true,
+    email: true,
     displayPicUrl: true,
     status: true,
     teacher: {},
-    parent: {},
     student: {},
   }
 
-  if (data.userType === "TEACHER") {
+  if (data.userPermissions.userType === "TEACHER") {
 
      Object.assign(selectUser.teacher, {
       select: {
         teacherID: true,
         indexNumber: true,
-        email: true,
         role: true,
-        subject: true,
       }
     })
     delete selectUser.student;
-    delete selectUser.parent;
 
-  } else if (data.userType === "PARENT") {
-
-    Object.assign(selectUser.parent, {
-      select: {
-        parentID: true,
-        email: true,
-        myChildren: {
-          select: {
-            studentID: true,
-            grade: true,
-            class: true,
-            user: {
-              select: {
-                userID: true,
-                firstName: true,
-                lastName: true,
-                displayPicUrl: true,
-              }
-            }
-          }
-        }
-      }
-    })
-    delete selectUser.student;
-    delete selectUser.teacher;
-
-  } else if (data.userType === "STUDENT") {
+  } else if (data.userPermissions.userType === "STUDENT") {
 
     Object.assign(selectUser.student, {
       select: {
         studentID: true,
         indexNumber: true,
-        email: true,
         grade: true,
-        class: true,
-        parent: {
-          select: {
-            parentID: true,
-            email: true,
-            user: {
-              select: {
-                userID: true,
-                firstName: true,
-                lastName: true,
-                displayPicUrl: true,
-              }
-            }
-          }
-        }
       }
     })
-    delete selectUser.parent;
     delete selectUser.teacher;
 
   }

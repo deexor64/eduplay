@@ -1,19 +1,14 @@
 import { z } from "zod";
-import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import userTokenChecker from "@/lib/utils/userTokenChecker";
-import { JwtPayload } from "jsonwebtoken";
 import { ActivityDifficulty, ActivityStatus, Subject } from "@prisma/client";
+import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
-export default function activitiesValidator(cookies: RequestCookies, searchParams: URLSearchParams): 
-{ status: boolean, data: any } {
-
-  // User token validation
-  const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenChecker(userToken, ["TEACHER", "STUDENT"],
-    ["MASTER", "ADMIN", "TEACHER", "DEMONSTRATOR"]);
-  if (!valid.status) return valid;
-
-  const jwtPayload = valid.data as JwtPayload;
+export default async function activitiesValidator(headers: Headers, searchParams: URLSearchParams): 
+Promise<{ status: boolean; data: any; }> {
+  
+  // Verify session
+  const token = headers.get("authorization")?.split("Bearer ")[1];
+  const userPermissions = await userPermissionCheck(token, ["STUDENT", "TEACHER"], ["ADMIN", "TEACHER", "DEMONSTRATOR"], ["ACTIVE"]);
+  if (!userPermissions.status) return userPermissions;
 
   // Input constraints
   const zSearchParams = z.object({
@@ -32,6 +27,6 @@ export default function activitiesValidator(cookies: RequestCookies, searchParam
   const parsed_s = zSearchParams.safeParse(Object.fromEntries(searchParams.entries()));
   if (!parsed_s.success) return { status: false, data: parsed_s.error.message };
 
-  return { status: true, data: {...parsed_s.data, ...jwtPayload} };
+  return { status: true, data: { ...parsed_s.data, userPermissions: userPermissions.data } };
 
 }

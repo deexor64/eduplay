@@ -16,7 +16,7 @@ export default async function userPermissionCheck(firebaseToken: string | undefi
     if (userType.length > 0 && !userType.includes(decoded.userType)) return { status: false, data: "User is unauthorized" };
 
     // Check role claim if applicable
-    if (role?.length && decoded.role && !role.includes(decoded.role)) return { status: false, data: "User role is unauthorized" };
+    if (role.length && decoded.role && !role.includes(decoded.role)) return { status: false, data: "User role is unauthorized" };
 
     // Check status claim if applicable
     if (status.length > 0 && decoded.status && !status.includes(decoded.status)) return { status: false, data: "User status is unauthorized" };

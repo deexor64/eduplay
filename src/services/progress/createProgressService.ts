@@ -5,7 +5,7 @@ export default async function createProgressService(data: any): Promise<ResType>
 
   const student = await prisma.student.findUnique({
     where: {
-      userID: data.userID,
+      userID: data.userPermissions.uid,
     },
     select: {
       studentID: true,

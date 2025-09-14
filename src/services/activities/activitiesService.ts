@@ -5,7 +5,7 @@ export default async function activitiesService(data: any): Promise<ResType> {
   
   // Get grade if user is a student
   const student = (data.userType === "STUDENT" ? await prisma.student.findUnique({
-    where: { userID: data.userID },
+    where: { userID: data.userPermissions.uid},
     select: { studentID: true, grade: true }
   }) : null);
   
@@ -54,7 +54,7 @@ export default async function activitiesService(data: any): Promise<ResType> {
 
     // Find studentID from userID
     const student = await prisma.student.findUnique({
-      where: { userID: data.userID },
+      where: { userID: data.userPermissions.uid },
       select: { studentID: true }
     });
 

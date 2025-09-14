@@ -3,12 +3,13 @@ import ActivityTitle from "@/components/templates/create/ActivityTitle";
 import Instructions from "@/components/templates/create/Instructions";
 import ActivityOptions from "@/components/templates/create/ActivityOptions";
 import Footer from "@/components/templates/create/Footer";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 import { useParams } from "next/navigation";
 import { lazy, Suspense, useMemo } from "react";
 import toast from "react-hot-toast";
 import ActivitySection from "@/components/templates/create/ActivitySection";
+import { AuthContext } from "@/contexts/AuthProvider";
 
 export interface CreateActivityProps {
   setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
@@ -17,6 +18,8 @@ export interface CreateActivityProps {
 }
 
 export default function CreateActivityLayout() {
+  
+  const { userID, email, userType, role, status, user } = useContext(AuthContext);
 
   const params = useParams();
   const templateCode = params.templateCode as string;
@@ -123,10 +126,12 @@ export default function CreateActivityLayout() {
       const form = activityForm(finalizedActivityData);
       
       const url = `/api/activities`;
+      const token = await user?.getIdToken();
       const res = await fetch(url, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
         body: form
       })

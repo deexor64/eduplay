@@ -8,10 +8,10 @@ export async function GET(req: NextRequest, context: { params: Promise<any> }) {
   
   try {
     
-    const cookies = req.cookies;
+    const headers = req.headers;
     const slugParam = {progressID: (await context.params).progressID}
     
-    const parsed = getProgressValidator(cookies, slugParam);
+    const parsed = getProgressValidator(headers, slugParam);
     if (!parsed.status) return NextResponse.json(
       {status: false, responseType: "log", data: parsed.data},
       { status: 401 }

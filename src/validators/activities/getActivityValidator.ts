@@ -2,27 +2,25 @@ import { z } from "zod";
 import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
 import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { JwtPayload } from "jsonwebtoken";
+import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
-export default function getActivityValidator(cookies: RequestCookies, slugParam: any):
-{ status: boolean, data: any }  {
+export default async function getActivityValidator(headers: Headers, slugParam: any):
+Promise<{ status: boolean; data: any; }> {
 
-  // User token validation
-  const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenChecker(userToken, ["TEACHER", "STUDENT"],
-    ["MASTER", "ADMIN", "TEACHER"]);
-  if (!valid.status) return valid;
-
-  const jwtPayload = valid.data as JwtPayload;
+  // Verify session
+  const token = headers.get("authorization")?.split("Bearer ")[1];
+  const userPermissions = await userPermissionCheck(token, ["TEACHER", "STUDENT"], ["ADMIN", "TEACHER"], ["ACTIVE"]);
+  if (!userPermissions.status) return userPermissions;
 
   // constraints
-  const zslugParams = z.object({
+  const zSlugParams = z.object({
     activityID: z.string(),
    })
   .strict();
 
-  const parsed_s = zslugParams.safeParse(slugParam);
+  const parsed_s = zSlugParams.safeParse(slugParam);
   if (!parsed_s.success) return { status: false, data: parsed_s.error.message }
 
-  return { status: true, data: { ...parsed_s.data, ...jwtPayload}}
+  return { status: true, data: { ...parsed_s.data, userPermissions: userPermissions.data}}
   
 }

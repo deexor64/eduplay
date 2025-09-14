@@ -8,10 +8,10 @@ export async function POST(req: NextRequest) {
 
   try {
 
-    const cookies = req.cookies;
+    const headers = req.headers;
     const formData = await req.json();
 
-    let parsed = await createProgressValidator(cookies, formData);
+    let parsed = await createProgressValidator(headers, formData);
     if (!parsed.status) return NextResponse.json(
       {status: false, responseType: "log", data: parsed.data},
       { status: 401 }
@@ -43,10 +43,10 @@ export async function GET(req: NextRequest) {
 
   try {
 
-    const cookies = req.cookies;
+    const headers = req.headers;
     const searchParams = req.nextUrl.searchParams;
 
-    let parsed = progressValidator(cookies, searchParams);
+    let parsed = progressValidator(headers, searchParams);
     if (!parsed.status) return NextResponse.json(
       {status: false, responseType: "log", data: parsed.data},
       { status: 401 }

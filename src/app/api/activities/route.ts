@@ -9,10 +9,10 @@ export async function POST(req: NextRequest) {
   
   try {
     
-    const cookies = req.cookies;
+    const headers = req.headers;
     const formData = await req.json();
     
-    const parsed = await createActivityValidator(cookies, formData);
+    const parsed = await createActivityValidator(headers, formData);
     if (!parsed.status) return NextResponse.json(
       {status: false, responseType: "log", data: parsed.data},
       { status: 401 }
@@ -43,10 +43,11 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    const cookies = req.cookies;
+    
+    const headers = req.headers;
     const searchParams = req.nextUrl.searchParams;
 
-    const parsed = await activitiesValidator(cookies, searchParams);
+    const parsed = await activitiesValidator(headers, searchParams);
     if (!parsed.status) return NextResponse.json(
       {status: false, responseType: "log", data: parsed.data},
       { status: 401 }

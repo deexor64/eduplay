@@ -6,12 +6,15 @@ import InputFilter from "@/components/student/activity/InputFilter";
 import OptionFilter from "@/components/student/activity/OptionFilter";
 import Paginator from "@/components/student/activity/Paginator";
 import ViewActivityItem from "@/components/student/activity/ViewActivityItem";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
 import StudentNavigatorLayout from "@/components/student/StudentNavigatorLayout";
 import { ActivityDifficulty, Subject } from "@prisma/client";
+import { AuthContext } from "@/contexts/AuthProvider";
 
 export default function Activities() {
+  
+  const { userID, email, userType, role, status, user } = useContext(AuthContext);
 
   const [dbData, setDbData] = useState<{
     activities: Array<{
@@ -57,7 +60,13 @@ export default function Activities() {
 
     const params = activitiesQuery();
     const url = `/api/activities?${params}`;
-    const res = await fetch(url);
+    const token = await user?.getIdToken();
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
 
     const resData = await res.json();
     setDbData(resData.data);

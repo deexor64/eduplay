@@ -1,18 +1,13 @@
-import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import userTokenChecker from "@/lib/utils/userTokenChecker";
-import { JwtPayload } from "jsonwebtoken";
 import { z } from "zod";
+import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
-export default function progressValidator(cookies: RequestCookies, searchParams: URLSearchParams):
-{ status: boolean, data: any } {
+export default async function progressValidator(headers: Headers, searchParams: URLSearchParams):
+Promise<{ status: boolean; data: any; }> {
   
-  // User token validation
-  const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenChecker(userToken, ["STUDENT", "TEACHER", "PARENT"],
-     ["ADMIN", "MASTER", "TEACHER"]);
-  if (!valid.status) return valid;
-
-  const jwtPayload = valid.data as JwtPayload;
+  // Verify session
+  const token = headers.get("authorization")?.split("Bearer ")[1];
+  const userPermissions = await userPermissionCheck(token, ["STUDENT"], [], ["ACTIVE"]);
+  if (!userPermissions.status) return userPermissions;
 
   // constraints
   const zsearchParams = z.object({
@@ -23,6 +18,6 @@ export default function progressValidator(cookies: RequestCookies, searchParams:
   const parsed_s = zsearchParams.safeParse(Object.fromEntries(searchParams.entries()));
   if (!parsed_s.success) return { status: false, data: parsed_s.error.message }
 
-  return { status: true, data: {...parsed_s.data, ...jwtPayload} };
+  return { status: true, data: {...parsed_s.data, userPermissions: userPermissions.data} };
 
 }

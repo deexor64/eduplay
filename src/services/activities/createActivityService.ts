@@ -5,7 +5,7 @@ export default async function createActivityService(data: any): Promise<ResType>
 
   const teacher = await prisma.teacher.findUnique({
     where: {
-      userID: data.userID,
+      userID: data.userPermissions.uid,
     },
     select: {
       teacherID: true,

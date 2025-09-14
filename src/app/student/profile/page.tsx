@@ -1,19 +1,21 @@
 "use client"
 
 import StudentNavigatorLayout from "@/components/student/StudentNavigatorLayout";
-import PersonalInfoForm from "@/components/student/profile/PersonalInfoForm";
 import AcademicInfoForm from "@/components/student/profile/AcademicInfoForm";
+import PersonalInfoForm from "@/components/student/profile/PersonalInfoForm";
 import ProfilePictureUpload from "@/components/student/profile/ProfilePictureUpload";
 import PasswordChangeForm from "@/components/student/profile/PasswordChangeForm";
-import ParentInfoCard from "@/components/student/profile/ParentInfoCard";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { updateStudentInfo } from "@/actions/student/updateStudentInfo";
 import Assistant from "@/components/student/Assistant";
-import { StudentClass, UserStatus } from "@prisma/client";
+import { UserStatus } from "@prisma/client";
 import { EdgeStoreProvider } from "@/lib/edgestore";
 import Title from "@/components/student/Title";
+import { AuthContext } from "@/contexts/AuthProvider";
 
 export default function StudentProfile() {
+  
+  const { userID, email, userType, role, status, user } = useContext(AuthContext);
 
   // Assistant 
   const [assistantMessage, setAssistantMessage] = useState<{
@@ -30,58 +32,39 @@ export default function StudentProfile() {
     userID: string,
     firstName: string,
     lastName: string,
-    phoneNumber?: string,
-    dateOfBirth?: string,
+    email: string,
     displayPicUrl: string,
     status: UserStatus,
     student: {
       studentID: string,
       indexNumber: string,
-      email: string,
       grade: 1 | 2 | 3 | 4 | 5,
-      class: StudentClass,
-      parent: {
-        parentID: string,
-        email: string,
-        user: {
-          userID: string,
-          firstName: string,
-          lastName: string,
-          displayPicUrl: string,
-        }
-      }
     }
   }>({
     userID: "",
     firstName: "-",
     lastName: "-",
-    phoneNumber: "-",
-    dateOfBirth: "-",
+    email: "",
     displayPicUrl: "-",
-    status: "INACTIVE",
+    status: "ACTIVE",
     student: {
       studentID: "",
       indexNumber: "",
-      email: "",
       grade: 1,
-      class: "A",
-      parent: {
-        parentID: "",
-        email: "",
-        user: {
-          userID: "",
-          firstName: "",
-          lastName: "",
-          displayPicUrl: "/images/avatar.png",
-        }
-      }
     }
   });
 
   // Fetch student data
   async function fetchStudent() {  
 
-    const res = await fetch("/api/profile");
+    const url = `/api/profile`;
+    const token = await user?.getIdToken();
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
 
     const resData = await res.json();
     setDbData(resData.data);
@@ -89,7 +72,10 @@ export default function StudentProfile() {
   }
 
   async function updateStudentInfoHandler(update: any) {
-    await updateStudentInfo(update);
+    
+    const token = await user?.getIdToken();
+    
+    await updateStudentInfo(update, token!);
     await fetchStudent();
     try {
       setAssistantMessage({
@@ -123,15 +109,13 @@ export default function StudentProfile() {
           updateStudentInfo={updateStudentInfoHandler}
           studentInfo={{
             indexNumber: dbData.student.indexNumber,
-            email: dbData.student.email,
+            email: dbData.email,
             grade: dbData.student.grade,
-            class: dbData.student.class,
             status: dbData.status
           }}
         />
         <PersonalInfoForm data={dbData} updateStudentInfo={updateStudentInfoHandler} />
         <AcademicInfoForm data={dbData.student} updateStudentInfo={updateStudentInfoHandler} />
-        <ParentInfoCard parent={dbData.student.parent} />
         {/* TODO: implement password change */}
         <PasswordChangeForm />
 

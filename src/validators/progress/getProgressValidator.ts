@@ -1,16 +1,13 @@
 import { z } from "zod";
-import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import userTokenChecker from "../../lib/utils/userTokenChecker";
-import { JwtPayload } from "jsonwebtoken";
+import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
-export default function getProgressValidator(cookies: RequestCookies, slugParam: any):
-{ status: boolean, data: any }  {
+export default async function getProgressValidator(headers: Headers, slugParam: any):
+Promise<{ status: boolean; data: any; }> {
 
-  // User token validation
-  const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenChecker(userToken, ["STUDENT"]);
-  
-  const jwtPayload = valid.data as JwtPayload;
+  // Verify session
+  const token = headers.get("authorization")?.split("Bearer ")[1];
+  const userPermissions = await userPermissionCheck(token, ["STUDENT"], [], ["ACTIVE"]);
+  if (!userPermissions.status) return userPermissions;
   
   // constraints
   const zslugParams = z.object({

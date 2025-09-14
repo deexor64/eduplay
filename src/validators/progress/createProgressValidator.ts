@@ -1,18 +1,14 @@
 import { z } from "zod";
-import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import userTokenChecker from "@/lib/utils/userTokenChecker";
-import { JwtPayload } from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
+import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
-export default async function createProgressValidator(cookies: RequestCookies, formData: any): 
+export default async function createProgressValidator(headers: Headers, formData: any): 
 Promise<{ status: boolean, data: any }> {
 
-  // User token validation
-  const userToken = cookies.get("userInfo")?.value;
-  const valid = userTokenChecker(userToken, ["STUDENT"]);
-  if (!valid.status) return valid;
-
-  const jwtPayload = valid.data as JwtPayload;
+  // Verify session
+  const token = headers.get("authorization")?.split("Bearer ")[1];
+  const userPermissions = await userPermissionCheck(token, ["STUDENT"], [], ["ACTIVE"]);
+  if (!userPermissions.status) return userPermissions;
   
   // constraints
   const zFormData = z.object({
@@ -45,5 +41,5 @@ Promise<{ status: boolean, data: any }> {
     return { status: false, data: parsed.error.message };
   }
 
-  return { status: true, data: {...parsed.data, ...jwtPayload} };
+  return { status: true, data: {...parsed.data, userPermissions: userPermissions.data} };
 }

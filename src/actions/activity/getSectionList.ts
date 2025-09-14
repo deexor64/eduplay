@@ -4,19 +4,15 @@ import { cookies } from "next/headers";
 import userTokenChecker from "@/lib/utils/userTokenChecker";
 import { prisma } from "@/lib/prisma";
 import { Subject } from "@prisma/client";
+import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
-export async function getSectionList(): 
+export async function getSectionList(token: string): 
 Promise<Array<{subject: Subject, grade: number | null, section: string | null}> | Error> {
 
   try {
 
-    const cookieStore = await cookies();
-    
-    const userToken = cookieStore.get("userInfo")?.value;
-    const valid = userTokenChecker(userToken, ["TEACHER"], 
-      ["MASTER", "ADMIN", "TEACHER"]);
-
-    if (!valid) throw new Error("Unauthorized");
+    const userPermissions = await userPermissionCheck(token, ["TEACHER"], ["ADMIN", "TEACHER"], ["ACTIVE"]);
+    if (!userPermissions.status) throw new Error("Unauthorized");
 
     const sections = await prisma.activity.findMany({
       where: {

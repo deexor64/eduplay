@@ -6,10 +6,10 @@ export async function GET(req: NextRequest) {
   
   try {
     
-    const cookies = req.cookies;
+    const headers = req.headers;
     const searchParams = req.nextUrl.searchParams;
     
-    const parsed = sampleActivityValidator(cookies, searchParams);
+    const parsed = sampleActivityValidator(headers, searchParams);
     if (!parsed.status) return NextResponse.json(
       {status: false, responseType: "log", data: parsed.data},
       { status: 401 }

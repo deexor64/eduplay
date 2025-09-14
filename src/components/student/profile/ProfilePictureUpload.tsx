@@ -12,7 +12,6 @@ type ProfilePictureUploadProps = {
     indexNumber: string;
     email: string;
     grade: number;
-    class: string;
     status: string;
   };
 }
@@ -185,15 +184,6 @@ export default function ProfilePictureUpload(props: ProfilePictureUploadProps) {
                 <div>
                   <p className="text-xs text-gray-500">Grade</p>
                   <p className="font-semibold text-gray-800">Grade {studentInfo.grade}</p>
-                </div>
-              </div>
-
-              {/* Class */}
-              <div className="flex items-center space-x-2">
-                <span className="text-blue-600">🏫</span>
-                <div>
-                  <p className="text-xs text-gray-500">Class</p>
-                  <p className="font-semibold text-gray-800">Class {studentInfo.class}</p>
                 </div>
               </div>
 

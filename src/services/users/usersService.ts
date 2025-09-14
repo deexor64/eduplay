@@ -35,6 +35,7 @@ export default async function usersService(data: any): Promise<ResType> {
     role: true,
     user: {
       select: {
+        userID: true,
         firstName: true,
         lastName: true,
         email: true,

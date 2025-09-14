@@ -5,15 +5,15 @@ export default async function progressService(data: any): Promise<ResType> {
 
   // Find student by userID if userType is student
   // Progress which is relevent to student will be generated
-  const student = (data.userType === "STUDENT" ? await prisma.student.findUnique({
-    where: { userID: data.userID },
+  const student = (data.userPermissions.userType === "STUDENT" ? await prisma.student.findUnique({
+    where: { userID: data.userPermissions.uid },
     select: { studentID: true, grade: true }
   }) : null);
 
   // Fetch all progress records for this student
   let progresses: any = {};
 
-  if (data.userType === "STUDENT" && student) {
+  if (data.userPermissions.userType === "STUDENT" && student) {
     progresses = await prisma.progress.findMany({
       where: { progressFor: student.studentID },
       include: { activity: true }
