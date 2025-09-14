@@ -15,3 +15,36 @@ export async function signIn(email: string, password: string) {
 export async function logOut() {
   return await signOut(clientAuth);
 }
+
+
+
+
+async function deleteAllUsers() {
+  try {
+    let nextPageToken: string | undefined = undefined;
+
+    do {
+      // List up to 1000 users at a time
+      const listUsersResult = await adminAuth.listUsers(1000, nextPageToken);
+      const uids = listUsersResult.users.map((user) => user.uid);
+
+      if (uids.length > 0) {
+        const deleteResult = await adminAuth.deleteUsers(uids);
+        console.log(
+          `Deleted ${deleteResult.successCount} users, ${deleteResult.failureCount} failures`
+        );
+        if (deleteResult.failureCount > 0) {
+          console.error(deleteResult.errors);
+        }
+      }
+
+      nextPageToken = listUsersResult.pageToken;
+    } while (nextPageToken);
+
+    console.log("All Firebase Auth users deleted!");
+  } catch (err) {
+    console.error("Error deleting users:", err);
+  }
+}
+
+deleteAllUsers();

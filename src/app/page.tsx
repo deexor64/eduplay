@@ -1,43 +1,21 @@
 import Link from 'next/link';
-import styles from './welcome.module.css';
-import { UserType } from '@/lib/utils/types';
+import styles from './landing.module.css';
 
-export default function Root() {
-  const teacherStudentUsers: UserType[] = ["TEACHER", "STUDENT"];
-  const parentUsers: UserType[] = ["PARENT"];
-
-  function getDisplayText(role: string): string {
-    return role.charAt(0).toUpperCase() + role.slice(1) + " Login";
-  }
-
-  function getRoleDescription(role: string): string {
-    switch (role) {
-      case "TEACHER":
-        return "Create engaging activities and manage your classroom";
-      case "STUDENT":
-        return "Access interactive learning materials and track progress";
-      case "PARENT":
-        return "Monitor your child's learning journey and achievements";
-      default:
-        return "";
-    }
-  }
-
+export default function Landing() {
+  
   return (
     <div className="min-h-screen flex flex-col relative">
-      {/* Fixed Background */}
+      
+      {/* Background */}
       <div className="fixed inset-0 z-0">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: 'url(/images/welcome-background.jpg)',
-          }}
-        />
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(/images/welcome-background.jpg)',}} />
         <div className="absolute inset-0 bg-black/30"></div>
       </div>
 
       {/* Content Overlay */}
       <div className="relative z-10 flex flex-col min-h-screen">
+        
         {/* Header */}
         <header className="text-center py-12 px-4">
           <div className={`${styles.fadeInDown} ${styles.animate}`}>
@@ -49,7 +27,7 @@ export default function Root() {
                 style={{ minWidth: '3.5rem' }}
               />
               <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                NAKANO
+                EDUPlay
               </h1>
             </div>
             <h2 className="text-2xl text-white mb-6 font-medium drop-shadow-lg">
@@ -74,69 +52,35 @@ export default function Root() {
         {/* Main Content */}
         <main className="flex-1 px-4 pb-8">
           <div className="max-w-6xl mx-auto">
+            
             {/* Teachers & Students Section */}
-            <section className={`${styles.fadeInUp} ${styles.animate} ${styles.delay2} mb-12`}>
+            <section className={`${styles.fadeInUp} ${styles.animate} ${styles.delay2} mb-12 items-center`}>
+              
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-semibold text-white mb-2 drop-shadow-lg">Learning Community</h3>
                 <p className="text-white/80 drop-shadow-sm">Join our vibrant educational ecosystem</p>
               </div>
+          
+          
+
+                {/* Teacher Login */}
+                <Link href={"/auth/signin"} className={`${styles.loginCard} ${styles.hoverEffect} group w-60`}>
+                  <div className="p-8 text-center">
+                    <div className="text-2xl font-bold text-white mb-3">
+                      Login
+                    </div>
+                    <p className="text-white/90 text-sm leading-relaxed">
+                      Become a teacher and share your knowledge
+                    </p>
+                    <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <span className="text-white/80 text-sm">Click to get started →</span>
+                    </div>
+                  </div>
+                </Link>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {teacherStudentUsers.map(function (role, index) {
-                  return (
-                    <Link 
-                      href={"signup?userType=" + role} 
-                      className={`${styles.loginCard} ${styles.hoverEffect} group`} 
-                      key={index}
-                    >
-                      <div className="p-8 text-center">
-                        <div className="text-2xl font-bold text-white mb-3">
-                          {getDisplayText(role)}
-                        </div>
-                        <p className="text-white/90 text-sm leading-relaxed">
-                          {getRoleDescription(role)}
-                        </p>
-                        <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <span className="text-white/80 text-sm">Click to get started →</span>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
+              
             </section>
 
-            {/* Parents Section */}
-            <section className={`${styles.fadeInUp} ${styles.animate} ${styles.delay3}`}>
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-semibold text-white mb-2 drop-shadow-lg">Family Connection</h3>
-                <p className="text-white/80 drop-shadow-sm">Stay connected with your child's learning journey</p>
-              </div>
-              
-              <div className="max-w-lg mx-auto">
-                {parentUsers.map(function (role, index) {
-                  return (
-                    <Link 
-                      href={"signup?userType=" + role} 
-                      className={`${styles.parentCard} ${styles.hoverEffect} group`} 
-                      key={index}
-                    >
-                      <div className="p-8 text-center">
-                        <div className="text-2xl font-bold text-white mb-3">
-                          {getDisplayText(role)}
-                        </div>
-                        <p className="text-white/90 text-sm leading-relaxed">
-                          {getRoleDescription(role)}
-                        </p>
-                        <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <span className="text-white/80 text-sm">Click to get started →</span>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </section>
           </div>
         </main>
 

@@ -1,7 +1,7 @@
 import { adminAuth } from '@/lib/firebaseAdmin';
 import { prisma } from '@/lib/prisma';
 import { ResType } from '@/lib/utils/types';
-import { UserType } from '@prisma/client';
+import { TeacherRole, UserStatus, UserType } from '@prisma/client';
 
 export default async function registerService(data: any): Promise<ResType> {
   
@@ -74,9 +74,9 @@ export default async function registerService(data: any): Promise<ResType> {
       });
   
       await adminAuth.setCustomUserClaims(firebaseUser.uid, {
-        userID: firebaseUser.uid,
         userType: UserType.TEACHER,
-        role: record.role,
+        role: record.role as TeacherRole,
+        status: UserStatus.ACTIVE,
       });
       
       // DB record
@@ -114,9 +114,8 @@ export default async function registerService(data: any): Promise<ResType> {
       });
   
       await adminAuth.setCustomUserClaims(firebaseUser.uid, {
-        userID: firebaseUser.uid,
         userType: UserType.STUDENT,
-        role: record.role,
+        status: UserStatus.ACTIVE,
       });
       
       // DB record
@@ -126,7 +125,6 @@ export default async function registerService(data: any): Promise<ResType> {
           firstName: record.firstName,
           lastName: record.lastName,
           email: record.email,
-          status: "ACTIVE",  
           student: {
             create: {
               indexNumber: record.indexNumber,

@@ -1,13 +1,10 @@
-import AuthWrapper from "@/contexts/AuthWrapper";
+import { AuthProvider } from "@/contexts/AuthProvider";
 import { Toaster } from "react-hot-toast";
 
 export default function StudentLayout(props: any) {
   return (
-    <AuthWrapper allowedUserTypes={["STUDENT"]}>
-      <Toaster position="top-right" reverseOrder={false}/> {/* Notification provider */}
-        {props.children}
-    </AuthWrapper>
-  );
-
-  
+    <AuthProvider userType={["TEACHER", "STUDENT"]} role={["ADMIN", "TEACHER", "DEMONSTRATOR"]} status={[]}>
+      {props.children}
+    </AuthProvider>
+  ); 
 }

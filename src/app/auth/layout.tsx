@@ -1,11 +1,11 @@
-import Link from 'next/link';
+import { AuthProvider } from "@/contexts/AuthProvider";
 
 export default function Layout(props: any) {
-
+  
   return (
-    <div className="h-screen overflow-hidden flex items-center justify-end bg-gray-600 p-8 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/images/login.jpg')" }}>
+    <AuthProvider userType={[]} role={[]} status={[]}>
       {props.children}
-    </div>
-  );
-
-};
+    </AuthProvider>
+  )
+    
+}
