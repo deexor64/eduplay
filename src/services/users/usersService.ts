@@ -68,6 +68,7 @@ export default async function usersService(data: any): Promise<ResType> {
   
   // Add Verified attribute to users
   // And filter them if filter is set
+  // ISSUE: verified status not correctly detecting
   if (data.verified) {
 
     const usersVerified = await Promise.all(dbUsers.users.map(async (user: any) => {

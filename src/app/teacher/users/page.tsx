@@ -6,15 +6,18 @@ import InputFilter from "@/components/shared/filter/InputFilter";
 import OptionFilter from "@/components/shared/filter/OptionFilter";
 import Paginator from "@/components/shared/pagination/Paginator";
 import ViewUserItem from "@/components/users/ViewUserItem";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 import cleanParams from "@/lib/utils/cleanParams";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import { TeacherRole, UserStatus } from "@prisma/client";
 import toast from "react-hot-toast";
 import { updateUserStatus } from "@/actions/user/updateUserStatus";
+import { AuthContext } from "@/contexts/AuthProvider";
 
 export default function Users() {
+  
+  const { userID, email, userType, role, status, user } = useContext(AuthContext);
   
   const searchParams = useSearchParams();
   const userListType = searchParams.get("userListType");
@@ -72,9 +75,14 @@ export default function Users() {
 
     // fetch
     const params = usersQuery();
-    
     const url = `/api/users?${params}`;
-    const res = await fetch(url);
+    const token = await user?.getIdToken();
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
     
     const resData = await res.json();
     setDbData(resData.data);

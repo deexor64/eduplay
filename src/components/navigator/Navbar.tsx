@@ -1,18 +1,19 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import useAuth from "@/hooks/useAuth";
 import { faBell, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { AuthContext } from '@/contexts/AuthProvider';
+import { useContext } from 'react';
 
 export default function Navbar() {
 
-  const { userType, teacherRole } = useAuth();
+  const { userType } = useContext(AuthContext);
   
   // route back to dashboard
   const router = useRouter();
   function routeBackToDashboard() { 
-    router.push(`/${userType.toLowerCase()}/`)
+    router.push(`/${userType?.toLowerCase()}/`)
   }
 
   return (

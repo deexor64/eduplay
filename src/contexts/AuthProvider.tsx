@@ -2,7 +2,7 @@
 
 import { usePathname, redirect } from "next/navigation";
 import { useEffect, useState, createContext } from "react";
-import { getIdTokenResult } from "firebase/auth";
+import { getIdTokenResult, User } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { clientAuth } from "@/lib/firebaseClient";
 import { TeacherRole, UserStatus, UserType } from "@prisma/client";
@@ -26,12 +26,17 @@ import Loading from "@/components/Loading";
 
 */
 
+/*
+  const { userID, email, userType, role, status, verified } = useContext(AuthContext);
+*/
+
 type AuthContextType = {
   userID: string | undefined;
   email: string | undefined;
   userType: UserType | undefined;
   role: TeacherRole | undefined;
   status: UserStatus | undefined;
+  user: User | undefined;
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -40,17 +45,18 @@ export const AuthContext = createContext<AuthContextType>({
   userType: undefined,
   role: undefined,
   status: undefined,
+  user: undefined,
 });
 
 export function AuthProvider({ children, userType, role, status }:
   { children: React.ReactNode, userType: string[], role: string[], status: string[]}) {
     
   type UserToken = {
-    user_id: string;
-    email: string;
-    userType: string;
-    status: string;
-    role?: string;
+    user_id: string | undefined;
+    email: string | undefined;
+    userType: UserType | undefined;
+    status: UserStatus | undefined;
+    role?: TeacherRole | undefined;
   };
   
   const pathname = usePathname(); // current url
@@ -66,61 +72,81 @@ export function AuthProvider({ children, userType, role, status }:
   
     if (!user) {
       console.log("AUTH: No user");
-      if (!pathname.startsWith("/auth")) redirect("/auth/signin");
+      
+      if (pathname.startsWith("/auth")) { 
+        setAuthorized(true);
+        return;
+      }
+      
+      redirect("/auth/signin");
       return;
     }
-  
-    if (!claims) {
-      console.log("AUTH: fetching claims");
-      (async () => {
-        const token = await getIdTokenResult(user, true);
-        setClaims(token.claims as UserToken);
-      })();
-      return;
-    }
-  
-    console.log("AUTH: User exists ", claims);
     
+    console.log("AUTH: User exists ");
+    console.log("AUTH: fetching claims");
+    
+    if (!claims) return;
+    console.log("AUTH: ", claims);
+    
+    if (pathname.startsWith("/auth")) { 
+      setAuthorized(true);
+      return;
+    }
+    
+    // Authenticate
     if (!user.emailVerified) {
       console.log("AUTH: Email not verified");
-      if (!pathname.startsWith("/auth")) redirect("/auth/signin");
+      redirect("/auth/signin");
+      return;
+    }
+    
+    if ( userType.length > 0 &&  claims.userType &&  !userType.includes(claims.userType)) {
+      console.log("AUTH: User type not allowed");
+      redirect("/auth/signin");
+      return;
     }
   
-    // Validate claims
-    if (
-      userType.length > 0 &&
-      claims.userType &&
-      !userType.includes(claims.userType)
-    )
-    if (!pathname.startsWith("/auth")) redirect("/auth/signin");
-  
-    if (
-      role.length > 0 &&
-      claims.role &&
-      !role.includes(claims.role)
-    )
-    if (!pathname.startsWith("/auth")) redirect("/auth/signin");
-  
-    if (
-      status.length > 0 &&
-      claims.status &&
-      !status.includes(claims.status)
-    )
-    if (!pathname.startsWith("/auth")) redirect("/auth/signin");
+    if ( role.length > 0 && claims.role && !role.includes(claims.role)){
+      console.log("AUTH: Role not allowed");
+      redirect("/auth/signin");
+      return;
+    }
+    
+    if ( status.length > 0 && claims.status && !status.includes(claims.status)) {
+      console.log("AUTH: Status not allowed");
+      redirect("/auth/signin");
+      return;
+    }
     
     // Set authorized status
     setAuthorized(true);
     
   }, [user, claims, loading, userType, role, status]);
+  
+  useEffect(() => {
+    
+    if (!user) return;
+  
+    (async () => {
+      const token = await getIdTokenResult(user, true);
+      setClaims(token.claims as UserToken);
+    })();
+    
+  }, [user]);
 
+  if (!authorized) return <Loading />;
 
-  if (!authorized || !claims) return <Loading />;
-
-  return (
+  return user && claims ? (
     <AuthContext.Provider value={{ userID: claims.user_id, email: claims.email, 
-      userType: claims.userType as UserType, role: claims.role as TeacherRole | undefined, 
-      status: claims.status as UserStatus }}>
+      userType: claims.userType, role: claims.role, 
+      status: claims.status as UserStatus, user: user }}>
+      {children}
+    </AuthContext.Provider>
+  ) : (
+    <AuthContext.Provider value={{ userID: undefined, email: undefined, 
+      userType: undefined, role: undefined, status: undefined, user: undefined }}>
       {children}
     </AuthContext.Provider>
   );
+  
 }

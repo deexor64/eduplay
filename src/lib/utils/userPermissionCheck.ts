@@ -1,11 +1,11 @@
 import { adminAuth } from "@/lib/firebaseAdmin";
 import { TeacherRole, UserStatus, UserType } from "@prisma/client";
 
-export default async function userTokenChecker(firebaseToken: string | undefined, userType: UserType[],
-  role: TeacherRole[], status: UserStatus[] ): Promise<{ status: boolean; data: string }> {
+export default async function userPermissionCheck(firebaseToken: string | undefined, userType: UserType[],
+  role: TeacherRole[], status: UserStatus[] ): Promise<{ status: boolean; data: any }> {
   
   // No token provided
-  if (!firebaseToken) return { status: false, data: "Unauthorized" };
+  if (!firebaseToken) return { status: false, data: "Unauthorized, No token provided" };
 
   try {
     
@@ -22,12 +22,12 @@ export default async function userTokenChecker(firebaseToken: string | undefined
     if (status.length > 0 && decoded.status && !status.includes(decoded.status)) return { status: false, data: "User status is unauthorized" };
 
     // All checks passed
-    return { status: true, data: "Authorized" };
+    return { status: true, data: decoded };
 
   } catch {
     
     // Token invalid or expired
-    return { status: false, data: "Unauthorized" };
+    return { status: false, data: "Unauthorized, Invalid token" };
     
   }
   
