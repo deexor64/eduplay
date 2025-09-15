@@ -6,7 +6,7 @@ import { getIdTokenResult, User } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { clientAuth } from "@/lib/firebaseClient";
 import { TeacherRole, UserStatus, UserType } from "@prisma/client";
-import Loading from "@/components/Loading";
+import CatLoading from "@/components/shared/loading/CatLoading";
 
 /*
 
@@ -134,7 +134,7 @@ export function AuthProvider({ children, userType, role, status }:
     
   }, [user]);
 
-  if (!authorized) return <Loading />;
+  if (!authorized) return <CatLoading />;
 
   return user && claims ? (
     <AuthContext.Provider value={{ userID: claims.user_id, email: claims.email, 

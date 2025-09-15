@@ -1,8 +1,7 @@
 import { ReactNode, useState } from "react";
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUsers, faUser, faUserFriends, faFileAlt, faBox, faCog, faEnvelope, faPeopleGroup, faBook }
- from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUser, faUserFriends, faFileAlt, faBox } from '@fortawesome/free-solid-svg-icons';
 
 type SideBarLinkProps = {
   link: string,
@@ -61,7 +60,7 @@ export default function Sidebar(props: SidebarProps) {
       {/* Sidebar */}
       <div className={`h-full bg-blue-950 backdrop-blur-lg border-r border-gray-800/50 shadow-sm transition-all duration-300 ease-in-out
           px-2 py-1 ${isOpen ? "w-50" : "w-20"}`}>
-        <ul className="space-y-6 mt-20 ">
+        <ul className="space-y-6 mt-20">
           <SideBarLink link="/teacher/users?userListType=student" icon={faUsers} isOpen={isOpen} isActive={openedLink === "/teacher/users?userListType=student"} onClick={() => setOpenedLink("/teacher/users?userListType=student")}>Students</SideBarLink>
           <SideBarLink link="/teacher/users?userListType=teacher" icon={faUserFriends} isOpen={isOpen} isActive={openedLink === "/teacher/users?userListType=teacher"} onClick={() => setOpenedLink("/teacher/users?userListType=teacher")}>Teachers</SideBarLink>
           <SideBarLink link="/teacher/templates" icon={faFileAlt} isOpen={isOpen} isActive={openedLink === "/teacher/templates"} onClick={() => setOpenedLink("/teacher/templates")}>Templates</SideBarLink>

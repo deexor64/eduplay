@@ -1,6 +1,10 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import PandaEar from '@/components/signin/PandaEar';
+import PandaFace from '@/components/signin/PandaFace';
+import PandaHand from '@/components/signin/PandaHand';
+import PandaPaw from '@/components/signin/PandaPaw';
+import React, { useState, useEffect,useContext } from 'react';
 import { clientAuth } from "@/lib/firebaseClient";
 import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { redirect } from "next/navigation";
@@ -8,10 +12,29 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGlobe, faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons"; // ← change here
 import { AuthContext } from "@/contexts/AuthProvider";
 
-export default function Signin() {
+export default function PandaSignIn() {
   
   const { userID, email, userType, role, status, user } = useContext(AuthContext);
+  
+  // Panda
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
+  // Reset panda styles when clicking outside inputs
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('#email') && !target.closest('#password')) {
+        setIsEmailFocused(false);
+        setIsPasswordFocused(false);
+      } 
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+  
+  // Login
   const [uEmail, setUEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -52,66 +75,84 @@ export default function Signin() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
-      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+    <div className="min-h-screen bg-[#8e70e6] flex items-center justify-center p-4 font-poppins">
+      <div className="relative w-[31.25rem] h-[31.25rem]">
         
-        {/* Title */}
-        <h1 className="text-3xl font-bold text-center mb-6">Sign In</h1>
-
+         {/*TODO: Implement error message popup*/}
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         {message && <p className="text-green-600 text-center mb-4">{message}</p>}
-
-        {/* Google Login */}
-        <button
-          onClick={handleGoogleLogin}
-          className="flex items-center justify-center gap-3 w-full px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition mb-6"
-        >
-          <FontAwesomeIcon icon={faGlobe} />
-          Sign in with Google
-        </button>
-
-        <div className="border-b border-gray-300 mb-6"></div>
-
-        {/* Email/Password Login */}
-        <form onSubmit={handleEmailLogin} className="flex flex-col gap-4">
-          <div className="flex items-center border px-3 py-2 rounded-lg">
-            <FontAwesomeIcon icon={faEnvelope} className="text-gray-400 mr-2" />
-            <input
-              type="email"
-              placeholder="Email"
-              value={uEmail}
-              onChange={(e) => setUEmail(e.target.value)}
-              className="flex-1 outline-none"
-              required
-            />
-          </div>
-          <div className="flex items-center border px-3 py-2 rounded-lg">
-            <FontAwesomeIcon icon={faLock} className="text-gray-400 mr-2" />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="flex-1 outline-none"
-              required
-            />
-          </div>
+        
+        {/* Panda Face */}
+        <PandaFace isEmailFocused={isEmailFocused} />
+        
+        {/* Panda Ears */}
+        <PandaEar />
+        
+        {/* Panda Hands */}
+        <PandaHand isPasswordFocused={isPasswordFocused} />
+        
+        {/* Panda paws */}
+        <PandaPaw />
+        
+        {/* Form */}
+        <form onSubmit={handleEmailLogin} className="pt-10 pb-4 absolute top-[9.5rem] left-1/2 -translate-x-1/2 w-[23.75rem] h-[22rem] bg-white rounded-lg p-12 flex flex-col justify-center z-50">
+          
+          {/* Google Login */}
           <button
-            type="submit"
-            className="w-full px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+            onClick={handleGoogleLogin}
+            className="cursor-pointer flex items-center justify-center gap-3 w-full px-6 py-3 bg-gray-200 text-black rounded-lg hover:bg-red-600 transition mb-4"
           >
+            <FontAwesomeIcon icon={faGlobe} />
+            Sign in with Google
+          </button>
+          
+          {/* Email Login */}
+          <label htmlFor="email" className="block mb-1 font-semibold text-[#2e0d30]">
+            Enter your Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            placeholder="Email"
+            className="text-[0.95rem] font-normal text-[#3f3554] p-1 border-b-2 border-[#3f3554] outline-none focus:border-[#71c418] placeholder-[#b4b5b3] mb-4"
+            value={uEmail}
+            onChange={(e) => setUEmail(e.target.value)}
+            onFocus={() => {
+              setIsEmailFocused(true);
+              setIsPasswordFocused(false);
+            }}
+          />
+          
+          {/* Password Input */}
+          <label htmlFor="password" className="block mb-1 font-semibold text-[#2e0d30]">
+            Enter your Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Password"
+            className="text-[0.95rem] font-normal text-[#3f3554] p-1 border-b-2 border-[#3f3554] outline-none focus:border-[#71c418] placeholder-[#b4b5b3] mb-4"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onFocus={() => {
+              setIsEmailFocused(false);
+              setIsPasswordFocused(true);
+            }}
+          />
+          
+          <button type="submit" className="text-[0.95rem] p-2 w-[18.6rem] rounded bg-[#c41857] text-white uppercase font-semibold cursor-pointer tracking-wider mt-2 hover:bg-[#a31447]">
             Login
           </button>
+          
+          <p className="text-center text-sm text-gray-500 mt-1 mb-6">
+            Forgot Password?{" "}
+            <a href="/auth/forgot" className="text-blue-600 hover:underline">
+              Reset Password
+            </a>
+          </p>
+          
         </form>
-
-        <p className="text-center text-sm text-gray-500 mt-6">
-          Don’t have an account?{" "}
-          <a href="/auth/signup" className="text-blue-600 hover:underline">
-            Sign up
-          </a>
-        </p>
-        
       </div>
     </div>
   );
-}
+};
