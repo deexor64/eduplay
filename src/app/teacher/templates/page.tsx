@@ -96,7 +96,12 @@ export default function Templates() {
     <NavigatorLayout>
       
       {/* Title */}
-      <Title title="Activity Templates" />
+      {
+        ["ADMIN"].includes(role as TeacherRole)  ? (
+          <Title title="Activity Templates" syncTemplates={true} handleSyncTemplates={handleSyncTemplates}/>
+        ) :
+        <Title title="Activity Templates" />
+      }
 
       {/* Filters */}
       <FilterWrapper>
@@ -111,12 +116,6 @@ export default function Templates() {
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Title</InputFilter>
-        {/* sync button. shown only to admins */}
-        {
-          ["ADMIN"].includes(role as TeacherRole)  && (
-            <SyncTemplateButton handleSyncTemplates={handleSyncTemplates} />
-          )
-        }
       </FilterWrapper>
       
       {/* Info */}
