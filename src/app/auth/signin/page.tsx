@@ -6,8 +6,8 @@ import PandaHand from '@/components/signin/PandaHand';
 import PandaPaw from '@/components/signin/PandaPaw';
 import React, { useState, useEffect,useContext } from 'react';
 import { clientAuth } from "@/lib/firebaseClient";
-import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
-import { redirect } from "next/navigation";
+import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
+import { redirect, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGlobe, faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons"; // ← change here
 import { AuthContext } from "@/contexts/AuthProvider";
@@ -35,6 +35,8 @@ export default function PandaSignIn() {
   }, []);
   
   // Login
+  const router = useRouter();
+  
   const [uEmail, setUEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -49,6 +51,7 @@ export default function PandaSignIn() {
   const handleGoogleLogin = async () => {
     try {
       const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
       await signInWithPopup(clientAuth, provider);
       setError(null);
     } catch (err: any) {
@@ -71,6 +74,21 @@ export default function PandaSignIn() {
       setError(null);
     } catch (err: any) {
       setError(err.message || "Login failed");
+    }
+  };
+  
+  // Handle password reset
+  async function handlePasswordReset() {
+    if (!uEmail) {
+      setError("No email provided. Please enter your email first.");
+      return;
+    }
+    try{
+      await sendPasswordResetEmail(clientAuth, uEmail);
+      setMessage("Password reset email sent. Please check your inbox");
+      setError(null);
+    } catch (err: any) {
+      setError("Failed to send reset email");
     }
   };
 
@@ -99,6 +117,7 @@ export default function PandaSignIn() {
           
           {/* Google Login */}
           <button
+            type="button"
             onClick={handleGoogleLogin}
             className="cursor-pointer flex items-center justify-center gap-3 w-full px-6 py-3 bg-gray-200 text-black rounded-lg hover:bg-red-600 transition mb-4"
           >
@@ -146,9 +165,9 @@ export default function PandaSignIn() {
           
           <p className="text-center text-sm text-gray-500 mt-1 mb-6">
             Forgot Password?{" "}
-            <a href="/auth/forgot" className="text-blue-600 hover:underline">
+            <button className="text-blue-600 hover:underline" onClick={handlePasswordReset}>
               Reset Password
-            </a>
+            </button>
           </p>
           
         </form>
