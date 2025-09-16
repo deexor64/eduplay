@@ -9,8 +9,9 @@ import { clientAuth } from "@/lib/firebaseClient";
 import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
 import { redirect, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGlobe, faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons"; // ← change here
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { AuthContext } from "@/contexts/AuthProvider";
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 export default function PandaSignIn() {
   
@@ -121,7 +122,7 @@ export default function PandaSignIn() {
             onClick={handleGoogleLogin}
             className="cursor-pointer flex items-center justify-center gap-3 w-full px-6 py-3 bg-gray-200 text-black rounded-lg hover:bg-red-600 transition mb-4"
           >
-            <FontAwesomeIcon icon={faGlobe} />
+            <FontAwesomeIcon icon={faGoogle as IconProp} />
             Sign in with Google
           </button>
           

@@ -34,7 +34,7 @@ export default function Navbar() {
       <div
         className="text-white font-bold cursor-pointer"
         onClick={ routeBackToDashboard}>
-        <span className="text-xl">EduSoft</span>
+        <span className="text-xl">EduPlay</span>
       </div>
       
       <div className="flex items-center space-x-4">

@@ -18,7 +18,7 @@ Promise<{ status: boolean; data: any; }> {
     grade: z.enum(["1", "2", "3", "4", "5"]).transform((grade) => parseInt(grade)).optional(),
     role: z.nativeEnum(TeacherRole).optional(),
     email: z.string().optional(),
-    verified: z.enum(["Verified", "Unverified"]).optional(),
+    verified: z.enum(["VERIFIED", "UNVERIFIED"]).optional(),
     status: z.nativeEnum(UserStatus).optional(),
     page: z.string().transform((val) => parseInt(val)).pipe(z.number().min(1)),
     limit: z.string().transform((val) => parseInt(val)).pipe(z.number().min(1))

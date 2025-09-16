@@ -74,7 +74,7 @@ export default function RegisterLog(props: RegisterLogProps) {
       {/* Message */}
       <div className="flex flex-col">
         <span className="font-medium break-words max-w-xl">
-          {tooLong ? "Message too long, open in a new tab..." : <pre>{message}</pre> }
+          {tooLong ? "Message too long, open in a new tab..." : <pre className="whitespace-pre-wrap break-words">{message}</pre> }
         </span>
         <span className="text-xs opacity-70">
           {timestamp.toLocaleTimeString()}

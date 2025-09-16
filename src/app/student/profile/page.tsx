@@ -1,7 +1,6 @@
 "use client"
 
 import StudentNavigatorLayout from "@/components/student/StudentNavigatorLayout";
-import AcademicInfoForm from "@/components/student/profile/AcademicInfoForm";
 import PersonalInfoForm from "@/components/student/profile/PersonalInfoForm";
 import ProfilePictureUpload from "@/components/student/profile/ProfilePictureUpload";
 import PasswordChangeForm from "@/components/student/profile/PasswordChangeForm";
@@ -9,13 +8,17 @@ import { useContext, useEffect, useState } from "react";
 import { updateStudentInfo } from "@/actions/student/updateStudentInfo";
 import Assistant from "@/components/student/Assistant";
 import { UserStatus } from "@prisma/client";
-import { EdgeStoreProvider } from "@/lib/edgestore";
 import Title from "@/components/student/Title";
 import { AuthContext } from "@/contexts/AuthProvider";
+import useFileStoreUploader from "@/hooks/useFileStoreUploader";
+import generateHash from "@/lib/utils/generateHash";
 
-export default function StudentProfile() {
+export default function Profile() {
   
   const { userID, email, userType, role, status, user } = useContext(AuthContext);
+  
+  // FileStore handler
+  const fileStoreUploader = useFileStoreUploader();
 
   // Assistant 
   const [assistantMessage, setAssistantMessage] = useState<{
@@ -89,6 +92,23 @@ export default function StudentProfile() {
       });
     }
   }
+  
+  async function updateProfilePictureHandler(file: File): Promise<string> {
+    const hash = await generateHash(file.name);
+    try {
+      const urls = await fileStoreUploader(new Map<string, File>([[hash, file]]));
+      const url = urls.get(hash) + "";
+      const token = await user?.getIdToken();
+      await updateStudentInfo({ displayPicUrl: url }, token!);
+      return url;
+    } catch (e: any) {
+      setAssistantMessage({
+        show: true,
+        text: e.message,
+      });
+      return "";
+    }
+  }
 
   useEffect(() => {
     fetchStudent();
@@ -96,32 +116,30 @@ export default function StudentProfile() {
 
   return (
     <>
-    <EdgeStoreProvider>
     <StudentNavigatorLayout>
       <div className="p-4 space-y-6">
 
         <Title title="Profile" imageUrl="/images/student/title-activities.png" />
         
-        {/* ISSUE: Image selection window doesn't open */}
         <ProfilePictureUpload 
-          currentImage={dbData.displayPicUrl}
-          studentName={`${dbData.firstName} ${dbData.lastName}`}
-          updateStudentInfo={updateStudentInfoHandler}
-          studentInfo={{
-            indexNumber: dbData.student.indexNumber,
-            email: dbData.email,
-            grade: dbData.student.grade,
-            status: dbData.status
-          }}
+          updateProfilePictureHandler={updateProfilePictureHandler}
+          studentInfo={
+            {
+              currentImage: dbData.displayPicUrl,
+              studentName: `${dbData.firstName} ${dbData.lastName}`,
+              indexNumber: dbData.student.indexNumber,
+              email: dbData.email,
+              grade: dbData.student.grade,
+              status: dbData.status
+            }
+          }
         />
         <PersonalInfoForm data={dbData} updateStudentInfo={updateStudentInfoHandler} />
-        <AcademicInfoForm data={dbData.student} updateStudentInfo={updateStudentInfoHandler} />
         {/* TODO: implement password change */}
         <PasswordChangeForm />
 
       </div>
     </StudentNavigatorLayout>
-    </EdgeStoreProvider>
 
     {/* Assistant */}
     <Assistant assistantMessage={assistantMessage} setAssistantMessage={setAssistantMessage} />

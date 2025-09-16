@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, context: { params: Promise<any> }) {
     const headers = req.headers;
     const slugParam = {activityID: (await context.params).activityID}
     
-    const parsed = getActivityValidator(headers, slugParam);
+    const parsed = await getActivityValidator(headers, slugParam);
     if (!parsed.status) return NextResponse.json(
       {status: false, responseType: "log", data: parsed.data},
       { status: 401 }

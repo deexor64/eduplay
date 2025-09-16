@@ -1,14 +1,12 @@
 "use client"
 
 import React, { useState, useRef } from "react";
-import useFileStoreUploader from "@/hooks/useFileStoreUploader";
-import generateHash from "@/lib/utils/generateHash";
 
 type ProfilePictureUploadProps = {
-  currentImage: string;
-  studentName: string;
-  updateStudentInfo: (update: any) => Promise<void>;
+  updateProfilePictureHandler: (file: File) => Promise<string>;
   studentInfo: {
+    currentImage: string;
+    studentName: string;
     indexNumber: string;
     email: string;
     grade: number;
@@ -18,15 +16,12 @@ type ProfilePictureUploadProps = {
 
 export default function ProfilePictureUpload(props: ProfilePictureUploadProps) {
   
-  const { currentImage, studentName, updateStudentInfo, studentInfo } = props;
-
-  const fileStoreUploader = useFileStoreUploader();
+  const { updateProfilePictureHandler, studentInfo } = props;
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const abortSave = useRef(false);
   const [fileToUpload, setFileToUpload] = useState<File | null>(null);
 
   // Handle file selection
@@ -66,30 +61,14 @@ export default function ProfilePictureUpload(props: ProfilePictureUploadProps) {
     if (!fileToUpload) return;
     setUploading(true);
     setUploadProgress(0);
-    try {
-      // Generate a unique hash for the filename
-      const hash = await generateHash(studentName + Date.now().toString());
-      const uniqueKey = `profile-${hash}`;
-      var files = new Map();
-      files.set(uniqueKey, fileToUpload);
-      const urlMap = await fileStoreUploader(files, abortSave, function(progress) {
-        setUploadProgress(progress);
-      });
-      const url = urlMap.get(uniqueKey);
-      if (url) {
-        await updateStudentInfo({ displayPicUrl: url });
-      }
-      setUploading(false);
-      setFileToUpload(null);
-      setSelectedImage(null); // Hide Save Changes button after upload
-    } catch (e) {
-      setUploading(false);
-      // Optionally show error
-    }
+    const url = await updateProfilePictureHandler(fileToUpload);
+    setUploading(false);
+    setFileToUpload(null);
+    setSelectedImage(null); // Hide Save Changes button after upload
   };
 
   // The image to display in the preview (selected or current)
-  const displayImage = selectedImage || currentImage;
+  const displayImage = selectedImage || studentInfo.currentImage;
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200">
@@ -104,7 +83,7 @@ export default function ProfilePictureUpload(props: ProfilePictureUploadProps) {
             <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg">
               <img
                 src={displayImage}
-                alt={`${studentName}'s profile picture`}
+                alt={`${studentInfo.studentName}'s profile picture`}
                 className="w-full h-full object-cover"
               />
             </div>

@@ -6,7 +6,6 @@ import InputFilter from "@/components/shared/filter/InputFilter";
 import OptionFilter from "@/components/shared/filter/OptionFilter";
 import Paginator from "@/components/shared/pagination/Paginator";
 import ViewTemplateItem from "@/components/templates/ViewTemplateItem";
-import SyncTemplateButton from "@/components/templates/SyncTemplatesButton";
 import React, { useContext, useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
@@ -119,7 +118,7 @@ export default function Templates() {
       </FilterWrapper>
       
       {/* Info */}
-      <div className="w-full min-h-[calc(100vh-350px)] table-auto text-left">
+      <div className="w-full min-h-[calc(100vh-380px)] table-auto text-left">
         {dbData.templates.length === 0 ? (
           <div className="text-center text-gray-500 py-8">Nothing to display</div>
         ) : (

@@ -5,8 +5,7 @@ import React, { useState, useEffect } from "react";
 interface PersonalInfoData {
   firstName: string;
   lastName: string;
-  phoneNumber?: string;
-  dateOfBirth?: string;
+  email: string;
 }
 
 interface PersonalInfoFormProps {
@@ -86,33 +85,19 @@ export default function PersonalInfoForm(props: PersonalInfoFormProps) {
             placeholder="Enter your last name"
           />
         </div>
-
-        {/* Phone Number */}
+        
+        {/* Email */}
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Phone Number
+            Email
           </label>
           <input
-            type="tel"
-            value={formData.phoneNumber || ''}
-            onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+            type="email"
+            value={formData.email}
+            onChange={(e) => handleInputChange('email', e.target.value)}
             disabled={!isEditing}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
-            placeholder="Enter your phone number"
-          />
-        </div>
-
-        {/* Date of Birth */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Date of Birth
-          </label>
-          <input
-            type="date"
-            value={formData.dateOfBirth || ''}
-            onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
-            disabled={!isEditing}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
+            placeholder="Enter your email"
           />
         </div>
 

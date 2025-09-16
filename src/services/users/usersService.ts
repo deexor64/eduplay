@@ -53,7 +53,7 @@ export default async function usersService(data: any): Promise<ResType> {
     delete selectUsers.role;
   }
 
-  const dbUsers = {
+  const users = {
     users: await userListHandler[data.userListType].findMany({
       where: whereUsers,
       select: selectUsers,
@@ -65,37 +65,32 @@ export default async function usersService(data: any): Promise<ResType> {
     })
   }
   
-  let users = dbUsers;
-  
   // Add Verified attribute to users
-  // And filter them if filter is set
-  // ISSUE: verified status not correctly detecting
-  if (data.verified) {
-
-    const usersVerified = await Promise.all(dbUsers.users.map(async (user: any) => {
-      
-      const fbUser = await adminAuth.getUserByEmail(user.user.email);
-      
-      return {
-        ...user,
-        user: {
-          ...user.user,
-          verified: fbUser.emailVerified,
-        }
-      };
-      
-    }));
+  let dbUsers = users;
+  
+  const usersVerified = await Promise.all(users.users.map(async (user: any) => {
     
-    if (data.verified === "Verified") {
-      users.users = usersVerified.filter(user => user.user.verified);
-    } else if (data.verified === "Unverified") {
-      users.users = usersVerified.filter(user => !user.user.verified);
-    } else if (data.verified === undefined) {
-      users.users = usersVerified;
-    }
+    const fbUser = await adminAuth.getUserByEmail(user.user.email);
     
+    return {
+      ...user,
+      user: {
+        ...user.user,
+        verified: fbUser.emailVerified,
+      }
+    };
+    
+  }));
+  
+  // Filter verified users if filter is set
+  if (data.verified && data.verified === "VERIFIED") {
+    dbUsers.users = usersVerified.filter(user => user.user.verified);
+  } else if (data.verified && data.verified === "UNVERIFIED") {
+    dbUsers.users = usersVerified.filter(user => !user.user.verified);
+  } else {
+    dbUsers.users = usersVerified;
   }
- 
+    
   return { status: true, resDataType: "success", data: users };
   
 }

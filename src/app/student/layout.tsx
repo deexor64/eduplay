@@ -1,5 +1,4 @@
 import { AuthProvider } from "@/contexts/AuthProvider";
-import { Toaster } from "react-hot-toast";
 
 export default function StudentLayout(props: any) {
   return (

@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const headers = req.headers;
     const searchParams = req.nextUrl.searchParams;
 
-    const parsed = profileValidator(headers, searchParams);
+    const parsed = await profileValidator(headers, searchParams);
     if (!parsed.status) return NextResponse.json(
       { status: false, responseType: "log", data: parsed.data },
       { status: 401 }

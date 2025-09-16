@@ -7,7 +7,7 @@ Promise<{ status: boolean; data: any; }> {
   
   // Verify session
   const token = headers.get("authorization")?.split("Bearer ")[1];
-  const userPermissions = await userPermissionCheck(token, ["TEACHER"], ["TEACHER", "ADMIN"], ["ACTIVE"]);
+  const userPermissions = await userPermissionCheck(token, ["TEACHER"], ["ADMIN"], ["ACTIVE"]);
   if (!userPermissions.status) return userPermissions;
   
   const zSearchParams = z.object({

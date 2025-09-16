@@ -1,6 +1,10 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import useConfirm from "@/hooks/useConfirm";
+import { signOut } from "firebase/auth";
+import { clientAuth } from "@/lib/firebaseClient";
+import { ConfirmDialog } from "../shared/popups/confirmDialog";
 
 // LeftSidebar: Book, Cup, and Wrench
 export function LeftSidebar() {
@@ -30,6 +34,15 @@ export function LeftSidebar() {
 
 // RightSidebar: Assistant, Guide, Notifications, and Quick Actions
 export function RightSidebar() {
+  
+  const { confirm, state, setState } = useConfirm();
+  
+  // Logout
+  async function logOut() {
+    const ok = await confirm("Do you really want to Logout?");
+    if (ok) signOut(clientAuth);
+  }
+  
   return (
     <div className="fixed top-0 right-0 h-full w-28 flex flex-col justify-evenly items-center pt-5 gap-8 z-40">
       {/* Avatar */}
@@ -42,16 +55,13 @@ export function RightSidebar() {
       <div title="Notifications" className="transition-transform duration-200 hover:scale-110 drop-shadow-amber-400 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg mt-5">
         <Image src="/images/student/envelop.png" alt="Notifications" width={60} height={60} />
       </div>
-      {/* Parent */}
-      <Link href="/student/parent" title="Parent">
-        <div className="transition-transform duration-200 hover:scale-110 drop-shadow-blue-400 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg mt-5">
-          <Image src="/images/student/parent.png" alt="Parent" width={70} height={70} />
-        </div>
-      </Link>
       {/* Logout */}
-      <div title="Logout" className="transition-transform duration-200 hover:scale-110 drop-shadow-orange-600 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg">
+      <button title="Logout" onClick={logOut} className="transition-transform duration-200 hover:scale-110 drop-shadow-orange-600 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg">
         <Image src="/images/student/logout.png" alt="Logout" width={70} height={70} />
-      </div>
+      </button>
+      
+      <ConfirmDialog state={state} setState={setState} />
+      
     </div>
   );
 }
