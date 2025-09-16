@@ -4,7 +4,7 @@ import { ResType } from '@/lib/utils/types';
 export default async function activitiesService(data: any): Promise<ResType> {
   
   // Get grade if user is a student
-  const student = (data.userType === "STUDENT" ? await prisma.student.findUnique({
+  const student = (data.userPermissions.userType === "STUDENT" ? await prisma.student.findUnique({
     where: { userID: data.userPermissions.uid},
     select: { studentID: true, grade: true }
   }) : null);
@@ -17,12 +17,12 @@ export default async function activitiesService(data: any): Promise<ResType> {
     grade: data.grade,
     difficulty: data.difficulty,
   };
-
-  if (data.userType === "STUDENT" && student) {
+  
+  if (data.userPermissions.userType === "STUDENT" && student) {
     // status: Only published actiivities are shown
     // grade: Only activities for the student's grade or below are shown
     whereActivities.status = "PUBLISHED";
-    whereActivities.grade = (data.grade && data.grade <= student.grade ? data.grade : student.grade) || { lte: student.grade };
+    whereActivities.grade = data.grade ? (data.grade <= student.grade ? data.grade : student.grade) : { lte: student.grade};
   }
   
   let selectActivities: any = {
@@ -36,7 +36,7 @@ export default async function activitiesService(data: any): Promise<ResType> {
     isScored: true,
   }
 
-  if (data.userType === "STUDENT") {
+  if (data.userPermissions.userType === "STUDENT") {
     // status: Status is not shown to students
     delete selectActivities.status;
   }
@@ -50,7 +50,7 @@ export default async function activitiesService(data: any): Promise<ResType> {
 
   // For students include a "Completed" field
   // ISSUE: Not correctly counting total values with completed attribute
-  if (data.userType === "STUDENT") {
+  if (data.userPermissions.userType === "STUDENT") {
 
     // Find studentID from userID
     const student = await prisma.student.findUnique({

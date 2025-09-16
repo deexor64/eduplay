@@ -14,7 +14,7 @@ interface ViewActivityItemProps {
     grade?: 1 | 2 | 3 | 4 | 5;
     isScored: boolean;
     difficulty?: ActivityDifficulty;
-    topic?: string;
+    section: string;
   };
   handleUpdateActivityStatus: (activityID: string, status: ActivityStatus) => void;
 }
@@ -40,7 +40,7 @@ export default function ViewActivityItem(props: ViewActivityItemProps) {
             cursor-pointer no-underline hover:text-gray-800"
             style={{ textDecoration: 'none' }}
           >
-            {itemData.topic ? itemData.topic + ": " + itemData.title 
+            {itemData.section ? itemData.section + " | " + itemData.title 
             : itemData.title}
           </Link>
           <InfoBadge text={itemData.activityID.slice(0, 23) + "..."} colorTheme="default" />

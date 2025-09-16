@@ -99,7 +99,7 @@ export default function Activities() {
         >Title</InputFilter>
         <OptionFilter
           filterKey="grade"
-          values={['1', '2', '3', '4', '5']}
+          values={Array.from({ length: 5 }, (_, i) => String(i + 1))} // ISSUE: fetch grade
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Grade</OptionFilter>
