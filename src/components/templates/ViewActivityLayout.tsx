@@ -252,6 +252,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
     // Progress is saved only for scored activities
     if (dbData.isScored) { 
 
+      const token = await user?.getIdToken();
       const form = resultForm();
 
       const url = `/api/progress`;
@@ -259,6 +260,7 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
         body: form
       })

@@ -26,7 +26,7 @@ export default function Landing() {
                 className="w-25 h-25 object-cover"
                 style={{ minWidth: '3.5rem' }}
               />
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent p-5">
                 EDUPlay
               </h1>
             </div>
@@ -54,30 +54,27 @@ export default function Landing() {
           <div className="max-w-6xl mx-auto">
             
             {/* Teachers & Students Section */}
-            <section className={`${styles.fadeInUp} ${styles.animate} ${styles.delay2} mb-12 items-center`}>
+            <section className={`${styles.fadeInUp} ${styles.animate} ${styles.delay2} mb-12 items-center flex flex-col`}>
               
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-semibold text-white mb-2 drop-shadow-lg">Learning Community</h3>
                 <p className="text-white/80 drop-shadow-sm">Join our vibrant educational ecosystem</p>
               </div>
           
-          
-
-                {/* Teacher Login */}
-                <Link href={"/auth/signin"} className={`${styles.loginCard} ${styles.hoverEffect} group w-60`}>
-                  <div className="p-8 text-center">
-                    <div className="text-2xl font-bold text-white mb-3">
+                {/* Login */}
+                <Link href={"/auth/signin"} className={`${styles.loginCard} ${styles.hoverEffect} group w-100`}>
+                  <div className="p-4 text-center">
+                    <div className="text-3xl font-bold text-white mb-3">
                       Login
                     </div>
                     <p className="text-white/90 text-sm leading-relaxed">
-                      Become a teacher and share your knowledge
+                      Become a part of our interactive community
                     </p>
                     <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <span className="text-white/80 text-sm">Click to get started →</span>
                     </div>
                   </div>
                 </Link>
-              
               
             </section>
 

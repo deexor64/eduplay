@@ -60,7 +60,7 @@ export default function RegisterLog(props: RegisterLogProps) {
 
   };
 
-  const tooLong = message.split("\n").length > 5; // more than 30 lines
+  const tooLong = message ? message.split("\n").length > 5 : false; // more than 30 lines
 
   return (
     <div className={`p-3 rounded-lg text-sm flex justify-between items-start ${type === "error"
