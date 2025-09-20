@@ -5,7 +5,9 @@ export default function TeacherLayout(props: any) {
   return (
     <AuthProvider userType={["TEACHER"]} role={["ADMIN", "TEACHER"]} status={["ACTIVE"]}>
       <Toaster position="top-right" reverseOrder={false}/> {/* Notification provider */}
-      {props.children}
+      <div className="teacher-route">
+        {props.children}
+      </div>
     </AuthProvider>
   );
 }

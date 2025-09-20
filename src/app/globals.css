@@ -1,13 +1,23 @@
 @import "tailwindcss";
-/* @import 'sweetalert2/src/sweetalert2.scss' */
 
 @font-face {
     font-family: 'ComicSans';
-    src: url('/fonts/ComicSansMS.ttf') format('truetype');
+    src: url('../assets/fonts/ComicSansMS.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
-* {
+.teacher-route {
     font-family: 'ComicSans', cursive, sans-serif;
+}
+
+@font-face {
+    font-family: 'KGMissKindergarten';
+    src: url('../assets/fonts/KGMissKindergarten.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.student-route {
+    font-family: 'KGMissKindergarten', cursive, sans-serif;
 }
