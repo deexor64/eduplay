@@ -2,7 +2,7 @@ import Lottie, { useLottie } from "lottie-react";
 
 export default function Loading() {
   return (
-    <div className="flex items-center justify-center h-screen w-screen bg-gray-100">
+    <div className="flex items-center justify-center h-screen w-screen bg-emerald-200">
       <div className="flex flex-col items-center space-y-4">
         
         {/* Lottie animation */}

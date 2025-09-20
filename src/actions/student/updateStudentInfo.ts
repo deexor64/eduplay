@@ -7,7 +7,6 @@ import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 export async function updateStudentInfo(updateData: {
   firstName?: string,
   lastName?: string,
-  email?: string,
   displayPicUrl?: string,
 }, token: string) {
   
@@ -34,7 +33,6 @@ export async function updateStudentInfo(updateData: {
   // DB update
   const userUpdate: any = {};
 
-  if (updateData.email !== undefined) userUpdate.email = updateData.email;
   if (updateData.firstName !== undefined) userUpdate.firstName = updateData.firstName;
   if (updateData.lastName !== undefined) userUpdate.lastName = updateData.lastName;
   if (updateData.displayPicUrl !== undefined) userUpdate.displayPicUrl = updateData.displayPicUrl;

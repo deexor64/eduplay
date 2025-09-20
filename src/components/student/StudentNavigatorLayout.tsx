@@ -9,7 +9,7 @@ export default function StudentNavigatorLayout(props: any) {
 
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: 'url(/images/work-desk.jpg)' }}>
+            style={{ backgroundImage: 'url(/images/student/student-navigator.jpg)' }}>
 
             {/* Left Side bar */}
             <LeftSidebar />

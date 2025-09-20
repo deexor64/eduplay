@@ -82,7 +82,7 @@ export default function PandaSignIn() {
       setMessage({message: "Your Email looks empty", type: "normal"});
       return;
     } else if (!password) {
-      setMessage({message: "Seems you haven't entered the Password", type: "normal"});
+      setMessage({message: "You forgot to enter the Password", type: "normal"});
       return;
     }
     
@@ -94,11 +94,11 @@ export default function PandaSignIn() {
         setMessage({message: "We sent you a verification email, Check your inbox", type: "success"});
       } else {
         const claims = (await user.getIdTokenResult()).claims;
-        await Promise.resolve(setTimeout(() => redirect("/" + (claims.userType! as string).toLowerCase()), 1000)); // wait a bit
+        await Promise.resolve(setTimeout(() => redirect("/" + (claims.userType! as string).toLowerCase()), 1500)); // wait a bit
         setMessage({message: "Voilà! That worked", type: "success"});
       }
     } catch (err: any) {
-      setMessage({message: "Ooops! Your email or password is wrong", type: "error"});
+      setMessage({message: "Ooops! Your Email or Password is wrong", type: "error"});
     }
     
   };

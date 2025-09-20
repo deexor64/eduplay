@@ -1,9 +1,13 @@
 "use client"
 
 import React, { useState, useRef } from "react";
+import localFont from "next/font/local";
+import toSentenceCase from "@/lib/utils/toSentenceCase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave, faTrashRestore, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 
 type ProfilePictureUploadProps = {
-  updateProfilePictureHandler: (file: File) => Promise<string>;
+  updateProfilePictureHandler: (file: File) => Promise<void>;
   studentInfo: {
     currentImage: string;
     studentName: string;
@@ -14,172 +18,139 @@ type ProfilePictureUploadProps = {
   };
 }
 
+const SpaceNova = localFont({
+  src: "../../../assets/fonts/SpaceNova.otf",
+  weight: "400",
+  style: "normal",
+});
+
 export default function ProfilePictureUpload(props: ProfilePictureUploadProps) {
   
   const { updateProfilePictureHandler, studentInfo } = props;
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [fileToUpload, setFileToUpload] = useState<File | null>(null);
-
-  // Handle file selection
-  const handleFileSelect = (file: File) => {
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-      setFileToUpload(file); // Save file for upload
-    }
-  };
 
   // Handle file input change
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("File input change event triggered");
+  
     const file = e.target.files?.[0];
-    if (file) {
-      console.log("File selected:", file.name);
-      handleFileSelect(file);
-    } else {
-      console.log("No file selected");
+
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (e) => setSelectedImageUrl(e.target?.result as string);
+      reader.readAsDataURL(file);
+      setSelectedImage(file); // Save file for upload
     }
-    // Reset the input value so the same file can be selected again
+
     e.target.value = '';
+    
   };
 
   // Discard the selected image and file (reset to original state)
   const handleDiscardChanges = () => {
+    setSelectedImageUrl(null);
     setSelectedImage(null);
-    setFileToUpload(null);
   };
 
   // Handle save changes (upload the selected image and update DB)
   const handleSaveChanges = async () => {
-    if (!fileToUpload) return;
+    if (!selectedImage) return;
     setUploading(true);
-    setUploadProgress(0);
-    const url = await updateProfilePictureHandler(fileToUpload);
+    await updateProfilePictureHandler(selectedImage);
     setUploading(false);
-    setFileToUpload(null);
-    setSelectedImage(null); // Hide Save Changes button after upload
+    setSelectedImage(null);
+    setSelectedImageUrl(null);
   };
 
-  // The image to display in the preview (selected or current)
-  const displayImage = selectedImage || studentInfo.currentImage;
+  const displayImage = selectedImageUrl || studentInfo.currentImage;
+  const statusColor = studentInfo.status === "ACTIVE" ? "bg-green-500" : "bg-red-500";
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200">
-      <h2 className="text-xl font-bold text-blue-700 mb-4">Profile Information</h2>
-      <div className="flex flex-col lg:flex-row items-center lg:items-stretch space-y-6 lg:space-y-0 lg:space-x-8 ">
-        
-        {/* Profile Picture section*/}
-        <div className="flex flex-col items-center space-y-4 lg:justify-center ">
+    <div className="relative w-full max-w-6xl mx-auto bg-gradient-to-br from-purple-400 via-pink-300 to-yellow-200 rounded-3xl shadow-2xl overflow-hidden flex items-center p-6">
+    
+      {/* Profile Picture */}
+      <div className="relative w-1/3 flex-shrink-0">
+        <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg mx-auto">
           
-          {/* Profile Picture Preview */}
-          <div className="relative">
-            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg">
-              <img
-                src={displayImage}
-                alt={`${studentInfo.studentName}'s profile picture`}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-
-          {/* Choose file button*/}
-          <div className="relative">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleFileInputChange(e)}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              id="profile-picture-input"
-            />
-            <label
-              htmlFor="profile-picture-input"
-              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold cursor-pointer inline-block"
-            >
-              Choose Photo
-            </label>
-          </div>
-
-          {/* Upload action buttons */}
-          <div className="flex space-x-3">
-            {selectedImage && !uploading && (
+          {/* Image */}
+          <img
+            src={displayImage}
+            alt="Profile picture"
+            className="w-full h-full object-cover"
+          />
+          
+          {/* Overlay for upload */}
+          <div className={`absolute inset-0 flex items-center justify-center bg-white/30 
+            ${selectedImageUrl || uploading ? "opacity-40" : "opacity-0"} hover:opacity-100 transition-opacity`}>
+            
+            {!selectedImageUrl && !uploading && (
               <>
-                <button
-                  onClick={handleDiscardChanges}
-                  className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold"
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileInputChange}
+                  className="hidden"
+                  id="profile-picture-input"
+                />
+                <label htmlFor="profile-picture-input"
+                  className="px-4 py-2 bg-purple-700 text-white rounded-lg font-bold cursor-pointer hover:bg-purple-800"
                 >
-                  Discard Changes
-                </button>
-                <button
-                  onClick={handleSaveChanges}
-                  className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-semibold"
-                >
-                  Save Changes
-                </button>
+                  <FontAwesomeIcon icon={faUserPlus} />
+                </label>
               </>
             )}
-            {uploading && (
-              <div className="flex items-center space-x-2">
-                <span className="text-blue-700 font-semibold">Uploading...</span>
-                <span>{uploadProgress}%</span>
+    
+            {selectedImageUrl && !uploading && (
+              <div className="flex space-x-2">
+                <button onClick={handleDiscardChanges} className="px-3 py-1 bg-gray-400 text-white rounded-lg hover:bg-gray-500 font-bold">
+                  <FontAwesomeIcon icon={faTrashRestore} />
+                </button>
+                <button onClick={handleSaveChanges} className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 font-bold">
+                  <FontAwesomeIcon icon={faSave} />
+                </button>
               </div>
             )}
-          </div>
-        </div>
-
-        {/* Student Information section*/}
-        <div className="flex-1 w-full lg:w-auto lg:flex lg:flex-col">
-          <div className="bg-blue-50 rounded-xl p-4 space-y-3  flex flex-col justify-center">
-            
-            {/* Index number */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="flex items-center space-x-2">
-                <span className="text-blue-600">🎓</span>
-                <div>
-                  <p className="text-xs text-gray-500">Index Number</p>
-                  <p className="font-semibold text-gray-800">{studentInfo.indexNumber}</p>
-                </div>
-              </div>
-
-              {/* Email */}
-              <div className="flex items-center space-x-2">
-                <span className="text-blue-600">📧</span>
-                <div>
-                  <p className="text-xs text-gray-500">Email</p>
-                  <p className="font-semibold text-gray-800">{studentInfo.email}</p>
-                </div>
-              </div>
-
-              {/* Grade */}
-              <div className="flex items-center space-x-2">
-                <span className="text-blue-600">📚</span>
-                <div>
-                  <p className="text-xs text-gray-500">Grade</p>
-                  <p className="font-semibold text-gray-800">Grade {studentInfo.grade}</p>
-                </div>
-              </div>
-
-              {/* Status */}
-              <div className="flex items-center space-x-2">
-                <span className="text-blue-600">📊</span>
-                <div>
-                  <p className="text-xs text-gray-500">Status</p>
-                  <p className="font-semibold text-gray-800">{studentInfo.status}</p>
-                </div>
-              </div>
-
+    
+            {uploading && <span className="text-blue-900 font-bold">Uploading...</span>}
+          
             </div>
-          </div>
         </div>
-
+    
+        {/* Accent stars */}
+        <div className="absolute -top-4 -left-4 w-6 h-6 bg-yellow-400 rounded-full animate-bounce"></div>
+        <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-pink-400 rounded-full animate-pulse"></div>
+      
       </div>
+    
+      {/* Info Section */}
+      <div className="ml-6 flex-1 flex flex-col justify-center items-start">
+        
+        {/* Name */}
+        <h1 className={`${SpaceNova.className} text-5xl font-extrabold text-blue-900 uppercase`}>
+          {studentInfo.studentName}
+        </h1>
+    
+        {/* Grade */}
+        <h2 className={`${SpaceNova.className} text-3xl font-bold text-orange-600 mt-2`}>
+          GRADE {studentInfo.grade.toString().padStart(2, "0")}
+        </h2>
+    
+        {/* Index & Status */}
+        <div className="flex items-center mt-4 space-x-4">
+          <div className="bg-white/80 px-3 py-1 rounded-full shadow-md font-bold text-blue-900">
+            #{studentInfo.indexNumber}
+          </div>
+          <div className={`h-6 w-6 rounded-full ${statusColor} shadow-lg ring-2 ring-white`} title={toSentenceCase(studentInfo.status)}></div>
+        </div>
+    
+      </div>
+    
     </div>
+
+
   );
-} 
+}

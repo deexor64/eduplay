@@ -12,6 +12,8 @@ import Title from "@/components/student/Title";
 import { AuthContext } from "@/contexts/AuthProvider";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 import generateHash from "@/lib/utils/generateHash";
+import { EmailAuthProvider, reauthenticateWithCredential, sendEmailVerification, signOut, updateEmail, updatePassword } from "firebase/auth";
+import { clientAuth } from "@/lib/firebaseClient";
 
 export default function Profile() {
   
@@ -73,43 +75,72 @@ export default function Profile() {
     setDbData(resData.data);
 
   }
-
-  async function updateStudentInfoHandler(update: any) {
-    
-    const token = await user?.getIdToken();
-    
-    await updateStudentInfo(update, token!);
-    await fetchStudent();
-    try {
-      setAssistantMessage({
-        show: true,
-        text: "Profile updated successfully",
-      });
-    } catch (e: any) {
-      setAssistantMessage({
-        show: true,
-        text: e.message,
-      });
-    }
-  }
   
-  async function updateProfilePictureHandler(file: File): Promise<string> {
+  async function updateProfilePictureHandler(file: File) {
     const hash = await generateHash(file.name);
     try {
       const urls = await fileStoreUploader(new Map<string, File>([[hash, file]]));
       const url = urls.get(hash) + "";
       const token = await user?.getIdToken();
       await updateStudentInfo({ displayPicUrl: url }, token!);
-      return url;
+      fetchStudent();
+      setAssistantMessage({
+        show: true,
+        text: "We updated your new photo, take a look",
+      });
     } catch (e: any) {
       setAssistantMessage({
         show: true,
-        text: e.message,
+        text: "Ooops, Something is wrong, can you try again..",
       });
-      return "";
     }
   }
+  
+  async function updateStudentInfoHandler(update: any) {
+    try {
+      const token = await user?.getIdToken();
+      await updateStudentInfo(update, token!);
+      await fetchStudent();
+      setAssistantMessage({
+        show: true,
+        text: "We updated your profile information",
+      });
+    } catch (e: any) {
+      setAssistantMessage({
+        show: true,
+        text: "Ooops, Something is wrong, can you try again..",
+      });
+    } 
+  }
+  
+  async function updatePasswordHandler(currentPassword: string, newPassword: string) {
 
+    if (newPassword.length < 6) {
+      setAssistantMessage({
+        show: true,
+        text: "Password must be at least 6 characters long!",
+      });
+      return;
+    }
+    
+    // ISSUE: firebase silently fail for empty password
+    try {
+      const credential = EmailAuthProvider.credential(email!, currentPassword);
+      await reauthenticateWithCredential(user!, credential);
+      await updatePassword(user!, newPassword);
+      setAssistantMessage({
+        show: true,
+        text: "We updated your password",
+      });
+    } catch (e: any) {
+      setAssistantMessage({
+        show: true,
+        text: "Ooops, Something is wrong, may be your old password is incorrect",
+      });
+      throw new Error("Password update failed");
+    }
+  }
+  
   useEffect(() => {
     fetchStudent();
   }, []);
@@ -136,7 +167,7 @@ export default function Profile() {
         />
         <PersonalInfoForm data={dbData} updateStudentInfo={updateStudentInfoHandler} />
         {/* TODO: implement password change */}
-        <PasswordChangeForm />
+          <PasswordChangeForm updatePasswordHandler={updatePasswordHandler} />
 
       </div>
     </StudentNavigatorLayout>
