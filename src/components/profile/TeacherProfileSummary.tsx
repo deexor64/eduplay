@@ -27,7 +27,7 @@ export default function TeacherProfileSummary(props: TeacherProfileSummaryProps)
         <img 
           src={teacherInfo.displayPicUrl || "/images/avatar.png"} 
           alt="Profile" 
-          className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+          className="w-34 h-34 rounded-full mx-auto mb-4 object-cover"
         />
         <label className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 cursor-pointer hover:bg-blue-700 transition-colors">
           <input
@@ -54,17 +54,17 @@ export default function TeacherProfileSummary(props: TeacherProfileSummaryProps)
       <div className="space-y-2 text-sm">
         <div className="flex justify-evenly">
           <span className="text-gray-600 flex items-center gap-2">
-            Role
+            <b>Role</b>
             <p className="font-medium capitalize m-0 leading-none">
               {teacherInfo.teacher.role.toLowerCase()}
             </p>
           </span>
           <span className="h-5 text-gray-600 flex items-center gap-2">
-            Status
+            <b>Status</b>
             <p className={`py-1 px-2 rounded-full text-xs leading-none m-0 ${
                 teacherInfo.status === 'ACTIVE'
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-red-100 text-red-800'
+                  ? 'bg-green-200 text-green-800'
+                  : 'bg-red-200 text-red-800'
               }`}>
               {teacherInfo.status}
             </p>

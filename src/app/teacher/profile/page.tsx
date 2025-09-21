@@ -13,9 +13,11 @@ import { UserStatus, TeacherRole } from "@prisma/client";
 import { AuthContext } from "@/contexts/AuthProvider";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 import generateHash from "@/lib/utils/generateHash";
-import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
+import { EmailAuthProvider, reauthenticateWithCredential, sendEmailVerification, updateEmail, updatePassword, verifyBeforeUpdateEmail } from "firebase/auth";
 import { clientAuth } from "@/lib/firebaseClient";
 import toast from "react-hot-toast";
+import usePrompt from "@/hooks/usePrompt";
+import { PromptDialog } from "@/components/shared/popups/promptDialog";
 
 export default function Profile() {
   
@@ -23,6 +25,9 @@ export default function Profile() {
   
   // FileStore handler
   const fileStoreUploader = useFileStoreUploader();
+  
+  // prompt
+  const { prompt, promptState, setPromptState } = usePrompt();
 
   // State for teacher data
   const [dbData, setDbData] = useState<{
@@ -146,7 +151,7 @@ export default function Profile() {
     }
   }
   
-  async function updateTeacherInfoHandler(update: { firstName?: string; lastName?: string }) {
+  async function updateTeacherInfoHandler(update: { firstName?: string, lastName?: string, email?: string }) {
     try {
       const token = await user?.getIdToken();
       await updateTeacherInfo(update, token!);
@@ -154,6 +159,19 @@ export default function Profile() {
       toast.success("Profile information updated successfully");
     } catch (e: any) {
       toast.error("Failed to update profile information");
+    } 
+  }
+  
+  async function updateEmailHandler(newEmail: string) {
+    try {
+      const currentPassword = await prompt("Enter your password");
+      if (!currentPassword) throw new Error("Password is required");
+      const credential = EmailAuthProvider.credential(user!.email!, currentPassword);
+      await reauthenticateWithCredential(user!, credential);
+      await verifyBeforeUpdateEmail(user!, newEmail);
+      toast.success("Verification email sent, Please verify to prevent login lockout");
+    } catch (e: any) {
+      toast.error("Failed to update email" + e.message);
     } 
   }
   
@@ -201,6 +219,9 @@ export default function Profile() {
 
   return (
     <NavigatorLayout>
+      
+      <PromptDialog state={promptState} setState={setPromptState} />
+      
       <div className="p-4 space-y-6">
         <Title title="Profile" />
         
@@ -220,6 +241,9 @@ export default function Profile() {
             <div className="lg:w-2/3 pl-0 lg:pl-6">
               <TeacherPersonalInfoForm 
                 data={dbData}
+                emailVerified={dbData.email === email ? true : false}
+                currentEmail={email}
+                updateEmailHandler={updateEmailHandler}
                 updateTeacherInfo={updateTeacherInfoHandler}
               />
             </div>

@@ -13,15 +13,20 @@ interface TeacherPersonalInfoFormProps {
       role: TeacherRole;
     };
   };
+  emailVerified: boolean;
+  currentEmail?: string;
+  updateEmailHandler: (newEmail: string) => Promise<void>;
   updateTeacherInfo: (update: { firstName?: string; lastName?: string }) => Promise<void>;
 }
 
 export default function TeacherPersonalInfoForm(props: TeacherPersonalInfoFormProps) {
-  const { data, updateTeacherInfo } = props;
+  
+  const { data, emailVerified, currentEmail, updateEmailHandler, updateTeacherInfo } = props;
   
   const [formData, setFormData] = useState({
     firstName: data.firstName,
     lastName: data.lastName,
+    email: data.email,
   });
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -30,6 +35,7 @@ export default function TeacherPersonalInfoForm(props: TeacherPersonalInfoFormPr
     setFormData({
       firstName: data.firstName,
       lastName: data.lastName,
+      email: data.email,
     });
   }, [data]);
 
@@ -54,6 +60,7 @@ export default function TeacherPersonalInfoForm(props: TeacherPersonalInfoFormPr
     setFormData({
       firstName: data.firstName,
       lastName: data.lastName,
+      email: data.email,
     });
     setIsEditing(false);
   };
@@ -82,17 +89,42 @@ export default function TeacherPersonalInfoForm(props: TeacherPersonalInfoFormPr
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Email { data.teacher.role === "ADMIN" ? "(Please use the Users page to update the Email)" : "(Please contact the administrator to change your Email)"}
-          </label>
-          <input
-            type="email"
-            value={data.email}
-            disabled
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
-          />
-        </div>
+        
+        {data.teacher.role === "ADMIN" && (
+          <div className="relative">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email {data.teacher.role !== "ADMIN" && " (Please contact the administrator to change your Email)"}
+            </label>
+            {!emailVerified && (
+              <input
+                type="email"
+                value={currentEmail}
+                disabled
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500 mb-1"
+              />
+            )}
+            <div className="flex items-center gap-2">
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                disabled={!isEditing}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
+              />
+              {!emailVerified && (
+                <button
+                  type="button"
+                  onClick={() => updateEmailHandler(data.email)}
+                  className="px-3 py-1 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600"
+                >
+                  Verify
+                </button>
+              )}
+            </div>
+          
+          </div>
+        )}
+
         
         {/* Action Buttons */}
         <div className="flex space-x-4 pt-4">

@@ -7,6 +7,7 @@ import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 export async function updateTeacherInfo(updateData: {
   firstName?: string,
   lastName?: string,
+  email?: string,
   displayPicUrl?: string,
 }, token: string) {
   
@@ -21,6 +22,15 @@ export async function updateTeacherInfo(updateData: {
     include: { teacher: true }
   });
   if (!user) return { status: false, message: "User not found" };
+  
+  // Email update (handles separately and only for admins)
+  if (updateData.email && userPermissions.data.role === "ADMIN") {
+    await prisma.user.update({
+      where: { userID: userID },
+      data: { email: updateData.email }
+    });
+    return { status: true, message: "Teacher info updated" };
+  }
   
   // Firebase update
   const fbUser = await adminAuth.getUser(userID);
