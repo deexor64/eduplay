@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 
 interface OptionFilterProps {
   filterKey: string;
@@ -12,12 +12,16 @@ export default function StudentOptionFilter(props: OptionFilterProps) {
 
   const { filterKey, values, setFilter, setTriggerFilter} = props;
   
+  const [selected, setSelected] = useState(false);
+  
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
 
     let newValue: string | undefined = e.target.value;
     newValue = newValue === "All" ? undefined : newValue;
+    
+    newValue ? setSelected(true) : setSelected(false);
 
     setFilter((prev: any) => ({
       ...prev,
@@ -41,8 +45,8 @@ export default function StudentOptionFilter(props: OptionFilterProps) {
       </label>
       <select
         id={filterKey}
-        className="border-2 border-purple-300 rounded-xl px-3 py-1 bg-white text-purple-800 shadow-md focus:border-pink-400 
-        focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none text-sm font-medium"
+        className={`${selected ? 'border-pink-600 focus: ring-pink-600' : 'border-purple-300 focus: ring-purple-300'} focus:ring-1 border-2 rounded-xl px-3 py-1 
+          bg-white text-purple-800 shadow-md transition-all duration-200 outline-none text-sm font-medium`}
         onChange={handleFilterChange}
       >
         <option value="All">All</option>
@@ -54,4 +58,4 @@ export default function StudentOptionFilter(props: OptionFilterProps) {
       </select>
     </div>
   );
-} 
+}

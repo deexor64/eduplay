@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 
 interface OptionFilterProps {
   filterKey: string;
@@ -12,12 +12,16 @@ export default function OptionFilter(props: OptionFilterProps) {
 
   const { filterKey, values, setFilter, setTriggerFilter } = props;
   
+  const [selected, setSelected] = useState(false);
+  
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
 
     let newValue: string | undefined = e.target.value;
     newValue = newValue === "All" ? undefined : newValue;
+    
+    newValue ? setSelected(true) : setSelected(false);
 
     setFilter((prev: any) => ({
       ...prev,
@@ -41,7 +45,8 @@ export default function OptionFilter(props: OptionFilterProps) {
       </label>
       <select
         id={filterKey}
-        className="border border-gray-300 rounded-lg px-2 py-1 bg-white text-purple-800 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-150 outline-none text-sm"
+        className={`${selected ? 'border-blue-600 focus:ring-blue-600' : 'border-gray-300 focus:ring-gray-300'} focus:ring-1 border-1 rounded-lg px-2 py-1 
+          bg-white text-purple-800 shadow-sm transition-all duration-150 outline-none text-sm`}
         onChange={handleFilterChange}
       >
         <option value="All">All</option>

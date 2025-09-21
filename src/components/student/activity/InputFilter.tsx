@@ -1,4 +1,4 @@
-import { useRef, ChangeEvent } from "react";
+import { useRef, ChangeEvent, useState } from "react";
 
 interface InputFilterProps {
   filterKey: string;
@@ -10,6 +10,8 @@ interface InputFilterProps {
 export default function StudentInputFilter(props: InputFilterProps) {
 
   const { filterKey, setFilter, setTriggerFilter} = props;
+  
+  const [selected, setSelected] = useState(false);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -17,6 +19,8 @@ export default function StudentInputFilter(props: InputFilterProps) {
 
     let newValue: string | undefined = e.target.value;
     newValue = newValue === "" ? undefined : newValue;
+    
+    newValue ? setSelected(true) : setSelected(false);
 
     setFilter((prev: any) => ({
       ...prev,
@@ -43,11 +47,11 @@ export default function StudentInputFilter(props: InputFilterProps) {
       <input
         id={filterKey}
         type="text"
-        className="border-2 border-purple-300 rounded-xl px-3 py-1 bg-white text-purple-800 shadow-md focus:border-pink-400 focus:ring-2 
-        focus:ring-pink-200 transition-all duration-200 outline-none placeholder:text-purple-300 text-sm font-medium"
+        className={`${selected ? 'border-pink-600 focus: ring-pink-600' : 'border-purple-300 focus: ring-purple-300'} focus:ring-1 border-2 rounded-xl px-3 py-1 
+          bg-white text-purple-800 shadow-md transition-all duration-200 outline-none placeholder:text-purple-300 text-sm font-medium`}
         onChange={handleInputChange}
         placeholder={`Search ${props.children}...`}
       />
     </div>
   );
-} 
+}
