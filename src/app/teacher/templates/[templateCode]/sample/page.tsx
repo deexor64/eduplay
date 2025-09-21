@@ -7,7 +7,9 @@ export default function Sample() {
 
   return (
     <TemplateProvider>
-      <ViewActivityLayout viewMode="SAMPLE" />
+      <div className="student-page">
+        <ViewActivityLayout viewMode="SAMPLE" />
+      </div>
     </TemplateProvider>
   )
 

@@ -7,7 +7,9 @@ export default function Activity() {
 
   return (
     <TemplateProvider>
-      <ViewActivityLayout viewMode="PREVIEW" />
+      <div className="student-page">
+        <ViewActivityLayout viewMode="PREVIEW"/>
+      </div>
     </TemplateProvider>
   )
 
