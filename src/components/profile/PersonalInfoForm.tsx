@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { UserStatus, TeacherRole } from "@prisma/client";
 
-interface TeacherPersonalInfoFormProps {
+interface PersonalInfoFormProps {
   data: {
     firstName: string;
     lastName: string;
@@ -19,7 +19,7 @@ interface TeacherPersonalInfoFormProps {
   updateTeacherInfo: (update: { firstName?: string; lastName?: string }) => Promise<void>;
 }
 
-export default function TeacherPersonalInfoForm(props: TeacherPersonalInfoFormProps) {
+export default function PersonalInfoForm(props: PersonalInfoFormProps) {
   
   const { data, emailVerified, currentEmail, updateEmailHandler, updateTeacherInfo } = props;
   

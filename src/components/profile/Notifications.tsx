@@ -11,16 +11,16 @@ interface Notification {
   read: boolean;
 }
 
-interface TeacherNotificationsProps {
+interface NotificationsProps {
   notifications: Notification[];
   markNotificationAsRead: (notificationId: string) => void;
 }
 
-export default function TeacherNotifications(props: TeacherNotificationsProps) {
+export default function Notifications(props: NotificationsProps) {
   const { notifications, markNotificationAsRead } = props;
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div >
       <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
         <svg className="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
           <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />

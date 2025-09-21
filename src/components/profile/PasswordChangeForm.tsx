@@ -2,11 +2,11 @@
 
 import React, { useState } from "react";
 
-interface TeacherPasswordChangeFormProps {
+interface PasswordChangeFormProps {
   updatePasswordHandler: (currentPassword: string, newPassword: string, confirmPassword: string) => Promise<void>;
 }
 
-export default function TeacherPasswordChangeForm(props: TeacherPasswordChangeFormProps) {
+export default function PasswordChangeForm(props: PasswordChangeFormProps) {
   const { updatePasswordHandler } = props;
   
   const [formData, setFormData] = useState({
@@ -54,7 +54,7 @@ export default function TeacherPasswordChangeForm(props: TeacherPasswordChangeFo
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div>
       <h3 className="text-lg font-semibold text-gray-800 mb-4">Change Password</h3>
       
       <div className="space-y-4">

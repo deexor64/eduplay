@@ -2,11 +2,10 @@
 
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import Title from "@/components/shared/headings/Title";
-import TeacherProfileSummary from "@/components/profile/TeacherProfileSummary";
-import TeacherPersonalInfoForm from "@/components/profile/TeacherPersonalInfoForm";
-import TeacherNotifications from "@/components/profile/TeacherNotifications";
-import TeacherCalendar from "@/components/profile/TeacherCalendar";
-import TeacherPasswordChangeForm from "@/components/profile/TeacherPasswordChangeForm";
+import ProfileSummary from "@/components/profile/ProfileSummary";
+import PersonalInfoForm from "@/components/profile/PersonalInfoForm";
+import Notifications from "@/components/profile/Notifications";
+import PasswordChangeForm from "@/components/profile/PasswordChangeForm";
 import { useContext, useEffect, useState } from "react";
 import { updateTeacherInfo } from "@/actions/teacher/updateTeacherInfo";
 import { UserStatus, TeacherRole } from "@prisma/client";
@@ -57,6 +56,7 @@ export default function Profile() {
   });
 
   // Notifications state
+  // TODO: Implement notifications
   const [notifications, setNotifications] = useState<Array<{
     id: string,
     title: string,
@@ -88,37 +88,14 @@ export default function Profile() {
       type: "warning", 
       timestamp: new Date(Date.now() - 7200000),
       read: true
-    }
-  ]);
-
-  // Calendar state
-  const [calendarEvents, setCalendarEvents] = useState<Array<{
-    id: string,
-    title: string,
-    date: Date,
-    time: string,
-    type: "class" | "meeting" | "deadline" | "personal"
-  }>>([
-    {
-      id: "1",
-      title: "Grade 3 Math Class",
-      date: new Date(),
-      time: "09:00 AM",
-      type: "class"
     },
     {
-      id: "2", 
-      title: "Staff Meeting",
-      date: new Date(Date.now() + 86400000),
-      time: "02:00 PM",
-      type: "meeting"
-    },
-    {
-      id: "3",
-      title: "Activity Review Deadline",
-      date: new Date(Date.now() + 172800000),
-      time: "05:00 PM", 
-      type: "deadline"
+      id: "4",
+      title: "System Maintenance",
+      message: "Scheduled maintenance will occur tonight from 2-4 AM",
+      type: "warning", 
+      timestamp: new Date(Date.now() - 7200000),
+      read: true
     }
   ]);
 
@@ -205,14 +182,6 @@ export default function Profile() {
     );
   }
 
-  function addCalendarEvent(event: Omit<typeof calendarEvents[0], 'id'>) {
-    const newEvent = {
-      ...event,
-      id: Date.now().toString()
-    };
-    setCalendarEvents(prev => [...prev, newEvent].sort((a, b) => a.date.getTime() - b.date.getTime()));
-  }
-
   useEffect(() => {
     fetchTeacher();
   }, []);
@@ -225,51 +194,49 @@ export default function Profile() {
       <div className="p-4 space-y-6">
         <Title title="Profile" />
         
-        {/* Top Section: Combined Personal Info */}
+        {/* Top Section: Profile Summary and Notifications */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex flex-col lg:flex-row gap-6">
             
-            {/* Profile Summary Section - 1/3 width */}
-            <div className="lg:w-1/3 border-r border-gray-200 pr-6">
-              <TeacherProfileSummary 
+            {/* Profile Summary Section - 1/2 width */}
+            <div className="lg:w-1/2 border-r border-gray-200 pr-6">
+              <ProfileSummary 
                 teacherInfo={dbData}
                 updateProfilePictureHandler={updateProfilePictureHandler}
               />
             </div>
 
-            {/* Personal Information Form Section - 2/3 width */}
-            <div className="lg:w-2/3 pl-0 lg:pl-6">
-              <TeacherPersonalInfoForm 
-                data={dbData}
-                emailVerified={dbData.email === email ? true : false}
-                currentEmail={email}
-                updateEmailHandler={updateEmailHandler}
-                updateTeacherInfo={updateTeacherInfoHandler}
+            {/* Notifications Section - 1/2 width */}
+            <div className="lg:w-1/2">
+              <Notifications 
+                notifications={notifications}
+                markNotificationAsRead={markNotificationAsRead}
               />
             </div>
           </div>
         </div>
 
-        {/* Middle Section: Notifications and Calendar */}
+        {/* Middle Section: Personal Info and Password Change */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
-          {/* Notifications */}
-          <TeacherNotifications 
-            notifications={notifications}
-            markNotificationAsRead={markNotificationAsRead}
-          />
+          {/* Personal Information Form */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <PersonalInfoForm 
+              data={dbData}
+              emailVerified={dbData.email === email ? true : false}
+              currentEmail={email}
+              updateEmailHandler={updateEmailHandler}
+              updateTeacherInfo={updateTeacherInfoHandler}
+            />
+          </div>
 
-          {/* Calendar */}
-          <TeacherCalendar 
-            calendarEvents={calendarEvents}
-            addCalendarEvent={addCalendarEvent}
-          />
+          {/* Password Change Form */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <PasswordChangeForm 
+              updatePasswordHandler={updatePasswordHandler}
+            />
+          </div>
         </div>
-
-        {/* Bottom Section: Password Change Form */}
-        <TeacherPasswordChangeForm 
-          updatePasswordHandler={updatePasswordHandler}
-        />
       </div>
     </NavigatorLayout>
   );

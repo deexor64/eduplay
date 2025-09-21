@@ -3,7 +3,7 @@
 import React from "react";
 import { UserStatus, TeacherRole } from "@prisma/client";
 
-interface TeacherProfileSummaryProps {
+interface ProfileSummaryProps {
   teacherInfo: {
     firstName: string;
     lastName: string;
@@ -18,7 +18,7 @@ interface TeacherProfileSummaryProps {
   updateProfilePictureHandler: (file: File) => Promise<void>;
 }
 
-export default function TeacherProfileSummary(props: TeacherProfileSummaryProps) {
+export default function ProfileSummary(props: ProfileSummaryProps) {
   const { teacherInfo, updateProfilePictureHandler } = props;
 
   return (
