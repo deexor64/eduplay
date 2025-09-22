@@ -7,8 +7,8 @@ import PersonalInfoForm from "@/components/profile/PersonalInfoForm";
 import Notifications from "@/components/profile/Notifications";
 import PasswordChangeForm from "@/components/profile/PasswordChangeForm";
 import { useContext, useEffect, useState } from "react";
-import { updateTeacherInfo } from "@/actions/teacher/updateTeacherInfo";
-import { UserStatus, TeacherRole } from "@prisma/client";
+import { updateTeacherInfo } from "@/actions/profile/updateTeacherInfo";
+import { UserStatus, TeacherRole, UserType } from "@prisma/client";
 import { AuthContext } from "@/contexts/AuthProvider";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 import generateHash from "@/lib/utils/generateHash";
@@ -199,7 +199,7 @@ export default function Profile() {
           <div className="flex flex-col lg:flex-row gap-6">
             
             {/* Profile Summary Section - 1/2 width */}
-            <div className="lg:w-1/2 border-r border-gray-200 pr-6">
+            <div className="lg:w-2/5 border-r border-gray-200 pr-6">
               <ProfileSummary 
                 teacherInfo={dbData}
                 updateProfilePictureHandler={updateProfilePictureHandler}
@@ -207,7 +207,7 @@ export default function Profile() {
             </div>
 
             {/* Notifications Section - 1/2 width */}
-            <div className="lg:w-1/2">
+            <div className="lg:w-3/5">
               <Notifications 
                 notifications={notifications}
                 markNotificationAsRead={markNotificationAsRead}

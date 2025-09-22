@@ -5,14 +5,15 @@
 import Link from "next/link";
 import InfoBadge from "@/components/shared/badges/InfoBadge";
 import ViewItemActionButton from "@/components/shared/buttons/ViewItemActionButton";
-import { UserStatus } from "@prisma/client";
+import { TeacherRole, UserStatus, UserType } from "@prisma/client";
+import MiniProfile from "./MiniProfile";
+import { useState } from "react";
 
 interface ViewUserItemProps {
   itemData: {
-    indexNumber?: string,
-    subject?: string,
-    role?: string,
-    grade?: number,
+    indexNumber: string,
+    role?: TeacherRole
+    grade?: 1 | 2 | 3 | 4 | 5,
     user: {
       userID: string,
       firstName: string,
@@ -23,12 +24,24 @@ interface ViewUserItemProps {
       displayPicUrl: string,
     }
   },
+  userType: UserType,
   handleUpdateUserStatus: Function,
+  handleUpdateUserInfo: Function,
 }
 
 export default function ViewUserItem(props: ViewUserItemProps) {
 
-  const itemData = props.itemData;
+  const {itemData, userType, handleUpdateUserStatus, handleUpdateUserInfo} = props;
+   const [showProfile, setShowProfile] = useState(false);
+   
+  const minUser = {
+    userID: itemData.user.userID,
+    name: `${itemData.user.firstName} ${itemData.user.lastName}`,
+    email: itemData.user.email,
+    indexNumber: itemData.indexNumber,
+    role: itemData.role,
+    grade: itemData.grade,
+  }
 
   return (
     <div className="border border-blue-200 bg-white rounded-xl p-4 flex items-center shadow hover:shadow-lg transition 
@@ -46,18 +59,13 @@ export default function ViewUserItem(props: ViewUserItemProps) {
       {/* Item info */}
         <div className="min-w-0 mr-auto">
 
-          {/* Clickable link */}
+          {/* Name */}
           <div className="flex items-center gap-2">
-            <Link
-              href={`/${itemData.user.firstName}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-lg font-semibold text-pink-700 truncate focus:outline-none focus:ring-2 
+            <p className="text-lg font-semibold text-pink-700 truncate focus:outline-none focus:ring-2 
               focus:ring-blue-200 cursor-pointer no-underline hover:text-pink-900"
-              style={{ textDecoration: 'none' }}
-            >
+              style={{ textDecoration: 'none' }}>
               {`${itemData.user.firstName} ${itemData.user.lastName} | ${itemData.user.email}`}
-            </Link>
+            </p>
             {itemData.indexNumber && (
               <InfoBadge text={itemData.indexNumber} colorTheme="default" />
             )}
@@ -67,9 +75,6 @@ export default function ViewUserItem(props: ViewUserItemProps) {
           <div className="flex items-center gap-2 mt-1 text-xs">
             {itemData.role && (
               <InfoBadge text={itemData.role} colorTheme="purple" />
-            )}
-            {itemData.subject && (
-              <InfoBadge text={itemData.subject} colorTheme="green" />
             )}
             {itemData.grade && (
               <InfoBadge text={`Grade ${itemData.grade}`} colorTheme="indigo" />
@@ -83,31 +88,38 @@ export default function ViewUserItem(props: ViewUserItemProps) {
      
       {/* Action buttons */}
       <div className="flex flex-row items-end gap-2  ml-4">
+        
+        <ViewItemActionButton text="Edit" colorTheme="gray"
+          onAction={() => setShowProfile(true)} />
+          
         {itemData.user.status === "ACTIVE" && (
           <>
             <ViewItemActionButton text="Suspend" colorTheme="yellow"
-              onAction={() => props.handleUpdateUserStatus(itemData.user.userID, "SUSPENDED")} />
+              onAction={() => handleUpdateUserStatus(itemData.user.userID, "SUSPENDED")} />
             <ViewItemActionButton text="Delete" colorTheme="red"
-              onAction={() => props.handleUpdateUserStatus(itemData.user.userID, "DELETED")} />
+              onAction={() => handleUpdateUserStatus(itemData.user.userID, "DELETED")} />
           </>
         )}
         {itemData.user.status === "SUSPENDED" && (
           <>
             <ViewItemActionButton text="Activate" colorTheme="green"
-              onAction={() => props.handleUpdateUserStatus(itemData.user.userID, "ACTIVE")} />
+              onAction={() => handleUpdateUserStatus(itemData.user.userID, "ACTIVE")} />
             <ViewItemActionButton text="Delete" colorTheme="red"
-              onAction={() => props.handleUpdateUserStatus(itemData.user.userID, "DELETED")} />
+              onAction={() => handleUpdateUserStatus(itemData.user.userID, "DELETED")} />
           </>
         )}
         {itemData.user.status === "DELETED" && (
           <>
             <ViewItemActionButton text="Activate" colorTheme="green"
-              onAction={() => props.handleUpdateUserStatus(itemData.user.userID, "ACTIVE")} />
+              onAction={() => handleUpdateUserStatus(itemData.user.userID, "ACTIVE")} />
             <ViewItemActionButton text="Delete" colorTheme="red"
-              onAction={() => props.handleUpdateUserStatus(itemData.user.userID, "DELETED")} />
+              onAction={() => handleUpdateUserStatus(itemData.user.userID, "DELETED")} />
           </>
         )}
       </div>
+      
+      <MiniProfile showPreview={showProfile} setShowProfile={setShowProfile}
+        userType={userType} user={minUser} handleUpdateUserInfo={handleUpdateUserInfo } />
 
     </div>
   );

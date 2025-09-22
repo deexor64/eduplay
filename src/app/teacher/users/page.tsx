@@ -10,10 +10,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 import cleanParams from "@/lib/utils/cleanParams";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
-import { TeacherRole, UserStatus } from "@prisma/client";
+import { TeacherRole, UserStatus, UserType } from "@prisma/client";
 import toast from "react-hot-toast";
 import { updateUserStatus } from "@/actions/user/updateUserStatus";
 import { AuthContext } from "@/contexts/AuthProvider";
+import { updateUserInfo } from "@/actions/user/updateUserInfo";
 
 export default function Users() {
   
@@ -24,10 +25,9 @@ export default function Users() {
  
   const [dbData, setDbData] = useState<{
     users: Array<{
-      indexNumber?: string,
-      grade?: number,
-      role?: string,
-      subject?: string,
+      indexNumber: string,
+      grade?: 1 | 2 | 3 | 4 | 5,
+      role?: TeacherRole,
       user: {
         userID: string,
         firstName: string,
@@ -109,6 +109,21 @@ export default function Users() {
 
   }
   
+  async function handleUpdateUserInfo(userID: string, updateData: any) {
+    
+    const token = await user?.getIdToken();
+
+    toast.promise(updateUserInfo(userID, userListType!.toUpperCase() as UserType, updateData, token!), {
+      loading: "Updating user...",
+      success: () => {
+        fetchUsers();
+        return "User updated successfully";
+      },
+      error: "Failed to update user",
+    })
+
+  }
+  
   return (
     <NavigatorLayout>
       
@@ -173,8 +188,8 @@ export default function Users() {
           <div className="text-center text-gray-500 py-8">Nothing to display</div>
         ) : (
           dbData.users.map(function (item) {
-            return <ViewUserItem itemData={item} handleUpdateUserStatus={handleUpdateUserStatus} 
-            key={item.user.userID}/>;
+            return <ViewUserItem itemData={item} handleUpdateUserInfo={handleUpdateUserInfo} 
+            userType={userListType!.toUpperCase() as UserType} handleUpdateUserStatus={handleUpdateUserStatus} key={item.user.userID}/>;
           })
         )}
       </div>
