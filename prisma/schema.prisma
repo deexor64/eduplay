@@ -60,6 +60,8 @@ model Teacher {
   user   User   @relation("teacher", fields: [userID], references: [userID])
 
   activity Activity[] @relation("activityCreator")
+  
+  notifications Notification[] @relation("notifyTeacher")
 }
 
 model Student {
@@ -71,6 +73,8 @@ model Student {
   user   User   @relation("student", fields: [userID], references: [userID])
   
   progress Progress[] @relation("progress")
+  
+  notifications Notification[] @relation("notifyStudent")
 }
 
 enum ActivityDifficulty {
@@ -133,4 +137,27 @@ model Progress {
 
   progressOf String
   activity   Activity @relation("progressOf", fields: [progressOf], references: [activityID])
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+}
+
+model Notification {
+  notificationID String   @id @default(uuid())
+  title          String
+  message        String
+  type           NotificationType
+  createdAt      DateTime @default(now())
+  
+  group          UserType?
+
+  forStudent     String?
+  student        Student? @relation("notifyStudent", fields: [forStudent], references: [studentID])
+
+  forTeacher     String?
+  teacher        Teacher? @relation("notifyTeacher", fields: [forTeacher], references: [teacherID])
 }

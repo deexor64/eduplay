@@ -1,23 +1,19 @@
-"use client"
-
+import { NotificationType } from "@prisma/client";
 import React from "react";
 
-interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  type: "info" | "success" | "warning" | "error";
-  timestamp: Date;
-  read: boolean;
-}
-
 interface NotificationsProps {
-  notifications: Notification[];
-  markNotificationAsRead: (notificationId: string) => void;
+  notifications: Array<{
+    notificationID: string,
+    title: string,
+    message: string,
+    type: NotificationType,
+    createdAt: Date,
+  }>;
 }
 
 export default function Notifications(props: NotificationsProps) {
-  const { notifications, markNotificationAsRead } = props;
+  
+  const { notifications } = props;
 
   return (
     <div >
@@ -31,21 +27,15 @@ export default function Notifications(props: NotificationsProps) {
       <div className="space-y-3 max-h-64 overflow-y-auto">
         {notifications.map((notification) => (
           <div 
-            key={notification.id}
-            className={`p-3 rounded-lg border-l-4 cursor-pointer transition-colors ${
-              notification.read 
-                ? 'bg-gray-50 border-gray-300' 
-                : 'bg-blue-50 border-blue-500'
-            }`}
-            onClick={() => markNotificationAsRead(notification.id)}
-          >
+            key={notification.notificationID}
+            className={"p-3 rounded-lg border-l-4 transition-colors bg-blue-50 border-blue-500"}          >
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <h4 className="font-medium text-gray-800">{notification.title}</h4>
                 <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
               </div>
               <div className="text-xs text-gray-500 ml-2">
-                {notification.timestamp.toLocaleDateString()}
+                {notification.createdAt.toLocaleString()} {/* ISSUE: localDateString*/}
               </div>
             </div>
           </div>

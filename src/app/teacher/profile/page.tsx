@@ -8,7 +8,7 @@ import Notifications from "@/components/profile/Notifications";
 import PasswordChangeForm from "@/components/profile/PasswordChangeForm";
 import { useContext, useEffect, useState } from "react";
 import { updateTeacherInfo } from "@/actions/profile/updateTeacherInfo";
-import { UserStatus, TeacherRole, UserType } from "@prisma/client";
+import { UserStatus, TeacherRole, UserType, NotificationType } from "@prisma/client";
 import { AuthContext } from "@/contexts/AuthProvider";
 import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 import generateHash from "@/lib/utils/generateHash";
@@ -40,7 +40,14 @@ export default function Profile() {
       teacherID: string,
       indexNumber: string,
       role: TeacherRole,
-    }
+    },
+    notifications: Array<{
+      notificationID: string,
+      title: string,
+      message: string,
+      type: NotificationType,
+      createdAt: Date,
+    }>,
   }>({
     userID: "",
     firstName: "-",
@@ -52,52 +59,9 @@ export default function Profile() {
       teacherID: "",
       indexNumber: "",
       role: "TEACHER",
-    }
+    },
+    notifications: [],
   });
-
-  // Notifications state
-  // TODO: Implement notifications
-  const [notifications, setNotifications] = useState<Array<{
-    id: string,
-    title: string,
-    message: string,
-    type: "info" | "success" | "warning" | "error",
-    timestamp: Date,
-    read: boolean
-  }>>([
-    {
-      id: "1",
-      title: "New Student Registration",
-      message: "5 new students have been registered in your class",
-      type: "info",
-      timestamp: new Date(),
-      read: false
-    },
-    {
-      id: "2", 
-      title: "Activity Published",
-      message: "Your 'Math Addition' activity has been successfully published",
-      type: "success",
-      timestamp: new Date(Date.now() - 3600000),
-      read: false
-    },
-    {
-      id: "3",
-      title: "System Maintenance",
-      message: "Scheduled maintenance will occur tonight from 2-4 AM",
-      type: "warning", 
-      timestamp: new Date(Date.now() - 7200000),
-      read: true
-    },
-    {
-      id: "4",
-      title: "System Maintenance",
-      message: "Scheduled maintenance will occur tonight from 2-4 AM",
-      type: "warning", 
-      timestamp: new Date(Date.now() - 7200000),
-      read: true
-    }
-  ]);
 
   // Fetch teacher data
   async function fetchTeacher() {  
@@ -174,14 +138,6 @@ export default function Profile() {
     }
   }
 
-  function markNotificationAsRead(notificationId: string) {
-    setNotifications(prev => 
-      prev.map(notif => 
-        notif.id === notificationId ? { ...notif, read: true } : notif
-      )
-    );
-  }
-
   useEffect(() => {
     fetchTeacher();
   }, []);
@@ -208,10 +164,7 @@ export default function Profile() {
 
             {/* Notifications Section - 1/2 width */}
             <div className="lg:w-3/5">
-              <Notifications 
-                notifications={notifications}
-                markNotificationAsRead={markNotificationAsRead}
-              />
+              <Notifications notifications={dbData.notifications} />
             </div>
           </div>
         </div>
