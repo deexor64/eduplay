@@ -114,7 +114,8 @@ export function AuthProvider({ children, userType, role, status }:
     
     if ( status.length > 0 && claims.status && !status.includes(claims.status)) {
       console.log("AUTH: Status not allowed");
-      redirect("/auth/signin");
+      if (claims.status === "ACTIVE" || claims.status === "SUSPENDED") redirect(`/${claims.userType?.toLowerCase()}/profile`);
+      else redirect("/auth/signin");
       return;
     }
     

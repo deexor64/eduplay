@@ -21,7 +21,7 @@ export default function Users() {
   const { userID, email, userType, role, status, user } = useContext(AuthContext);
   
   const searchParams = useSearchParams();
-  const userListType = searchParams.get("userListType");
+  const userListType = searchParams.get("userListType") as UserType;
  
   const [dbData, setDbData] = useState<{
     users: Array<{
@@ -128,8 +128,8 @@ export default function Users() {
     <NavigatorLayout>
       
       {/* Title */}
-      {(userListType === "teacher") && <Title title="Teachers" addUser="teacher"/>}
-      {(userListType === "student") && <Title title="Students" addUser="student"/>}
+      {(userListType === "TEACHER") && <Title title="Teachers" addUser="teacher"/>}
+      {(userListType === "STUDENT") && <Title title="Students" addUser="student"/>}
 
       {/* Filters */}
       <FilterWrapper>
@@ -149,7 +149,7 @@ export default function Users() {
           setTriggerFilter={setTriggerFilter}
         >Email</InputFilter>
         {
-          userListType === "student" && 
+          userListType === "STUDENT" && 
           <>
             <OptionFilter
             filterKey="grade"
@@ -160,7 +160,7 @@ export default function Users() {
         </>
         }
         {
-          userListType === "teacher" && 
+          userListType === "TEACHER" && 
           <OptionFilter
             filterKey="role"
             values={Object.values(TeacherRole)}
@@ -189,7 +189,7 @@ export default function Users() {
         ) : (
           dbData.users.map(function (item) {
             return <ViewUserItem itemData={item} handleUpdateUserInfo={handleUpdateUserInfo} 
-            userType={userListType!.toUpperCase() as UserType} handleUpdateUserStatus={handleUpdateUserStatus} key={item.user.userID}/>;
+            userType={userListType as UserType} handleUpdateUserStatus={handleUpdateUserStatus} key={item.user.userID}/>;
           })
         )}
       </div>

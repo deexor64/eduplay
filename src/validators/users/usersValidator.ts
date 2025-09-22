@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TeacherRole, UserStatus } from "@prisma/client";
+import { TeacherRole, UserStatus, UserType } from "@prisma/client";
 import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
 export default async function usersValidator(headers: Headers, searchParams: URLSearchParams): 
@@ -12,7 +12,7 @@ Promise<{ status: boolean; data: any; }> {
 
   // Input validation
   const zSearchParams = z.object({
-    userListType: z.enum(["teacher", "student"]),
+    userListType: z.nativeEnum(UserType),
     indexNumber: z.string().optional(),
     fullName: z.string().optional(),
     grade: z.enum(["1", "2", "3", "4", "5"]).transform((grade) => parseInt(grade)).optional(),

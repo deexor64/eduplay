@@ -1,7 +1,8 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useContext, useState } from "react";
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers, faUser, faUserFriends, faFileAlt, faBox } from '@fortawesome/free-solid-svg-icons';
+import { AuthContext } from "@/contexts/AuthProvider";
 
 type SideBarLinkProps = {
   link: string,
@@ -48,6 +49,8 @@ type SidebarProps = {
 }
 
 export default function Sidebar(props: SidebarProps) {
+  
+  const { userID, email, userType, role, status, user } = useContext(AuthContext);
 
   const { isOpen, setIsOpen } = props;
   const [ openedLink, setOpenedLink ] = useState("");
@@ -61,9 +64,13 @@ export default function Sidebar(props: SidebarProps) {
       <div className={`h-full bg-blue-950 backdrop-blur-lg border-r border-gray-800/50 shadow-sm transition-all duration-300 ease-in-out
           px-2 py-1 ${isOpen ? "w-50" : "w-20"}`}>
         <ul className="space-y-6 mt-20">
-          <SideBarLink link="/teacher/users?userListType=student" icon={faUsers} isOpen={isOpen} isActive={openedLink === "/teacher/users?userListType=student"} onClick={() => setOpenedLink("/teacher/users?userListType=student")}>Students</SideBarLink>
-          <SideBarLink link="/teacher/users?userListType=teacher" icon={faUserFriends} isOpen={isOpen} isActive={openedLink === "/teacher/users?userListType=teacher"} onClick={() => setOpenedLink("/teacher/users?userListType=teacher")}>Teachers</SideBarLink>
-          <SideBarLink link="/teacher/templates" icon={faFileAlt} isOpen={isOpen} isActive={openedLink === "/teacher/templates"} onClick={() => setOpenedLink("/teacher/templates")}>Templates</SideBarLink>
+          { userType === "TEACHER" && role === "ADMIN" && (
+            <>
+            <SideBarLink link="/teacher/users?userListType=STUDENT" icon={faUsers} isOpen={isOpen} isActive={openedLink === "/teacher/users?userListType=STUDENT"} onClick={() => setOpenedLink("/teacher/users?userListType=STUDENT")}>Students</SideBarLink>
+            <SideBarLink link="/teacher/users?userListType=TEACHER" icon={faUserFriends} isOpen={isOpen} isActive={openedLink === "/teacher/users?userListType=TEACHER"} onClick={() => setOpenedLink("/teacher/users?userListType=TEACHER")}>Teachers</SideBarLink>
+            <SideBarLink link="/teacher/templates" icon={faFileAlt} isOpen={isOpen} isActive={openedLink === "/teacher/templates"} onClick={() => setOpenedLink("/teacher/templates")}>Templates</SideBarLink>
+            </>
+          )}
           <SideBarLink link="/teacher/activities" icon={faBox} isOpen={isOpen} isActive={openedLink === "/teacher/activities"} onClick={() => setOpenedLink("/teacher/activities")}>Activities</SideBarLink>
           <SideBarLink link="/teacher/profile" icon={faUser} isOpen={isOpen} isActive={openedLink === "/teacher/profile"} onClick={() => setOpenedLink("/teacher/profile")}>Profile</SideBarLink>
         </ul>

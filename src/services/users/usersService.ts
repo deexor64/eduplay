@@ -3,8 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { ResType } from '@/lib/utils/types';
 
 const userListHandler: any = {
-  teacher: prisma.teacher,
-  student: prisma.student,
+  TEACHER: prisma.teacher,
+  STUDENT: prisma.student,
 } as const;
 
 export default async function usersService(data: any): Promise<ResType> {
@@ -21,10 +21,10 @@ export default async function usersService(data: any): Promise<ResType> {
     }
   };
 
-  if (data.userListType === "teacher") {
+  if (data.userListType === "TEACHER") {
     // grade, class: Teacher don't have grade, class
     delete whereUsers.grade;
-  } else if (data.userListType === "student") {
+  } else if (data.userListType === "STUDENT") {
     // role: Student don't have role
     delete whereUsers.role;
   }
@@ -45,7 +45,7 @@ export default async function usersService(data: any): Promise<ResType> {
     },
   }
   
-  if (data.userListType === "teacher") {
+  if (data.userListType === "TEACHER") {
     // grade, class: Teacher don't have grade, class and role
     delete selectUsers.grade;
   } else {

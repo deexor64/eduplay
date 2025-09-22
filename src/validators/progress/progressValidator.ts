@@ -6,7 +6,7 @@ Promise<{ status: boolean; data: any; }> {
   
   // Verify session
   const token = headers.get("authorization")?.split("Bearer ")[1];
-  const userPermissions = await userPermissionCheck(token, ["STUDENT"], [], ["ACTIVE"]);
+  const userPermissions = await userPermissionCheck(token, ["STUDENT"], [], ["ACTIVE", "SUSPENDED"]);
   if (!userPermissions.status) return userPermissions;
 
   // constraints

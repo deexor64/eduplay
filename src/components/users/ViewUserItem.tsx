@@ -1,5 +1,3 @@
-// This component is used only for displaying user info
-
 "use client";
 
 import Link from "next/link";
@@ -61,8 +59,7 @@ export default function ViewUserItem(props: ViewUserItemProps) {
 
           {/* Name */}
           <div className="flex items-center gap-2">
-            <p className="text-lg font-semibold text-pink-700 truncate focus:outline-none focus:ring-2 
-              focus:ring-blue-200 cursor-pointer no-underline hover:text-pink-900"
+            <p className="text-lg font-semibold text-pink-700 truncate focus:outline-none no-underline"
               style={{ textDecoration: 'none' }}>
               {`${itemData.user.firstName} ${itemData.user.lastName} | ${itemData.user.email}`}
             </p>
@@ -112,8 +109,6 @@ export default function ViewUserItem(props: ViewUserItemProps) {
           <>
             <ViewItemActionButton text="Activate" colorTheme="green"
               onAction={() => handleUpdateUserStatus(itemData.user.userID, "ACTIVE")} />
-            <ViewItemActionButton text="Delete" colorTheme="red"
-              onAction={() => handleUpdateUserStatus(itemData.user.userID, "DELETED")} />
           </>
         )}
       </div>

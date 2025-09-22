@@ -6,7 +6,7 @@ export default async function profileValidator(headers: Headers, searchParams: U
   
   // Verify session
   const token = headers.get("authorization")?.split("Bearer ")[1];
-  const userPermissions = await userPermissionCheck(token, ["STUDENT", "TEACHER"], [], ["ACTIVE"]);
+  const userPermissions = await userPermissionCheck(token, ["STUDENT", "TEACHER"], [], ["ACTIVE", "SUSPENDED"]);
   if (!userPermissions.status) return userPermissions;
 
   // constraints
