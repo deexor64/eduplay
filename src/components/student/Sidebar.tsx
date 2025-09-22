@@ -52,9 +52,11 @@ export function RightSidebar() {
         </div>
       </Link>
       {/* Notifications */}
-      <div title="Notifications" className="transition-transform duration-200 hover:scale-110 drop-shadow-amber-400 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg mt-5">
-        <Image src="/images/student/envelop.png" alt="Notifications" width={60} height={60} />
-      </div>
+      <Link href="/student/notifications" title="Notifications">
+        <div title="Notifications" className="transition-transform duration-200 hover:scale-110 drop-shadow-amber-400 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg mt-5">
+          <Image src="/images/student/envelop.png" alt="Notifications" width={60} height={60} />
+        </div>
+      </Link>
       {/* Logout */}
       <button title="Logout" onClick={logOut} className="transition-transform duration-200 hover:scale-110 drop-shadow-orange-600 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg">
         <Image src="/images/student/logout.png" alt="Logout" width={70} height={70} />
