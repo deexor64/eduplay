@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/contexts/AuthProvider";
 import { NotificationType } from "@prisma/client";
 import ViewNotificationItem from "@/components/student/notification/ViewNotificationItem";
+import { markNotificationAsRead } from "@/actions/notification/markNotificationAsRead";
 
 export default function NotificationsPage() {
   
@@ -18,6 +19,7 @@ export default function NotificationsPage() {
       message: string;
       type: NotificationType;
       createdAt: string;
+      isRead?: boolean;
     }>;
   } | null>(null);
 
@@ -29,6 +31,12 @@ export default function NotificationsPage() {
     });
     const resData = await res.json();
     setDbData(resData.data);
+  }
+
+  async function handleMarkNotificationRead(id: string) {
+    const token = await user?.getIdToken();
+    await markNotificationAsRead(id, token!);
+    await fetchNotifications();
   }
 
   useEffect(() => {
@@ -63,8 +71,17 @@ export default function NotificationsPage() {
             </div>
           </div>
         ) : (
-          dbData && dbData.notifications.map((n) => (
-            <ViewNotificationItem key={n.notificationID} {...n} />
+          dbData && dbData.notifications.map((notification) => (
+            <div key={notification.notificationID} className="relative">
+              <ViewNotificationItem key={notification.notificationID} {...notification} />
+              {!notification.isRead && (
+                <button onClick={() => handleMarkNotificationRead(notification.notificationID)}
+                  className="absolute top-2 right-2 text-xs px-2 py-1 bg-white/80 border rounded-md hover:bg-white cursor:pointer"
+                >
+                  Mark as read
+                </button>
+              )}
+            </div>
           ))
         )}
         

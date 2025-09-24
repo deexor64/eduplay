@@ -43,6 +43,8 @@ model User {
 
   teacher Teacher? @relation("teacher")
   student Student? @relation("student")
+
+  notificationReads NotificationRead[]
 }
 
 enum TeacherRole {
@@ -160,4 +162,18 @@ model Notification {
 
   forTeacher     String?
   teacher        Teacher? @relation("notifyTeacher", fields: [forTeacher], references: [teacherID])
+
+  reads NotificationRead[]
+}
+
+model NotificationRead {
+  notificationReadID String   @id @default(uuid())
+  notificationID     String
+  userID             String
+  readAt             DateTime @default(now())
+
+  notification Notification @relation(fields: [notificationID], references: [notificationID])
+  user         User         @relation(fields: [userID], references: [userID])
+
+  @@unique([notificationID, userID])
 }

@@ -26,10 +26,23 @@ export default async function notificationsService(data: any): Promise<ResType> 
       message: true,
       type: true,
       createdAt: true,
+      reads: {
+        where: { userID: data.userPermissions.uid },
+        select: { notificationReadID: true },
+      }
     },
     orderBy: { createdAt: 'desc' },
   });
 
-  return { status: true, resDataType: "success", data: { notifications: notifications } };
+  const formattedNotifications = notifications.map(notification => ({
+    notificationID: notification.notificationID,
+    title: notification.title,
+    message: notification.message,
+    type: notification.type,
+    createdAt: notification.createdAt,
+    isRead: (notification.reads?.length ?? 0) > 0,
+  }));
+
+  return { status: true, resDataType: "success", data: { notifications: formattedNotifications } };
   
 } 

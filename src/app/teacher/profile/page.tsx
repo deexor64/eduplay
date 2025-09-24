@@ -17,6 +17,7 @@ import { clientAuth } from "@/lib/firebaseClient";
 import toast from "react-hot-toast";
 import usePrompt from "@/hooks/usePrompt";
 import { PromptDialog } from "@/components/shared/popups/promptDialog";
+import { markNotificationAsRead } from "@/actions/notification/markNotificationAsRead";
 
 export default function Profile() {
   
@@ -47,6 +48,7 @@ export default function Profile() {
       message: string,
       type: NotificationType,
       createdAt: Date,
+      isRead?: boolean,
     }>,
   }>({
     userID: "",
@@ -76,6 +78,12 @@ export default function Profile() {
 
     const resData = await res.json();
     setDbData(resData.data);
+  }
+  
+  async function handleMarkNotificationRead(notificationID: string) {
+    const token = await user?.getIdToken();
+    await markNotificationAsRead(notificationID, token!);
+    await fetchTeacher();
   }
   
   async function updateProfilePictureHandler(file: File) {
@@ -164,7 +172,7 @@ export default function Profile() {
 
             {/* Notifications Section - 1/2 width */}
             <div className="lg:w-3/5">
-              <Notifications notifications={dbData.notifications} />
+              <Notifications notifications={dbData.notifications} handleMarkNotificationRead={handleMarkNotificationRead} />
             </div>
           </div>
         </div>

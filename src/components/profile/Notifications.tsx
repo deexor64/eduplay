@@ -8,12 +8,14 @@ interface NotificationsProps {
     message: string,
     type: NotificationType,
     createdAt: Date,
+    isRead?: boolean,
   }>;
+  handleMarkNotificationRead?: (id: string) => void;
 }
 
 export default function Notifications(props: NotificationsProps) {
   
-  const { notifications } = props;
+  const { notifications, handleMarkNotificationRead } = props;
 
   return (
     <div >
@@ -28,7 +30,7 @@ export default function Notifications(props: NotificationsProps) {
         {notifications.map((notification) => (
           <div 
             key={notification.notificationID}
-            className={"p-3 rounded-lg border-l-4 transition-colors bg-blue-50 border-blue-500"}          >
+            className={"p-3 rounded-lg border-l-4 transition-colors bg-blue-50 border-blue-500 relative"}          >
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <h4 className="font-medium text-gray-800">{notification.title}</h4>
@@ -38,6 +40,12 @@ export default function Notifications(props: NotificationsProps) {
                 {notification.createdAt.toLocaleString()} {/* ISSUE: localDateString*/}
               </div>
             </div>
+            {handleMarkNotificationRead && !notification.isRead && (
+              <button onClick={() => handleMarkNotificationRead(notification.notificationID)}
+                className="absolute top-2 right-2 text-xs px-2 py-1 bg-white/80 border rounded-md hover:bg-white cursor-pointer">
+                Mark as read
+              </button>
+            )}
           </div>
         ))}
       </div>
