@@ -1,7 +1,4 @@
 import { z } from "zod";
-import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import userTokenChecker from "@/lib/utils/userTokenChecker";
-import { JwtPayload } from "jsonwebtoken";
 import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 
 export default async function getActivityValidator(headers: Headers, slugParam: any):

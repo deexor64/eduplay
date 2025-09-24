@@ -10,6 +10,8 @@ import { lazy, Suspense, useMemo } from "react";
 import toast from "react-hot-toast";
 import ActivitySection from "@/components/templates/create/ActivitySection";
 import { AuthContext } from "@/contexts/AuthProvider";
+import { getSectionList } from "@/actions/activity/getSectionList";
+import { Subject } from "@prisma/client";
 
 export interface CreateActivityProps {
   setMediaFiles: React.Dispatch<React.SetStateAction<Map<string, File>>>,
@@ -104,6 +106,19 @@ export default function CreateActivityLayout() {
     return JSON.stringify(form);
     
   }
+  
+  // Get subject sections list
+  async function handleGetSectionList(): 
+  Promise<Array<{grade: number, subject: Subject, section: string}>> {
+    try {
+      const token = await user?.getIdToken();
+      const sectionL = await getSectionList(token!);
+      return sectionL;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
 
   async function handleSubmit () {
     
@@ -165,7 +180,7 @@ export default function CreateActivityLayout() {
         <TemplateTitle templateCode={templateCode}>{templateCode.split("-")[1]}</TemplateTitle>
 
         {/* Activity topic */}
-        <ActivitySection options={formData.options} setFormData={setFormData} />
+        <ActivitySection options={formData.options} setFormData={setFormData} handleGetSectionList={handleGetSectionList} />
 
         {/* Activity title */}
         <ActivityTitle setFormData={setFormData} />

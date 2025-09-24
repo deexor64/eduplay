@@ -1,7 +1,4 @@
 import { z } from "zod";
-import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import userTokenChecker from "@/lib/utils/userTokenChecker";
-import { JwtPayload } from "jsonwebtoken";
 import { ActivityDifficulty, Subject } from "@prisma/client";
 import userPermissionCheck from "@/lib/utils/userPermissionCheck";
 

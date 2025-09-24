@@ -5,23 +5,20 @@ import { useEffect, useState } from "react";
 type ActivitySectionProps = {
   options: any;
   setFormData: Function;
+  handleGetSectionList: () => Promise<Array<{grade: number, subject: Subject, section: string}>>
 }
   
 export default function ActivitySection(props: ActivitySectionProps) {
   
   // Sections list
   const [sectionList, setSectionList] = useState<Array<{
-    subject: Subject, grade: number | null, section: string | null}> | []>([]);
+    subject: Subject, grade: number, section: string}>>([]);
   
-  // Get sections list from server
-  async function handleGetSectionList() {
-    const sectionL = await getSectionList();
-    sectionL instanceof Error ?
-      setSectionList([]) : setSectionList(sectionL)
-  }
+  const [inputValue, setInputValue] = useState(""); // For filtering section
 
   useEffect(() => {
-    handleGetSectionList();
+    const sectionL = props.handleGetSectionList();
+    sectionL.then((list) => setSectionList(list));
   }, []);
   
   // Set activity section
@@ -43,7 +40,9 @@ export default function ActivitySection(props: ActivitySectionProps) {
 
       {/* Section input */}
       <input
-        id="section-list" type="text"
+        id="section-input"
+        type="text"
+        list="section-list" 
         className="w-full p-3 border border-gray-300 rounded-lg bg-white/80 backdrop-blur
         transition-all duration-300 focus:border-blue-500 focus:outline-none focus:bg-white 
         focus:shadow-md disabled:bg-gray-200 disabled:cursor-not-allowed"
@@ -52,16 +51,17 @@ export default function ActivitySection(props: ActivitySectionProps) {
       />
 
       {/* Topic list */}
-      {/* ISSUE: Topic list doesn't appear */}
-      <datalist id="section-list" className="z-50">
-        {sectionList.filter(function(value) {
-          return value.section && value.subject === props.options.subject && 
-            value.grade === props.options.grade;
-        })
-        .map(function(value) {
-          return <option value={value.section!} key={value.section}>{value.section}</option>;
-        })}
+      <datalist id="section-list">
+        {sectionList.filter(value => {
+          if (!inputValue) return true;
+            return value.section.toLowerCase().includes(inputValue.toLowerCase());
+          })
+          .map(value => (
+            <option value={value.section} key={value.section} >{value.section} (Grade: {value.grade}, Subject {value.subject})</option>
+          )
+        )}
       </datalist>
+    
       
     </section>
   );
