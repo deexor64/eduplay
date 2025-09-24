@@ -43,18 +43,20 @@ export function RightSidebar() {
   const [navigatorInfo, setNavigatorInfo] = useState<{
     displayPicUrl: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    unreadCount?: number,
   }>({
     displayPicUrl: "/images/student/avatar.png",
     firstName: user?.displayName?.split(' ')[0] || '',
-    lastName: user?.displayName?.split(' ')[1] || ''
+    lastName: user?.displayName?.split(' ')[1] || '',
+    unreadCount: 0,
   })
 
   async function fetchNavigatorInfo() {
     const token = await user?.getIdToken();
     try {
       const info = await getNavigatorInfo(token!);
-      setNavigatorInfo(info);
+      setNavigatorInfo(info as any);
     } catch (error) {
       console.log("Server error");
     }
@@ -80,8 +82,13 @@ export function RightSidebar() {
       </Link>
       {/* Notifications */}
       <Link href="/student/notifications" title="Notifications">
-        <div title="Notifications" className="transition-transform duration-200 hover:scale-110 drop-shadow-amber-400 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg mt-5">
+        <div title="Notifications" className="relative transition-transform duration-200 hover:scale-110 drop-shadow-amber-400 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg mt-5">
           <Image src="/images/student/envelop.png" alt="Notifications" width={60} height={60} />
+          { (navigatorInfo.unreadCount ?? 0) > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1 min-w-[18px] text-center">
+              {navigatorInfo.unreadCount}
+            </span>
+          )}
         </div>
       </Link>
       {/* Logout */}
