@@ -4,17 +4,43 @@ import { useRouter } from 'next/navigation';
 import { faBell, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AuthContext } from '@/contexts/AuthProvider';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { clientAuth } from "@/lib/firebaseClient";
 import { signOut } from "firebase/auth";
 import useConfirm from "@/hooks/useConfirm";
 import { ConfirmDialog } from '../shared/popups/confirmDialog';
+import { getNavigatorInfo } from '@/actions/navigator/getNavigatorInfo';
 
 export default function Navbar() {
 
-  const { userType } = useContext(AuthContext);
-  const { confirm, state, setState } = useConfirm();
+  const { userType, user } = useContext(AuthContext);
+  const { confirm, confirmState, setConfirmState } = useConfirm();
   
+  // User info shown on top
+  const [navigatorInfo, setNavigatorInfo] = useState<{
+    displayPicUrl:string,
+    firstName:string,
+    lastName:string
+  }>({
+    displayPicUrl: "/images/avatar.png",
+    firstName: user?.displayName?.split(' ')[0] || '',
+    lastName: user?.displayName?.split(' ')[1] || ''
+  })
+  
+  async function fetchNavigatorInfo() {
+    const token = await user?.getIdToken();
+    try {
+      const info = await getNavigatorInfo(token!)
+      setNavigatorInfo(info);
+    } catch (error) {
+      console.log("Server error");
+    }
+  }
+  
+  useEffect(() => {
+    fetchNavigatorInfo();
+  }, [user]);
+
   // route back to dashboard
   const router = useRouter();
   function routeBackToDashboard() { 
@@ -38,12 +64,13 @@ export default function Navbar() {
       </div>
       
       <div className="flex items-center space-x-4">
+        <p className="text-white">{navigatorInfo.firstName} {navigatorInfo.lastName}</p>
+        <img src={navigatorInfo.displayPicUrl} className="w-8 h-8 rounded-full" alt="Profile" />
         <button className="text-white cursor-pointer"><FontAwesomeIcon icon={faBell} /></button>
-        <img src="/images/avatar.png" className="w-8 h-8 rounded-full" alt="Profile" />
         <button className="text-white cursor-pointer" onClick={async() => await logOut()}><FontAwesomeIcon icon={faSignOut} /></button>
       </div>
       
-      <ConfirmDialog state={state} setState={setState} />
+      <ConfirmDialog state={confirmState} setState={setConfirmState} />
       
     </div>
   );

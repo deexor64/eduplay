@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import useConfirm from "@/hooks/useConfirm";
 import { signOut } from "firebase/auth";
 import { clientAuth } from "@/lib/firebaseClient";
 import { ConfirmDialog } from "../shared/popups/confirmDialog";
+import { AuthContext } from "@/contexts/AuthProvider";
+import { getNavigatorInfo } from "@/actions/navigator/getNavigatorInfo";
 
-// LeftSidebar: Book, Cup, and Wrench
 export function LeftSidebar() {
+
   return (
     <div className="fixed top-0 left-0 h-full w-28 flex flex-col justify-evenly items-center pt-5 gap-8 z-40">
       {/* Activities */}
@@ -32,23 +34,48 @@ export function LeftSidebar() {
   );
 }
 
-// RightSidebar: Assistant, Guide, Notifications, and Quick Actions
 export function RightSidebar() {
-  
-  const { confirm, state, setState } = useConfirm();
-  
+
+  const { userType, user } = useContext(AuthContext);
+  const { confirm, confirmState, setConfirmState } = useConfirm();
+
+  // User info shown on top
+  const [navigatorInfo, setNavigatorInfo] = useState<{
+    displayPicUrl: string,
+    firstName: string,
+    lastName: string
+  }>({
+    displayPicUrl: "/images/student/avatar.png",
+    firstName: user?.displayName?.split(' ')[0] || '',
+    lastName: user?.displayName?.split(' ')[1] || ''
+  })
+
+  async function fetchNavigatorInfo() {
+    const token = await user?.getIdToken();
+    try {
+      const info = await getNavigatorInfo(token!);
+      setNavigatorInfo(info);
+    } catch (error) {
+      console.log("Server error");
+    }
+  }
+
+  useEffect(() => {
+    fetchNavigatorInfo();
+  }, [user]);
+
   // Logout
   async function logOut() {
     const ok = await confirm("Do you really want to Logout?");
     if (ok) signOut(clientAuth);
   }
-  
+
   return (
     <div className="fixed top-0 right-0 h-full w-28 flex flex-col justify-evenly items-center pt-5 gap-8 z-40">
       {/* Avatar */}
-      <Link href="/student/profile" title="Settings">
-        <div title="You" className="transition-transform duration-200 hover:scale-110 drop-shadow-gray-400 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg ">
-          <Image src="/images/student/avatar.png" alt="You" width={80} height={80} />
+      <Link href="/student/profile" title="Profile">
+        <div className="w-[80px] h-[80px] rounded-full overflow-hidden relative">
+          <Image src={navigatorInfo.displayPicUrl} alt="You" fill className="object-cover"/>
         </div>
       </Link>
       {/* Notifications */}
@@ -61,9 +88,9 @@ export function RightSidebar() {
       <button title="Logout" onClick={logOut} className="transition-transform duration-200 hover:scale-110 drop-shadow-orange-600 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg">
         <Image src="/images/student/logout.png" alt="Logout" width={70} height={70} />
       </button>
-      
-      <ConfirmDialog state={state} setState={setState} />
-      
+
+      <ConfirmDialog state={confirmState} setState={setConfirmState} />
+
     </div>
   );
 }

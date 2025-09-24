@@ -2,17 +2,17 @@ import { useState, useCallback } from "react";
 
 export default function useConfirm() {
   
-  const [state, setState] = useState<{
+  const [confirmState, setConfirmState] = useState<{
     message: string;
     resolve?: (value: boolean) => void;
   } | null>(null);
 
   const confirm = useCallback((message: string) => {
     return new Promise<boolean>((resolve) => {
-      setState({ message, resolve });
+      setConfirmState({ message, resolve });
     });
   }, []);
 
-  return { confirm, state, setState };
+  return { confirm, confirmState, setConfirmState };
   
 }
