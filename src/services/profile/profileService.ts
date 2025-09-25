@@ -2,7 +2,8 @@ import { prisma } from '@/lib/prisma';
 import { ResType } from '@/lib/utils/types';
 import { UserType } from '@prisma/client';
 
-export default async function profileService(data: any): Promise<ResType> {
+export default async function profileService(data: any): 
+Promise<{ status: boolean, data: any }> {
 
   let whereUser: any = data.userID ? { 
     userID: data.userID,
@@ -92,7 +93,6 @@ export default async function profileService(data: any): Promise<ResType> {
     
   }
 
-  return { status: true, resDataType: "success", 
-    data: data.userPermissions.userType === "TEACHER" ? userWithNotifications : user };
+  return { status: true, data: data.userPermissions.userType === "TEACHER" ? userWithNotifications : user };
 
 }

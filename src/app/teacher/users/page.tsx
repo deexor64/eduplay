@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { updateUserStatus } from "@/actions/user/updateUserStatus";
 import { AuthContext } from "@/contexts/AuthProvider";
 import { updateUserInfo } from "@/actions/user/updateUserInfo";
+import { ListLoading } from "@/components/shared/loading/ListLoading";
 
 export default function Users() {
   
@@ -39,7 +40,7 @@ export default function Users() {
       }
     }>,
     total: number;
-  }>({ users: [], total: 0 });
+  } | null>(null);
 
   const [filter, setFilter] = useState({
     indexNumber: undefined,
@@ -85,6 +86,10 @@ export default function Users() {
     });
     
     const resData = await res.json();
+    if (!resData.status) {
+      console.log(resData.data);
+      return;
+    }
     setDbData(resData.data);
   
   }
@@ -184,7 +189,9 @@ export default function Users() {
       
       {/* Info */}
       <div className="w-full min-h-[calc(100vh-380px)] table-auto text-left">
-        {dbData.users.length === 0 ? (
+        {!dbData ? (
+          <ListLoading />
+        ) : dbData.users.length === 0 ? (
           <div className="text-center text-gray-500 py-8">Nothing to display</div>
         ) : (
           dbData.users.map(function (item) {
@@ -195,7 +202,7 @@ export default function Users() {
       </div>
   
       {/* paginator */}
-      <Paginator totalItems={dbData.total} pagination={pagination} setPagination={setPagination}/>
+      <Paginator totalItems={dbData ? dbData.total : 0} pagination={pagination} setPagination={setPagination}/>
 
     </NavigatorLayout>
     

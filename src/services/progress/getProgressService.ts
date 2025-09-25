@@ -1,7 +1,8 @@
 import { ResType } from '@/lib/utils/types';
 import { prisma } from '@/lib/prisma';
 
-export default async function getProgressService(data: any): Promise<ResType> {
+export default async function getProgressService(data: any): 
+Promise<{ status: boolean, data: any }> {
   
   const progress = await prisma.progress.findUnique({
     where: {
@@ -28,9 +29,9 @@ export default async function getProgressService(data: any): Promise<ResType> {
     }
   })
 
-  if (!progress) return { status: false, resDataType: "error", data: "Progress not found" };
+  if (!progress) return { status: false, data: "Progress not found" };
   
-  return { status: true, resDataType: "success", 
+  return { status: true, 
     data: {
       score: {
         baseScore: progress.baseScore,

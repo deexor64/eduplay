@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { ResType } from '@/lib/utils/types';
 
-export default async function createActivityService(data: any): Promise<ResType> {
+export default async function createActivityService(data: any): 
+Promise<{ status: boolean, data: any }> {
 
   const teacher = await prisma.teacher.findUnique({
     where: {
@@ -34,6 +35,6 @@ export default async function createActivityService(data: any): Promise<ResType>
     }
   })
   
-  return { status: true, resDataType: "success", data: existing.activityID };
+  return { status: true, data: existing.activityID };
   
 }

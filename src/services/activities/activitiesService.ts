@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { ResType } from '@/lib/utils/types';
 
-export default async function activitiesService(data: any): Promise<ResType> {
+export default async function activitiesService(data: any): 
+Promise<{ status: boolean, data: any }> {
   
   // Get grade if user is a student
   const student = (data.userPermissions.userType === "STUDENT" ? await prisma.student.findUnique({
@@ -97,6 +98,6 @@ export default async function activitiesService(data: any): Promise<ResType> {
     where: whereActivities,
   })
   
-  return { status: true, resDataType: "success", data: { activities, total } };
+  return { status: true, data: { activities, total } };
   
 }

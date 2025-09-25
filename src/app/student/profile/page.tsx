@@ -45,19 +45,7 @@ export default function Profile() {
       indexNumber: string,
       grade: 1 | 2 | 3 | 4 | 5,
     }
-  }>({
-    userID: "",
-    firstName: "-",
-    lastName: "-",
-    email: "",
-    displayPicUrl: "-",
-    status: "ACTIVE",
-    student: {
-      studentID: "",
-      indexNumber: "",
-      grade: 1,
-    }
-  });
+  } | null>(null);
 
   // Fetch student data
   async function fetchStudent() {  
@@ -72,6 +60,10 @@ export default function Profile() {
     });
 
     const resData = await res.json();
+    if (!resData.status) {
+      console.log(resData.data);
+      return;
+    }
     setDbData(resData.data);
 
   }
@@ -152,22 +144,28 @@ export default function Profile() {
 
         <Title title="Profile" imageUrl="/images/student/title-activities.png" />
         
-        <ProfilePictureUpload 
-          updateProfilePictureHandler={updateProfilePictureHandler}
-          studentInfo={
-            {
-              currentImage: dbData.displayPicUrl,
-              studentName: `${dbData.firstName} ${dbData.lastName}`,
-              indexNumber: dbData.student.indexNumber,
-              email: dbData.email,
-              grade: dbData.student.grade,
-              status: dbData.status
+        {/* Profile picture section */}
+        {
+          dbData && <ProfilePictureUpload 
+            updateProfilePictureHandler={updateProfilePictureHandler}
+            studentInfo={
+              {
+                currentImage: dbData.displayPicUrl,
+                studentName: `${dbData.firstName} ${dbData.lastName}`,
+                indexNumber: dbData.student.indexNumber,
+                email: dbData.email,
+                grade: dbData.student.grade,
+                status: dbData.status
+              }
             }
-          }
-        />
-        <PersonalInfoForm data={dbData} updateStudentInfo={updateStudentInfoHandler} />
-        {/* TODO: implement password change */}
-          <PasswordChangeForm updatePasswordHandler={updatePasswordHandler} />
+          />
+        }
+        
+        {/* Personal info form */}
+        {dbData && <PersonalInfoForm data={dbData} updateStudentInfo={updateStudentInfoHandler} />}
+        
+        {/* Password change */}
+        <PasswordChangeForm updatePasswordHandler={updatePasswordHandler} />
 
       </div>
     </StudentNavigatorLayout>

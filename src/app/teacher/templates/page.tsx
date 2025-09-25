@@ -13,6 +13,7 @@ import { syncTemplates } from "@/actions/templates/syncTemplates";
 import toast from "react-hot-toast";
 import { TeacherRole } from "@prisma/client";
 import { AuthContext } from "@/contexts/AuthProvider";
+import { ListLoading } from "@/components/shared/loading/ListLoading";
 
 export default function Templates() {
   
@@ -27,7 +28,7 @@ export default function Templates() {
     }>,
     templateTypes: Array<string>,
     total: number,
-  }>({ templates: [], templateTypes: [], total: 0 });
+  } | null>(null);
 
   const [filter, setFilter] = useState({
     templateType: undefined,
@@ -67,6 +68,10 @@ export default function Templates() {
     });
     
     const resData = await res.json();
+    if (!resData.status) {
+      console.log(resData.data);
+      return;
+    }
     setDbData(resData.data);
   
   }
@@ -106,7 +111,7 @@ export default function Templates() {
       <FilterWrapper>
         <OptionFilter
           filterKey="templateType"
-          values={dbData.templateTypes}
+          values={dbData ? dbData.templateTypes : []}
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
         >Type</OptionFilter>
@@ -119,7 +124,9 @@ export default function Templates() {
       
       {/* Info */}
       <div className="w-full min-h-[calc(100vh-380px)] table-auto text-left">
-        {dbData.templates.length === 0 ? (
+        {!dbData ? (
+          <ListLoading />
+        ) : dbData.templates.length === 0 ? (
           <div className="text-center text-gray-500 py-8">Nothing to display</div>
         ) : (
           dbData.templates.map(function (item) {
@@ -129,7 +136,7 @@ export default function Templates() {
       </div>
   
       {/* paginator */}
-      <Paginator totalItems={dbData.total} pagination={pagination} setPagination={setPagination}/>
+      <Paginator totalItems={dbData ? dbData.total : 0} pagination={pagination} setPagination={setPagination}/>
 
     </NavigatorLayout>
     

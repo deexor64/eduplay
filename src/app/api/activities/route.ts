@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     
     const parsed = await createActivityValidator(headers, formData);
     if (!parsed.status) return NextResponse.json(
-      {status: false, responseType: "log", data: parsed.data},
+      {status: false, data: parsed.data},
       { status: 401 }
     );
     
@@ -29,11 +29,10 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   
-  } catch (err: any) {
-    
+  } catch (err: any) { 
     console.log(err);
     return NextResponse.json(
-      { status: false, responseType: "log", data: "Internal server error."},
+      { status: false, data: "Internal server error"},
       { status: 500 }
     );
     
@@ -42,6 +41,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
+  
   try {
     
     const headers = req.headers;
@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
 
     const parsed = await activitiesValidator(headers, searchParams);
     if (!parsed.status) return NextResponse.json(
-      {status: false, responseType: "log", data: parsed.data},
+      {status: false, data: parsed.data},
       { status: 401 }
     );
 
@@ -66,9 +66,8 @@ export async function GET(req: NextRequest) {
   } catch (err: any) {
     console.log(err);
     return NextResponse.json(
-      { status: false, responseType: "log", data: "Internal server error."},
+      { status: false, data: "Internal server error."},
       { status: 500 }
     );
   }
 }
-

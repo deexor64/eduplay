@@ -3,7 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { ResType } from '@/lib/utils/types';
 import { TeacherRole, UserStatus, UserType } from '@prisma/client';
 
-export default async function registerService(data: any): Promise<ResType> {
+export default async function registerService(data: any): 
+Promise<{ status: boolean, data: any }> {
   
   const userRegisterType = data.userRegisterType;
   const users = data.users;
@@ -57,7 +58,7 @@ export default async function registerService(data: any): Promise<ResType> {
   }
   
   // Send existing record list
-  if (registerSummery.length > 0) return { status: false, resDataType: "error", data: registerSummery };
+  if (registerSummery.length > 0) return { status: false, data: registerSummery };
   
   // Create users
   registerSummery = "";
@@ -144,6 +145,6 @@ export default async function registerService(data: any): Promise<ResType> {
   }
   
   // Return created users summery
-  return { status: true, resDataType: "success", data: registerSummery };
+  return { status: true, data: registerSummery };
 
 }

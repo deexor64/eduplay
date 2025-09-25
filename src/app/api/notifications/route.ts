@@ -3,12 +3,14 @@ import notificationsValidator from '@/validators/notifications/notificationsVali
 import notificationsService from '@/services/notifications/notificationsService';
 
 export async function GET(req: NextRequest) {
+  
   try {
+    
     const headers = req.headers;
 
     const parsed = await notificationsValidator(headers);
     if (!parsed.status) return NextResponse.json(
-      { status: false, responseType: "log", data: parsed.data },
+      { status: false, data: parsed.data },
       { status: 401 }
     );
 
@@ -22,11 +24,13 @@ export async function GET(req: NextRequest) {
       query,
       { status: 200 }
     );
+    
   } catch (err: any) {
     console.log(err);
     return NextResponse.json(
-      { status: false, responseType: "log", data: "Internal server error." },
+      { status: false, data: "Internal server error" },
       { status: 500 }
     );
   }
+  
 } 

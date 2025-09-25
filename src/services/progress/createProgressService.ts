@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { ResType } from '@/lib/utils/types';
 
-export default async function createProgressService(data: any): Promise<ResType> {
+export default async function createProgressService(data: any): 
+Promise<{ status: boolean, data: any }> {
 
   const student = await prisma.student.findUnique({
     where: {
@@ -20,7 +21,7 @@ export default async function createProgressService(data: any): Promise<ResType>
     },
   });
 
-  if (existingProgress) return { status: false, resDataType: "error", 
+  if (existingProgress) return { status: false, 
     data: "Sorry kid, You cannot save your work twice. but you're free to try without saving. Just head back to activites and find the same actiivity. You will find your progress there..." };
   
   const progress = await prisma.progress.create({
@@ -38,6 +39,6 @@ export default async function createProgressService(data: any): Promise<ResType>
     },
   })
   
-  return { status: true, resDataType: "success", data: "Great, your work is saved" };
+  return { status: true, data: "Great, your work is saved" };
   
 }

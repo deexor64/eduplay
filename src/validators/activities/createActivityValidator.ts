@@ -10,7 +10,7 @@ Promise<{ status: boolean; data: any; }> {
   const userPermissions = await userPermissionCheck(token, ["TEACHER"], ["ADMIN", "TEACHER"], ["ACTIVE"]);
   if (!userPermissions.status) return userPermissions;
   
-  // constraints
+  // Validate
   const zFormData = z.object({
     templateCode: z.string(),
     section: z.string(),
@@ -20,8 +20,8 @@ Promise<{ status: boolean; data: any; }> {
     options: z.object({
       isScored: z.boolean(),
       grade: z.enum(["1", "2", "3", "4", "5"]).transform(value => parseInt(value)),
-      subject: z.enum(Object.values(Subject) as [string, ...string[]]),
-      difficulty: z.enum(Object.values(ActivityDifficulty) as [string, ...string[]]),
+      subject: z.nativeEnum(Subject),
+      difficulty: z.nativeEnum(ActivityDifficulty),
     })
   }).strict();
   

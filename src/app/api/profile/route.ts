@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
 
     const parsed = await profileValidator(headers, searchParams);
     if (!parsed.status) return NextResponse.json(
-      { status: false, responseType: "log", data: parsed.data },
+      { status: false, data: parsed.data },
       { status: 401 }
     );
     
@@ -27,13 +27,11 @@ export async function GET(req: NextRequest) {
     );
 
   } catch (err: any) {
-
     console.log(err);
     return NextResponse.json(
-      { status: false, responseType: "log", data: "Internal server error." },
+      { status: false, data: "Internal server error" },
       { status: 500 }
     );
-
   }
 
 }

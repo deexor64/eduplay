@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { ResType } from '@/lib/utils/types';
 
-export default async function progressService(data: any): Promise<ResType> {
+export default async function progressService(data: any): 
+Promise<{ status: boolean, data: any }> {
 
   // Find student by userID if userType is student
   // Progress which is relevent to student will be generated
@@ -74,7 +75,6 @@ export default async function progressService(data: any): Promise<ResType> {
 
   return {
     status: true,
-    resDataType: "success",
     data: {
       totalCompleted,
       averageScore,

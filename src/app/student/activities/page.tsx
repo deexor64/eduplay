@@ -11,6 +11,9 @@ import cleanParams from "@/lib/utils/cleanParams";
 import StudentNavigatorLayout from "@/components/student/StudentNavigatorLayout";
 import { ActivityDifficulty, Subject } from "@prisma/client";
 import { AuthContext } from "@/contexts/AuthProvider";
+import Lottie from "lottie-react";
+import ListLoading from "@/components/student/loading/ListLoading";
+import ListEmpty from "@/components/student/loading/ListEmpty";
 
 export default function Activities() {
   
@@ -29,7 +32,7 @@ export default function Activities() {
       progressID?: string,
     }>,
     total: number;
-  }>({ activities: [], total: 0 });
+  } | null>(null);
 
   const [filter, setFilter] = useState({
     section: undefined,
@@ -69,6 +72,10 @@ export default function Activities() {
     });
 
     const resData = await res.json();
+    if (!resData.status) {
+      console.log(resData.data);
+      return;
+    }
     setDbData(resData.data);
 
   }
@@ -125,21 +132,27 @@ export default function Activities() {
 
       {/* Activity List */}
       <div className="w-full min-h-[calc(100vh-390px)] grid grid-cols-1 md:grid-cols-2 gap-4">
-        {dbData.activities.length === 0 ? (
-          <div className="col-span-full text-center py-12">
-            <div className="text-6xl mb-4">😴</div>
-            <div className="text-gray-600 text-lg mb-2">No activities available right now</div>
-            <div className="text-gray-500">Check back later for new learning adventures!</div>
+        {!dbData ? (
+          <div className="col-span-full flex flex-col items-center justify-center py-12">
+            <ListLoading />
+            <div className="text-gray-500 mt-4">Loading activities...</div>
+          </div>
+        ) : dbData.activities.length === 0 ? (
+          <div className="col-span-full flex flex-col items-center text-center py-12">
+            <ListEmpty />
+            <div className="text-gray-600 text-lg mb-2">
+              No activities available
+            </div>
           </div>
         ) : (
-          dbData.activities.map(function (item) {
-            return <ViewActivityItem itemData={item} key={item.activityID}/>;
-          })
+          dbData.activities.map((item) => (
+            <ViewActivityItem itemData={item} key={item.activityID} />
+          ))
         )}
       </div>
 
       {/* paginator */}
-      <Paginator totalItems={dbData.activities.length} pagination={pagination} setPagination={setPagination}/>
+      <Paginator totalItems={dbData ? dbData.activities.length : 0} pagination={pagination} setPagination={setPagination}/>
 
     </StudentNavigatorLayout>
   );

@@ -9,9 +9,9 @@ Promise<{ status: boolean; data: any; }> {
   const userPermissions = await userPermissionCheck(token, ["TEACHER", "STUDENT"], ["ADMIN", "TEACHER"], ["ACTIVE"]);
   if (!userPermissions.status) return userPermissions;
 
-  // constraints
+  // Validate
   const zSlugParams = z.object({
-    activityID: z.string(),
+    activityID: z.string().uuid(),
    })
   .strict();
 

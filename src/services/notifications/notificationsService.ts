@@ -2,14 +2,15 @@ import { prisma } from '@/lib/prisma';
 import { ResType } from '@/lib/utils/types';
 import { UserType } from '@prisma/client';
 
-export default async function notificationsService(data: any): Promise<ResType> {
+export default async function notificationsService(data: any):
+Promise<{ status: boolean, data: any }> {
 
   const student = await prisma.student.findUnique({
     where: { userID: data.userPermissions.uid },
     select: { studentID: true },
   });
 
-  if (!student) return { status: false, resDataType: "log", data: "Student not found" };
+  if (!student) return { status: false, data: "Student not found" };
 
   const where = {
     OR: [
@@ -43,6 +44,6 @@ export default async function notificationsService(data: any): Promise<ResType> 
     isRead: (notification.reads?.length ?? 0) > 0,
   }));
 
-  return { status: true, resDataType: "success", data: { notifications: formattedNotifications } };
+  return { status: true, data: { notifications: formattedNotifications } };
   
 } 

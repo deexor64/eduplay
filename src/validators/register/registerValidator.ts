@@ -10,6 +10,7 @@ Promise<{ status: boolean; data: any; }> {
   const userPermissions = await userPermissionCheck(token, ["TEACHER"], ["ADMIN"], ["ACTIVE"]);
   if (!userPermissions.status) return userPermissions;
   
+  // Validate
   const zSearchParams = z.object({
     userRegisterType: z.nativeEnum(UserType),
   })
@@ -18,7 +19,6 @@ Promise<{ status: boolean; data: any; }> {
   const parsed_s = zSearchParams.safeParse(Object.fromEntries(searchParams.entries()));
   if (!parsed_s.success) return { status: false, data: parsed_s.error.message }
 
-  // constraints
   const SignupRecordSchema = z.object({
     firstName: z.string().min(1, "First name is required"),
     lastName: z.string().min(1, "Last name is required"),

@@ -7,7 +7,8 @@ const userListHandler: any = {
   STUDENT: prisma.student,
 } as const;
 
-export default async function usersService(data: any): Promise<ResType> {
+export default async function usersService(data: any): 
+Promise<{ status: boolean, data: any }> {
   
   let whereUsers: any = {
     indexNumber: data.indexNumber,
@@ -91,6 +92,6 @@ export default async function usersService(data: any): Promise<ResType> {
     dbUsers.users = usersVerified;
   }
     
-  return { status: true, resDataType: "success", data: users };
+  return { status: true, data: users };
   
 }

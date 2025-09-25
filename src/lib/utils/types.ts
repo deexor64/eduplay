@@ -62,11 +62,7 @@ export enum ActivityViewModeEnum {
 }
 
 // api response type
-export type ResType = {
-  status: boolean, 
-  resDataType: "message" | "data" | "log" | "error" | "warning" | "success",
-  data: any
-}
+export type ResType = { status: boolean, data: any }
 
 // activity difficulty
 export type ActivityDifficulty = "EASY" | "MEDIUM" | "HARD";

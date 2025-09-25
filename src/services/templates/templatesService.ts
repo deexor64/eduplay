@@ -1,7 +1,8 @@
 import { ResType } from '@/lib/utils/types';
 import { prisma } from "@/lib/prisma";
 
-export default async function templatesService(data: any): Promise<ResType> {
+export default async function templatesService(data: any): 
+Promise<{ status: boolean, data: any }> {
   
   let whereTemplates: any = {
     templateType: data.templateType,
@@ -36,6 +37,6 @@ export default async function templatesService(data: any): Promise<ResType> {
     where: whereTemplates,
   })
   
-  return { status: true, resDataType: "success", data: { templates, templateTypes, total } };
+  return { status: true, data: { templates, templateTypes, total } };
   
 }

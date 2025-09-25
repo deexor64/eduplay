@@ -50,20 +50,7 @@ export default function Profile() {
       createdAt: Date,
       isRead?: boolean,
     }>,
-  }>({
-    userID: "",
-    firstName: "-",
-    lastName: "-",
-    email: "",
-    displayPicUrl: "-",
-    status: "ACTIVE",
-    teacher: {
-      teacherID: "",
-      indexNumber: "",
-      role: "TEACHER",
-    },
-    notifications: [],
-  });
+  } | null>(null);
 
   // Fetch teacher data
   async function fetchTeacher() {  
@@ -77,7 +64,12 @@ export default function Profile() {
     });
 
     const resData = await res.json();
+    if (!resData.status) {
+      console.log(resData.data);
+      return;
+    }
     setDbData(resData.data);
+    
   }
   
   async function handleMarkNotificationRead(notificationID: string) {
@@ -158,37 +150,46 @@ export default function Profile() {
       <div className="p-4 space-y-6">
         <Title title="Profile" />
         
-        {/* Top Section: Profile Summary and Notifications */}
+        {/* Profile Summary and Notifications */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex flex-col lg:flex-row gap-6">
             
-            {/* Profile Summary Section - 1/2 width */}
+            {/* Profile Summary Section */}
             <div className="lg:w-2/5 border-r border-gray-200 pr-6">
-              <ProfileSummary 
-                teacherInfo={dbData}
-                updateProfilePictureHandler={updateProfilePictureHandler}
-              />
+              { dbData ? 
+                <ProfileSummary teacherInfo={dbData} updateProfilePictureHandler={updateProfilePictureHandler} />
+                : <p>Loading..</p>
+              } 
             </div>
 
-            {/* Notifications Section - 1/2 width */}
+            {/* Notifications Section */}
             <div className="lg:w-3/5">
-              <Notifications notifications={dbData.notifications} handleMarkNotificationRead={handleMarkNotificationRead} />
+              { dbData ? (
+                dbData.notifications.length === 0 ? 
+                  <p>No notifications</p> :
+                  <Notifications notifications={dbData.notifications} handleMarkNotificationRead={handleMarkNotificationRead} /> 
+                )
+                : <p>Loading</p>
+              }            
             </div>
+            
           </div>
         </div>
 
-        {/* Middle Section: Personal Info and Password Change */}
+        {/* Personal Info and Password Change */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           {/* Personal Information Form */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <PersonalInfoForm 
-              data={dbData}
-              emailVerified={dbData.email === email ? true : false}
-              currentEmail={email}
-              updateEmailHandler={updateEmailHandler}
-              updateTeacherInfo={updateTeacherInfoHandler}
-            />
+            {dbData ? 
+              <PersonalInfoForm 
+                data={dbData}
+                emailVerified={dbData.email === email ? true : false}
+                currentEmail={email}
+                updateEmailHandler={updateEmailHandler}
+                updateTeacherInfo={updateTeacherInfoHandler}
+              /> : <p>Loading..</p>
+            }
           </div>
 
           {/* Password Change Form */}

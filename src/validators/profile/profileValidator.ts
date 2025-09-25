@@ -9,13 +9,13 @@ export default async function profileValidator(headers: Headers, searchParams: U
   const userPermissions = await userPermissionCheck(token, ["STUDENT", "TEACHER"], [], ["ACTIVE", "SUSPENDED"]);
   if (!userPermissions.status) return userPermissions;
 
-  // constraints
-  const zsearchParams = z.object({
-    userID: z.string().optional(),
+  // Validate
+  const zSearchParams = z.object({
+    userID: z.string().uuid().optional(),
   })
   .strict();
 
-  const parsed_s = zsearchParams.safeParse(Object.fromEntries(searchParams.entries()));
+  const parsed_s = zSearchParams.safeParse(Object.fromEntries(searchParams.entries()));
   if (!parsed_s.success) return { status: false, data: parsed_s.error.message }
   
   return { status: true, data: {...parsed_s.data, userPermissions: userPermissions.data } };

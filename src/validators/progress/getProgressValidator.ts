@@ -9,13 +9,13 @@ Promise<{ status: boolean; data: any; }> {
   const userPermissions = await userPermissionCheck(token, ["STUDENT"], [], ["ACTIVE"]);
   if (!userPermissions.status) return userPermissions;
   
-  // constraints
-  const zslugParams = z.object({
-    progressID: z.string(),
+  // Validate
+  const zSlugParams = z.object({
+    progressID: z.string().uuid(),
    })
   .strict();
 
-  const parsed_s = zslugParams.safeParse(slugParam);
+  const parsed_s = zSlugParams.safeParse(slugParam);
   if (!parsed_s.success) return { status: false, data: parsed_s.error.message }
 
   return { status: true, data: parsed_s.data}

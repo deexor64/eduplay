@@ -10,7 +10,7 @@ Promise<{ status: boolean; data: any; }> {
   const userPermissions = await userPermissionCheck(token, ["TEACHER"], ["ADMIN"], ["ACTIVE"]);
   if (!userPermissions.status) return userPermissions;
 
-  // Input validation
+  // Validate
   const zSearchParams = z.object({
     userListType: z.nativeEnum(UserType),
     indexNumber: z.string().optional(),

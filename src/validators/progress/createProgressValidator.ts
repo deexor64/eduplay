@@ -10,7 +10,7 @@ Promise<{ status: boolean, data: any }> {
   const userPermissions = await userPermissionCheck(token, ["STUDENT"], [], ["ACTIVE"]);
   if (!userPermissions.status) return userPermissions;
   
-  // constraints
+  // Validate
   const zFormData = z.object({
     activityID: z.string().uuid(),
     score: z.object({
@@ -21,8 +21,7 @@ Promise<{ status: boolean, data: any }> {
     data: z.any(),
   }).strict();
 
-  // if activity is not graded progress is not saved
-  // if acitivty is graded, the time taken must be greater than 0
+  // If activity is not graded progress is not saved
   const activity = await prisma.activity.findUnique({
     where: {
       activityID: formData.activityID,
@@ -42,4 +41,5 @@ Promise<{ status: boolean, data: any }> {
   }
 
   return { status: true, data: {...parsed.data, userPermissions: userPermissions.data} };
+
 }

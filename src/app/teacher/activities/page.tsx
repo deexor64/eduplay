@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { ActivityDifficulty, ActivityStatus, Subject } from "@prisma/client";
 import { updateActivityStatus } from "@/actions/activity/updateActivityStatus";
 import { AuthContext } from "@/contexts/AuthProvider";
+import { ListLoading } from "@/components/shared/loading/ListLoading";
 
 export default function Activities() {
   
@@ -30,7 +31,7 @@ export default function Activities() {
       section: string,
     }>,
     total: number;
-  }>({ activities: [], total: 0 });
+  } | null>(null);
 
   const [filter, setFilter] = useState({
     section: undefined,
@@ -70,6 +71,10 @@ export default function Activities() {
     });
 
     const resData = await res.json();
+    if (!resData.status) {
+      console.log(resData.data);
+      return;
+    }
     setDbData(resData.data);
 
   }
@@ -139,19 +144,21 @@ export default function Activities() {
       </FilterWrapper>
 
       {/* Info */}
-       <div className="w-full min-h-[calc(100vh-380px)] table-auto text-left">
-        {dbData.activities.length === 0 ? (
+      <div className="w-full min-h-[calc(100vh-380px)] table-auto text-left">
+        {!dbData ? (
+          <ListLoading />
+        ) : dbData.activities.length === 0 ? (
           <div className="text-center text-gray-500 py-8">Nothing to display</div>
         ) : (
-          dbData.activities.map(function (item) {
-            return <ViewActivityItem itemData={item} handleUpdateActivityStatus={handleUpdateActivityStatus} 
-            key={item.activityID}/>;
-          })
+          dbData.activities.map((item) => (
+            <ViewActivityItem itemData={item} handleUpdateActivityStatus={handleUpdateActivityStatus}
+              key={item.activityID} />
+          ))
         )}
       </div>
 
       {/* paginator */}
-      <Paginator totalItems={dbData.total} pagination={pagination} setPagination={setPagination}/>
+      <Paginator totalItems={dbData ? dbData.total : 0} pagination={pagination} setPagination={setPagination}/>
    
     </NavigatorLayout>
   );

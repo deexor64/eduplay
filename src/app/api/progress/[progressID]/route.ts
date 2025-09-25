@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, context: { params: Promise<any> }) {
     
     const parsed = await getProgressValidator(headers, slugParam);
     if (!parsed.status) return NextResponse.json(
-      {status: false, responseType: "log", data: parsed.data},
+      {status: false, data: parsed.data},
       { status: 401 }
     );
     
@@ -28,14 +28,12 @@ export async function GET(req: NextRequest, context: { params: Promise<any> }) {
       { status: 200 }
     );
   
-  } catch (err: any) {
-    
+  } catch (err: any) { 
     console.log(err);
     return NextResponse.json(
-      { status: false, responseType: "log", data: "Internal server error."},
+      { status: false, data: "Internal server error"},
       { status: 500 }
-    );
-    
+    );  
   }
   
 }
