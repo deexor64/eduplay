@@ -5,16 +5,11 @@ import { faBell, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AuthContext } from '@/contexts/AuthProvider';
 import { useContext, useEffect, useState } from 'react';
-import { clientAuth } from "@/lib/firebaseClient";
-import { signOut } from "firebase/auth";
-import useConfirm from "@/hooks/useConfirm";
-import { ConfirmDialog } from '../shared/popups/confirmDialog';
 import { getNavigatorInfo } from '@/actions/navigator/getNavigatorInfo';
 
 export default function Navbar() {
 
   const { userType, user } = useContext(AuthContext);
-  const { confirm, confirmState, setConfirmState } = useConfirm();
   
   // User info shown on top
   const [navigatorInfo, setNavigatorInfo] = useState<{
@@ -48,12 +43,6 @@ export default function Navbar() {
   function routeBackToDashboard() { 
     router.push(`/${userType?.toLowerCase()}/`)
   }
-  
-  // Logout
-  async function logOut() {
-    const ok = await confirm("Do you really want to Logout?");
-    if (ok) signOut(clientAuth);
-  }
 
   function goToProfile() {
     router.push(`/${userType?.toLowerCase()}/profile`);
@@ -61,7 +50,7 @@ export default function Navbar() {
 
   return (
     <div className="w-full h-16 bg-blue-950 flex justify-between items-center 
-      p-4 shadow-md sticky top-0 z-20 ">
+      p-4 pr-6 pl-6 shadow-md sticky top-0 z-20 ">
         
       <div
         className="text-white font-bold cursor-pointer"
@@ -80,10 +69,7 @@ export default function Navbar() {
             </span>
           )}
         </button>
-        <button className="text-white cursor-pointer" onClick={async() => await logOut()}><FontAwesomeIcon icon={faSignOut} /></button>
       </div>
-      
-      <ConfirmDialog state={confirmState} setState={setConfirmState} />
       
     </div>
   );

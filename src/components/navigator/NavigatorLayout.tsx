@@ -18,7 +18,7 @@ export default function NavigatorLayout(props: any) {
         {/* Sidebar with passed toggle function */}
         <Sidebar isOpen={isOpen } setIsOpen={setIsOpen}/>
         {/* layout content */}
-        <section className={`flex-grow transition-all duration-300
+        <section className={`flex-grow transition-all duration-100
           w-full p-6 ${isOpen ? "ml-50" : "ml-20"}`}>
           {props.children}
         </section>

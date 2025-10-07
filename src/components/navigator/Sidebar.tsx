@@ -1,8 +1,12 @@
 import { ReactNode, useContext, useState } from "react";
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUsers, faUser, faUserFriends, faFileAlt, faBox } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUser, faUserFriends, faFileAlt, faBox, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { AuthContext } from "@/contexts/AuthProvider";
+import { signOut } from "firebase/auth";
+import { clientAuth } from "@/lib/firebaseClient";
+import useConfirm from "@/hooks/useConfirm";
+import { ConfirmDialog } from "../shared/popups/confirmDialog";
 
 type SideBarLinkProps = {
   link: string,
@@ -43,6 +47,45 @@ function SideBarLink(props: SideBarLinkProps) {
   )
 }
 
+function LogoutButton(props: any) {
+  const { children, icon, isOpen, isActive, onClick } = props;
+
+  return (
+    <li className="relative top-20">
+      <button
+        onClick={onClick}
+        type="button"
+        className={`w-full text-left flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group cursor-pointer
+          ${!isOpen ? 'justify-center' : ''}
+          ${isActive 
+            ? 'bg-white text-black' 
+            : 'text-gray-100 hover:bg-white hover:text-black'}
+        `}
+      >
+        {icon && (
+          <div
+            className={`w-6 h-6 transition-colors duration-200 flex items-center justify-center
+              ${isActive 
+                ? 'text-black' 
+                : 'text-white group-hover:text-black'}
+            `}
+          >
+            <FontAwesomeIcon icon={icon} className="w-5 h-5" />
+          </div>
+        )}
+
+        <span
+          className={`font-medium overflow-hidden transition-all duration-300
+            ${!isOpen ? 'w-0' : 'w-auto'}
+          `}
+        >
+          {isOpen && children}
+        </span>
+      </button>
+    </li>
+  );
+}
+
 type SidebarProps = {
   isOpen: boolean,
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -54,28 +97,39 @@ export default function Sidebar(props: SidebarProps) {
 
   const { isOpen, setIsOpen } = props;
   const [ openedLink, setOpenedLink ] = useState("");
+  
+  const { confirm, confirmState, setConfirmState } = useConfirm();
+  
+  // Logout
+  async function logOut() {
+    const ok = await confirm("Do you really want to Logout?");
+    if (ok) signOut(clientAuth);
+  }
 
   return (
+    <>
     <div className="fixed h-full">
 
       {/* ISSUE: Link wobbles when collapsing */}
 
       {/* Sidebar */}
-      <div className={`h-full bg-blue-950 backdrop-blur-lg border-r border-gray-800/50 shadow-sm transition-all duration-300 ease-in-out
+      <div className={`h-full bg-blue-950 backdrop-blur-lg border-r border-gray-800/50 shadow-sm transition-all duration-100 ease-in-out
           px-2 py-1 ${isOpen ? "w-50" : "w-20"}`}>
         <ul className="space-y-6 mt-20">
           { userType === "TEACHER" && role === "ADMIN" && (
             <>
-            <SideBarLink link="/teacher/users?userListType=STUDENT" icon={faUsers} isOpen={isOpen} isActive={openedLink === "/teacher/users?userListType=STUDENT"} onClick={() => setOpenedLink("/teacher/users?userListType=STUDENT")}>Students</SideBarLink>
-            <SideBarLink link="/teacher/users?userListType=TEACHER" icon={faUserFriends} isOpen={isOpen} isActive={openedLink === "/teacher/users?userListType=TEACHER"} onClick={() => setOpenedLink("/teacher/users?userListType=TEACHER")}>Teachers</SideBarLink>
-            <SideBarLink link="/teacher/templates" icon={faFileAlt} isOpen={isOpen} isActive={openedLink === "/teacher/templates"} onClick={() => setOpenedLink("/teacher/templates")}>Templates</SideBarLink>
+              <SideBarLink link="/teacher/users?userListType=STUDENT" icon={faUsers} isOpen={isOpen} isActive={openedLink === "/teacher/users?userListType=STUDENT"} onClick={() => setOpenedLink("/teacher/users?userListType=STUDENT")}>Students</SideBarLink>
+              <SideBarLink link="/teacher/users?userListType=TEACHER" icon={faUserFriends} isOpen={isOpen} isActive={openedLink === "/teacher/users?userListType=TEACHER"} onClick={() => setOpenedLink("/teacher/users?userListType=TEACHER")}>Teachers</SideBarLink>
             </>
           )}
+          <SideBarLink link="/teacher/templates" icon={faFileAlt} isOpen={isOpen} isActive={openedLink === "/teacher/templates"} onClick={() => setOpenedLink("/teacher/templates")}>Templates</SideBarLink>
           <SideBarLink link="/teacher/activities" icon={faBox} isOpen={isOpen} isActive={openedLink === "/teacher/activities"} onClick={() => setOpenedLink("/teacher/activities")}>Activities</SideBarLink>
           <SideBarLink link="/teacher/profile" icon={faUser} isOpen={isOpen} isActive={openedLink === "/teacher/profile"} onClick={() => setOpenedLink("/teacher/profile")}>Profile</SideBarLink>
+          <LogoutButton icon={faSignOut} isOpen={isOpen} isActive={openedLink === "/auth/signin"} onClick={async() => await logOut()}>Logout</LogoutButton>
         </ul>
+        
       </div>
-
+      
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -97,6 +151,11 @@ export default function Sidebar(props: SidebarProps) {
           />
         </div>
       </button>
+      
     </div>
+    
+    <ConfirmDialog state={confirmState} setState={setConfirmState} />
+    
+    </>
   );
 }
