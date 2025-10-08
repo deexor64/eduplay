@@ -11,13 +11,17 @@ import cleanParams from "@/lib/utils/cleanParams";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import { syncTemplates } from "@/actions/templates/syncTemplates";
 import toast from "react-hot-toast";
-import { TeacherRole } from "@prisma/client";
+import { TeacherRole, UserStatus } from "@prisma/client";
 import { AuthContext } from "@/contexts/AuthProvider";
 import { ListLoading } from "@/components/shared/loading/ListLoading";
+import Unauthorized from "@/components/shared/loading/Unauthorized";
 
 export default function Templates() {
   
   const { userID, email, userType, role, status, user } = useContext(AuthContext);
+  if (status != UserStatus.ACTIVE) {
+    return <Unauthorized />;
+  }
   
   const [dbData, setDbData] = useState<{
     templates: Array<{

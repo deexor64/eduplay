@@ -10,14 +10,18 @@ import React, { useContext, useEffect, useState } from "react";
 import cleanParams from "@/lib/utils/cleanParams";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import toast from "react-hot-toast";
-import { ActivityDifficulty, ActivityStatus, Subject } from "@prisma/client";
+import { ActivityDifficulty, ActivityStatus, Subject, TeacherRole, UserStatus } from "@prisma/client";
 import { updateActivityStatus } from "@/actions/activity/updateActivityStatus";
 import { AuthContext } from "@/contexts/AuthProvider";
 import { ListLoading } from "@/components/shared/loading/ListLoading";
+import Unauthorized from "@/components/shared/loading/Unauthorized";
 
 export default function Activities() {
   
   const { userID, email, userType, role, status, user } = useContext(AuthContext);
+  if (status != UserStatus.ACTIVE) {
+    return <Unauthorized />;
+  }
 
   const [dbData, setDbData] = useState<{
     activities: Array<{

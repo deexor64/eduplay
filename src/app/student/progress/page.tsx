@@ -6,10 +6,15 @@ import RecentActivityItem from "@/components/student/progress/RecentActivityItem
 import Achievements from "@/components/student/progress/Achievements";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/contexts/AuthProvider";
+import { UserStatus, UserType } from "@prisma/client";
+import Unauthorized from "@/components/shared/loading/Unauthorized";
 
 export default function Progress() {
   
   const { userID, email, userType, role, status, user } = useContext(AuthContext);
+  if (userType != UserType.STUDENT || status != UserStatus.ACTIVE) {
+    return <Unauthorized />;
+  }
   
   // Analysed summery form the server
   const [dbData, setDbData] = useState<{

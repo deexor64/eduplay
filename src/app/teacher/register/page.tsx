@@ -3,7 +3,7 @@
 import { useState, FormEvent, useContext } from "react";
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { TeacherRole, UserType } from "@prisma/client";
+import { TeacherRole, UserStatus, UserType } from "@prisma/client";
 import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import Title from "@/components/shared/headings/Title";
 import InputField from "@/components/register/InputField";
@@ -16,10 +16,14 @@ import toSentenceCase from "@/lib/utils/toSentenceCase";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AuthContext } from "@/contexts/AuthProvider";
+import Unauthorized from "@/components/shared/loading/Unauthorized";
 
 export default function Register() {
   
   const { userID, email, userType, role, status, user } = useContext(AuthContext);
+  if (role != TeacherRole.ADMIN || status != UserStatus.ACTIVE) {
+    return <Unauthorized />;
+  }
 
   const searchParams = useSearchParams();
   const userRegisterType = searchParams.get("userType") as UserType;

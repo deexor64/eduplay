@@ -16,10 +16,14 @@ import { updateUserStatus } from "@/actions/user/updateUserStatus";
 import { AuthContext } from "@/contexts/AuthProvider";
 import { updateUserInfo } from "@/actions/user/updateUserInfo";
 import { ListLoading } from "@/components/shared/loading/ListLoading";
+import Unauthorized from "@/components/shared/loading/Unauthorized";
 
 export default function Users() {
   
   const { userID, email, userType, role, status, user } = useContext(AuthContext);
+  if (role != TeacherRole.ADMIN || status != UserStatus.ACTIVE) {
+    return <Unauthorized />;
+  }
   
   const searchParams = useSearchParams();
   const userListType = searchParams.get("userListType") as UserType;
