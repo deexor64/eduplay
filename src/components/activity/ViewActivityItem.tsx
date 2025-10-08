@@ -43,7 +43,6 @@ export default function ViewActivityItem(props: ViewActivityItemProps) {
             {itemData.section ? itemData.section + " | " + itemData.title 
             : itemData.title}
           </Link>
-          <InfoBadge text={itemData.activityID.slice(0, 23) + "..."} colorTheme="default" />
         </div>
 
         {/* Badges and description */}

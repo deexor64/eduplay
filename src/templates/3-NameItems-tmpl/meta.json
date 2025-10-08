@@ -1,0 +1,30 @@
+{
+  "templateCode": "3-NameItems-tmpl",
+  "title": "Name Items",
+  "description": "Name the items shown in images",
+  "templateType": "Text Completion",
+  "sampleActivity": {
+    "templateCode": "3-NameItems-tmpl",
+    "section": "1. Animals",
+    "title": "Name the Animals",
+    "instructions": "🧠 Look at each image carefully and write the correct name for each animal. All possible answers are provided below.",
+    "activityData": {
+      "items": [
+        {
+          "image": "/templates/3-NameItems-tmpl/dog.jpg",
+          "name": "dog"
+        },
+        {
+          "image": "/templates/3-NameItems-tmpl/cat.jpg",
+          "name": "cat"
+        }
+      ],
+      "showAnswerList": true
+    },
+    "difficulty": "EASY",
+    "subject": "COMMON",
+    "grade": 1,
+    "isGraded": false,
+    "status": "UNPUBLISHED"
+  }
+}
