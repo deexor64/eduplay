@@ -7,11 +7,8 @@ import PandaPaw from '@/components/signin/PandaPaw';
 import React, { useState, useEffect,useContext } from 'react';
 import { clientAuth } from "@/lib/firebaseClient";
 import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
-import { redirect, useRouter } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { redirect } from "next/navigation";
 import { AuthContext } from "@/contexts/AuthProvider";
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import DialogueCloud from '@/components/register/DialogueCloud';
 
 export default function PandaSignIn() {
@@ -53,7 +50,7 @@ export default function PandaSignIn() {
   
   // Already logged in
   useEffect(() => {
-    if (user && userType && status === "ACTIVE" && user.emailVerified) redirect("/" + userType.toLowerCase());
+    if (user && userType && status === "ACTIVE" && user.emailVerified) redirect("/" + userType.toLowerCase() + "/activities");
   }, [user]);
   
   // Google login

@@ -1,3 +1,5 @@
+"use client";
+
 import TemplateTitle from "@/components/templates/create/TemplateTitle";
 import ActivityTitle from "@/components/templates/create/ActivityTitle";
 import Instructions from "@/components/templates/create/Instructions";
