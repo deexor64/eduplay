@@ -1,69 +1,101 @@
-import { getSectionList } from "@/actions/activity/getSectionList";
 import { Subject } from "@prisma/client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
+
+type SectionItem = { grade: number; subject: Subject; section: string };
 
 type ActivitySectionProps = {
-  options: any;
-  setFormData: Function;
-  handleGetSectionList: () => Promise<Array<{grade: number, subject: Subject, section: string}>>
-}
-  
-export default function ActivitySection(props: ActivitySectionProps) {
-  
-  // Sections list
-  const [sectionList, setSectionList] = useState<Array<{
-    subject: Subject, grade: number, section: string}>>([]);
-  
-  const [inputValue, setInputValue] = useState(""); // For filtering section
+  setFormData: React.Dispatch<React.SetStateAction<any>>;
+  handleGetSectionList: () => Promise<SectionItem[]>;
+};
 
+export default function ActivitySection({
+  setFormData,
+  handleGetSectionList,
+}: ActivitySectionProps) {
+  const [sectionList, setSectionList] = useState<SectionItem[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Fetch sections
   useEffect(() => {
-    const sectionL = props.handleGetSectionList();
-    sectionL.then((list) => setSectionList(list));
+    handleGetSectionList().then(setSectionList);
+  }, [handleGetSectionList]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  
-  // Set activity section
-  function setActivitySection(e: React.ChangeEvent<HTMLInputElement>) {
-    props.setFormData((prev: any) => {
-      return {
-        ...prev,
-        section: e.target.value.trim() || null
-      };
-    });
-  }
+
+  // Filter suggestions
+  const filteredSections = sectionList.filter((item) =>
+    item.section.toLowerCase().includes(inputValue.toLowerCase())
+  );
+
+  // Handle input change
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+    setIsOpen(true); // Show suggestions when typing
+    setFormData((prev: any) => ({ ...prev, section: value.trim() || null }));
+  };
+
+  // Handle suggestion click
+  const handleSuggestionClick = (section: string) => {
+    setInputValue(section);
+    setFormData((prev: any) => ({ ...prev, section }));
+    setIsOpen(false);
+  };
+
+  // Handle focus
+  const handleInputFocus = () => {
+    if (filteredSections.length > 0) setIsOpen(true);
+  };
 
   return (
     <section className="mb-4 bg-white/40 backdrop-blur p-6 rounded-xl shadow-md">
-      
-      <label htmlFor="section-list" className="block text-lg font-semibold mb-3 text-gray-800">
+      <label htmlFor="section-input" className="block text-lg font-semibold mb-3 text-gray-800">
         Section
       </label>
 
-      {/* Section input */}
-      <input
-        id="section-input"
-        type="text"
-        list="section-list" 
-        className="w-full p-3 border border-gray-300 rounded-lg bg-white/80 backdrop-blur
-        transition-all duration-300 focus:border-blue-500 focus:outline-none focus:bg-white 
-        focus:shadow-md disabled:bg-gray-200 disabled:cursor-not-allowed"
-        placeholder="e.g.'1. Environment'"
-        onChange={(e) => setActivitySection(e)}
-      />
+      <div className="relative" ref={dropdownRef}>
+        <input
+          id="section-input"
+          type="text"
+          className="w-full p-3 border border-gray-300 rounded-lg bg-white/80 backdrop-blur
+            transition-all duration-300 focus:border-blue-500 focus:outline-none focus:bg-white 
+            focus:shadow-md disabled:bg-gray-200 disabled:cursor-not-allowed"
+          placeholder="e.g. '1. Environment'"
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          autoComplete="off"
+        />
 
-      {/* Topic list */}
-      <datalist id="section-list">
-        {sectionList.filter(value => {
-          if (!inputValue) return true;
-            return value.section.toLowerCase().includes(inputValue.toLowerCase());
-          })
-          .map(value => (
-            <option value={value.section} key={value.section} >{value.section} (Grade: {value.grade}, Subject {value.subject})</option>
-          )
+        {/* Custom Dropdown */}
+        {isOpen && filteredSections.length > 0 && (
+          <ul className="w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+            {filteredSections.map((item) => (
+              <li
+                key={`${item.grade}-${item.subject}-${item.section}`}
+                className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-gray-800 transition-colors"
+                onClick={() => handleSuggestionClick(item.section)}
+              >
+                <span className="font-medium">{item.section}</span>
+                <span className="text-sm text-gray-500 ml-2">
+                  (Grade {item.grade}, {item.subject})
+                </span>
+              </li>
+            ))}
+          </ul>
         )}
-      </datalist>
-    
-      
+      </div>
     </section>
   );
 }
-  
