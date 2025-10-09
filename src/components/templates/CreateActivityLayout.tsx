@@ -180,7 +180,7 @@ export default function CreateActivityLayout() {
         <TemplateTitle templateCode={templateCode}>{templateCode.split("-")[1]}</TemplateTitle>
 
         {/* Activity topic */}
-        <ActivitySection options={formData.options} setFormData={setFormData} handleGetSectionList={handleGetSectionList} />
+        <ActivitySection setFormData={setFormData} handleGetSectionList={handleGetSectionList} />
 
         {/* Activity title */}
         <ActivityTitle setFormData={setFormData} />
