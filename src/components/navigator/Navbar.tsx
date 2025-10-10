@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { faBell, faSignOut } from '@fortawesome/free-solid-svg-icons';
+import { faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AuthContext } from '@/contexts/AuthProvider';
 import { useContext, useEffect, useState } from 'react';
@@ -60,15 +60,14 @@ export default function Navbar() {
       
       <div className="flex items-center space-x-4">
         <p className="text-white">{navigatorInfo.firstName} {navigatorInfo.lastName}</p>
-        <img src={navigatorInfo.displayPicUrl} className="w-8 h-8 rounded-full cursor-pointer" alt="Profile" onClick={goToProfile}/>
-        <button className="relative text-white cursor-pointer" onClick={goToProfile}>
-          <FontAwesomeIcon icon={faBell} />
+        <div className="relative">
+          <img src={navigatorInfo.displayPicUrl} className="w-8 h-8 rounded-full cursor-pointer" alt="Profile" onClick={goToProfile}/>
           { (navigatorInfo.unreadCount ?? 0) > 0 && (
-            <span className="absolute -top-3 -right-2 bg-red-500 text-white text-xs rounded-full px-1 min-w-[18px] text-center">
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1 min-w-[18px] text-center">
               {navigatorInfo.unreadCount}
             </span>
           )}
-        </button>
+        </div>
       </div>
       
     </div>
