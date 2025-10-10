@@ -37,9 +37,9 @@ export default function Landing() {
           
           {/* School Introduction */}
           <div className={`${styles.fadeInUp} ${styles.animate} ${styles.delay1} max-w-3xl mx-auto mb-4`}>
-            <div className="bg-white/20 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-white/30">
+              <div className="bg-white/20 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-white/30">
               <h3 className="text-xl font-semibold text-white mb-4 drop-shadow-lg">Welcome to NAKANO Learning Platform</h3>
-              <p className="text-white/90 leading-relaxed drop-shadow-sm">
+              <p className="text-black leading-relaxed drop-shadow-sm">
                 At NAKANO, we believe in creating meaningful learning experiences that inspire curiosity and foster growth. 
                 Our interactive platform connects teachers, students, and parents in a collaborative educational ecosystem. 
                 Whether you're an educator crafting engaging lessons, a student exploring new concepts, or a parent supporting 
