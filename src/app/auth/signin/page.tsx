@@ -5,6 +5,7 @@ import PandaFace from '@/components/signin/PandaFace';
 import PandaHand from '@/components/signin/PandaHand';
 import PandaPaw from '@/components/signin/PandaPaw';
 import React, { useState, useEffect,useContext } from 'react';
+import styles from './signin.module.css';
 import { clientAuth } from "@/lib/firebaseClient";
 import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
 import { redirect } from "next/navigation";
@@ -122,6 +123,13 @@ export default function PandaSignIn() {
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center p-4 font-poppins"
       style={{ backgroundImage: "url('/images/login-background.jpg')" }}>
+
+      {/* Animated background symbols (non-interactive) */}
+      <div className={styles.signinBackground} aria-hidden="true">
+        {Array.from({ length: 24 }).map((_, i) => (
+          <div key={i}><span></span></div>
+        ))}
+      </div>
       <div className="relative w-[31.25rem] h-[31.25rem]">
         
         {message && <DialogueCloud message={message} />}
