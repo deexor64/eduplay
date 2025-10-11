@@ -30,7 +30,7 @@ export default function Landing() {
                 EDUPlay
               </h1>
             </div>
-            <h2 className="text-2xl text-white mb-6 font-medium drop-shadow-lg">
+            <h2 className="text-5xl text-white mb-6 font-extrabold italic drop-shadow-lg">
               Interactive Learning System
             </h2>
           </div>
@@ -38,8 +38,8 @@ export default function Landing() {
           {/* School Introduction */}
           <div className={`${styles.fadeInUp} ${styles.animate} ${styles.delay1} max-w-3xl mx-auto mb-4`}>
               <div className="bg-white/20 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-white/30">
-              <h3 className="text-xl font-semibold text-white mb-4 drop-shadow-lg">Welcome to NAKANO Learning Platform</h3>
-              <p className="text-black leading-relaxed drop-shadow-sm">
+              <h3 className="text-xl font-extrabold text-white mb-4 drop-shadow-lg">Welcome to NAKANO Learning Platform</h3>
+              <p className="text-black font-semibold leading-relaxed drop-shadow-sm">
                 At NAKANO, we believe in creating meaningful learning experiences that inspire curiosity and foster growth. 
                 Our interactive platform connects teachers, students, and parents in a collaborative educational ecosystem. 
                 Whether you're an educator crafting engaging lessons, a student exploring new concepts, or a parent supporting 
