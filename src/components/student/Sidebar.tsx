@@ -18,21 +18,21 @@ export function LeftSidebar() {
       <Link href="/student/activities" title="Activities">
         <div className="transition-transform duration-200 hover:scale-110 drop-shadow-white drop-shadow-xl  cursor-pointer bg-transparent rounded-lg flex flex-col items-center">
           <Image src="/images/student/activities.png" alt="Book" width={80} height={80} />
-            <span className="mt-2 text-xs font-semibold text-gray-900">Activities</span>
+          <span className="mt-2 text-md text-amber-950 font-bold">Activities</span>
         </div>
       </Link>
       {/* Games */}
-      <Link href="/student/games" title="Games">
+      <Link href={process.env.NEXT_PUBLIC_GAME_URL || "/"} title="Games">
         <div className="transition-transform duration-200 hover:scale-110 drop-shadow-fuchsia-500 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg flex flex-col items-center">
           <Image src="/images/student/games.png" alt="Settings" width={100} height={100} />
-            <span className="mt-2 text-xs font-semibold text-gray-900">Games</span>
+          <span className="mt-2 text-md text-amber-950 font-bold">Games</span>
         </div>
       </Link>
       {/* Progress */}
       <Link href="/student/progress" title="Progress">
         <div className="transition-transform duration-200 hover:scale-110 drop-shadow-amber-400 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg mt-5 flex flex-col items-center">
           <Image src="/images/student/progress.png" alt="Cup" width={50} height={50} />
-            <span className="mt-2 text-xs font-semibold text-gray-900">Progress</span>
+          <span className="mt-2 text-md text-amber-950 font-bold">Progress</span>
         </div>
       </Link>
     </div>
@@ -87,10 +87,10 @@ export function RightSidebar() {
       {/* Avatar */}
       <Link href="/student/profile" title="Profile">
         <div className="flex flex-col items-center">
-          <div className="w-[80px] h-[80px] rounded-full overflow-hidden relative">
+          <div className="w-[80px] h-[80px] rounded-full overflow-hidden relative border-2 border-stone-200">
             <Image src={navigatorInfo.displayPicUrl} alt="You" fill className="object-cover"/>
           </div>
-            <span className="mt-2 text-xs font-semibold text-gray-900">Profile</span>
+          <span className="mt-2 text-md text-amber-950 font-bold">Profile</span>
         </div>
       </Link>
       {/* Notifications */}
@@ -98,17 +98,17 @@ export function RightSidebar() {
         <div title="Notifications" className="relative transition-transform duration-200 hover:scale-110 drop-shadow-amber-400 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg mt-5 flex flex-col items-center">
           <Image src="/images/student/envelop.png" alt="Notifications" width={60} height={60} />
           { (navigatorInfo.unreadCount ?? 0) > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1 min-w-[18px] text-center">
-              {navigatorInfo.unreadCount}
+            <span className="absolute -top-2 right-4 bg-amber-500 w-5 h-5 text-white text-xs rounded-full px-1 text-center">
+              {/*{navigatorInfo.unreadCount}*/}
             </span>
           )}
-            <span className="mt-2 text-xs font-semibold text-gray-900">Notifications</span>
+          <span className="mt-2 text-md text-amber-950 font-bold">Notifications</span>
         </div>
       </Link>
       {/* Logout */}
       <button title="Logout" onClick={logOut} className="transition-transform duration-200 hover:scale-110 drop-shadow-orange-600 drop-shadow-xl  cursor-pointer bg-transparent rounded-lg flex flex-col items-center">
         <Image src="/images/student/logout.png" alt="Logout" width={70} height={70} />
-          <span className="mt-2 text-xs font-semibold text-gray-900">Logout</span>
+        <span className="mt-2 text-md text-amber-950 font-bold">Logout</span>
       </button>
 
       <ConfirmDialog state={confirmState} setState={setConfirmState} />

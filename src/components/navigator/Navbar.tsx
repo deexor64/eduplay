@@ -59,12 +59,12 @@ export default function Navbar() {
       </div>
       
       <div className="flex items-center space-x-4">
-        <p className="text-white">{navigatorInfo.firstName} {navigatorInfo.lastName}</p>
+        <p className="text-white font-bold">{navigatorInfo.firstName} {navigatorInfo.lastName}</p>
         <div className="relative">
           <img src={navigatorInfo.displayPicUrl} className="w-8 h-8 rounded-full cursor-pointer" alt="Profile" onClick={goToProfile}/>
           { (navigatorInfo.unreadCount ?? 0) > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1 min-w-[18px] text-center">
-              {navigatorInfo.unreadCount}
+            <span className="h-3 w-3 absolute top-6 -right-2 bg-emerald-300 text-white text-xs rounded-full text-center">
+              {/*{navigatorInfo.unreadCount}*/}
             </span>
           )}
         </div>

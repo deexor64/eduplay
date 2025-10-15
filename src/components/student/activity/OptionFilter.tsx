@@ -1,3 +1,4 @@
+import toSentenceCase from "@/lib/utils/toSentenceCase";
 import { ChangeEvent, useRef, useState } from "react";
 
 interface OptionFilterProps {
@@ -52,7 +53,7 @@ export default function StudentOptionFilter(props: OptionFilterProps) {
         <option value="All">All</option>
         {values.map((value) => (
           <option key={value} value={value}>
-            {value}
+            {toSentenceCase(value)}
           </option>
         ))}
       </select>

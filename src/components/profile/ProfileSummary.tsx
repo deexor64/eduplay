@@ -27,7 +27,7 @@ export default function ProfileSummary(props: ProfileSummaryProps) {
         <img 
           src={teacherInfo.displayPicUrl || "/images/avatar.png"} 
           alt="Profile" 
-          className="w-34 h-34 rounded-full mx-auto mb-4 object-cover"
+          className="w-34 h-34 rounded-full mx-auto mb-4 object-cover border-s-slate-400"
         />
         <label className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 cursor-pointer hover:bg-blue-700 transition-colors">
           <input

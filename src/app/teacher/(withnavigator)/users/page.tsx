@@ -151,7 +151,7 @@ export default function Users() {
           filterKey="indexNumber"
           setFilter={setFilter}
           setTriggerFilter={setTriggerFilter}
-        >Index NUmber</InputFilter>
+        >Index Number</InputFilter>
         <InputFilter
           filterKey="email"
           setFilter={setFilter}

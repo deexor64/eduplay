@@ -52,7 +52,6 @@
 .signinBackground span:after {
   content: var(--symbol);
   -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.2);
-  text-stroke: 0.5px rgba(0, 0, 0, 0.2);
   line-height: 1.2;
   position: relative;
   display: block;

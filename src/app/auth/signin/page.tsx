@@ -130,6 +130,7 @@ export default function PandaSignIn() {
           <div key={i}><span></span></div>
         ))}
       </div>
+      
       <div className="relative w-[31.25rem] h-[31.25rem]">
         
         {message && <DialogueCloud message={message} />}
