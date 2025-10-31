@@ -23,7 +23,7 @@ export default function ProfileSummary(props: ProfileSummaryProps) {
 
   return (
     <div className="text-center py-6">
-      <div className="relative inline-block">
+      <div className="relative inline-block bg-gray-100 p-3 rounded">
         <img 
           src={teacherInfo.displayPicUrl || "/images/avatar.png"} 
           alt="Profile" 

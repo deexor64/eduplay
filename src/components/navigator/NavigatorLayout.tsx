@@ -14,7 +14,7 @@ export default function NavigatorLayout(props: any) {
       {/* Nav bar and Spacer for Navbar height */}
       <Navbar/>
       {/* main content */}
-      <div className="flex flex-grow bg-blue-100">
+      <div className="flex flex-grow bg-sky-200">
         {/* Sidebar with passed toggle function */}
         <Sidebar isOpen={isOpen } setIsOpen={setIsOpen}/>
         {/* layout content */}

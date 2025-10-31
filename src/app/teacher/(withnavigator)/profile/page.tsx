@@ -81,12 +81,13 @@ export default function Profile() {
   async function updateProfilePictureHandler(file: File) {
     const hash = await generateHash(file.name);
     try {
+      const tId = toast.loading("Updating profile picture...");
       const urls = await fileStoreUploader(new Map<string, File>([[hash, file]]));
       const url = urls.get(hash) + "";
       const token = await user?.getIdToken();
       await updateTeacherInfo({ displayPicUrl: url }, token!);
       fetchTeacher();
-      toast.success("Profile picture updated successfully");
+      toast.success("Profile picture updated successfully", { id: tId });
     } catch (e: any) {
       toast.error("Failed to update profile picture");
     }
@@ -94,10 +95,11 @@ export default function Profile() {
   
   async function updateTeacherInfoHandler(update: { firstName?: string, lastName?: string, email?: string }) {
     try {
+      const tId = toast.loading("Updating profile information...");
       const token = await user?.getIdToken();
       await updateTeacherInfo(update, token!);
       await fetchTeacher();
-      toast.success("Profile information updated successfully");
+      toast.success("Profile information updated successfully", { id: tId });
     } catch (e: any) {
       toast.error("Failed to update profile information");
     } 
@@ -105,12 +107,13 @@ export default function Profile() {
   
   async function updateEmailHandler(newEmail: string) {
     try {
+      const tId = toast.loading("Updating email...");
       const currentPassword = await prompt("Enter your password");
       if (!currentPassword) throw new Error("Password is required");
       const credential = EmailAuthProvider.credential(user!.email!, currentPassword);
       await reauthenticateWithCredential(user!, credential);
       await verifyBeforeUpdateEmail(user!, newEmail);
-      toast.success("Verification email sent, Please verify to prevent login lockout");
+      toast.success("Verification email sent, Please verify to prevent login lockout", { id: tId });
     } catch (e: any) {
       toast.error("Failed to update email" + e.message);
     } 

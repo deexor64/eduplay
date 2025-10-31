@@ -49,7 +49,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className="w-full h-16 bg-blue-950 flex justify-between items-center 
+    <div className="w-full h-16 bg-cyan-700 flex justify-between items-center 
       p-4 pr-6 pl-6 shadow-md sticky top-0 z-20 ">
         
       <div

@@ -24,14 +24,12 @@ function SideBarLink({ link, children, icon, isOpen, isActive, onClick }: SideBa
     <li>
       <Link href={link} onClick={onClick}>
         <div
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group cursor-pointer ${!isOpen ? "justify-center" : ""} ${
-            isActive ? "bg-white text-black" : "text-white hover:bg-white hover:text-black"
-          }`}>
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group cursor-pointer ${!isOpen ? "justify-center" : ""} ${isActive ? "bg-white text-black" : "text-white hover:bg-white hover:text-black"
+            }`}>
           {icon && (
             <div
-              className={`w-7 h-7 transition-colors duration-200 flex items-center justify-center ${
-                isActive ? "text-black" : "text-white group-hover:text-black"
-              }`}>
+              className={`w-7 h-7 transition-colors duration-200 flex items-center justify-center ${isActive ? "text-black" : "text-white group-hover:text-black"
+                }`}>
               <FontAwesomeIcon icon={icon} className="w-6 h-6" />
             </div>
           )}
@@ -47,18 +45,16 @@ function SideBarLink({ link, children, icon, isOpen, isActive, onClick }: SideBa
 
 function LogoutButton({ children, icon, isOpen, isActive, onClick }: any) {
   return (
-    <li className="relative top-20">
+    <li>
       <button
         onClick={onClick}
         type="button"
-        className={`w-full text-left flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group cursor-pointer ${!isOpen ? "justify-center" : ""} ${
-          isActive ? "bg-white text-black" : "text-white hover:bg-white hover:text-black"
-        }`}>
+        className={`w-full text-left flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group cursor-pointer ${!isOpen ? "justify-center" : ""} ${isActive ? "bg-white text-black" : "text-white hover:bg-white hover:text-black"
+          }`}>
         {icon && (
           <div
-            className={`w-7 h-7 transition-colors duration-200 flex items-center justify-center ${
-              isActive ? "text-black" : "text-white group-hover:text-black"
-            }`}>
+            className={`w-7 h-7 transition-colors duration-200 flex items-center justify-center ${isActive ? "text-black" : "text-white group-hover:text-black"
+              }`}>
             <FontAwesomeIcon icon={icon} className="w-6 h-6" />
           </div>
         )}
@@ -77,9 +73,9 @@ type SidebarProps = {
 };
 
 export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
-  
+
   const { userID, email, userType, role, status, user } = useContext(AuthContext);
-  
+
   const [openedLink, setOpenedLink] = useState("/teacher/activities");
   const { confirm, confirmState, setConfirmState } = useConfirm();
 
@@ -92,9 +88,9 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     <>
       <div className="fixed h-screen">
         <div
-          className={`h-full bg-blue-950 backdrop-blur-lg border-r border-gray-800/50 shadow-sm transition-all duration-100 ease-in-out px-2 py-1 ${
-            isOpen ? "w-50" : "w-20"
-          }`}>
+          className={`h-[calc(100vh-4rem)] bg-cyan-700 backdrop-blur-lg  shadow-sm transition-all duration-100 ease-in-out px-2 py-1
+            flex flex-col justify-between ${isOpen ? "w-50" : "w-20"}`}>
+
           <ul className="space-y-6 mt-20">
             {userType === "TEACHER" && role === "ADMIN" && (
               <>
@@ -148,16 +144,19 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             >
               Profile
             </SideBarLink>
+          </ul>
 
+          <ul className="mb-2">
             <LogoutButton icon={faSignOut} isOpen={isOpen} isActive={openedLink === "/auth/signin"} onClick={async () => await logOut()}>
               Logout
             </LogoutButton>
           </ul>
+
         </div>
 
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="absolute top-4 left-4 w-10 h-10 flex items-center justify-center bg-blue-900 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+          className="absolute top-4 left-4 w-10 h-10 flex items-center justify-center bg-teal-600 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
         >
           <div className="flex flex-col items-center justify-center w-5 h-5 cursor-pointer">
             <span className={`block w-4 h-0.5 bg-white rounded-full transition-transform duration-300 transform origin-center ${isOpen ? 'rotate-45 translate-y-1' : ''}`} />

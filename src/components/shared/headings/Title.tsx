@@ -23,10 +23,10 @@ export default function Title(props: TitleProps) {
 
   return (
     <div className="mb-4">
-      <div className="flex items-center justify-between p-4 border-l-4 border-blue-700 bg-white rounded shadow-sm">
+      <div className="flex items-center justify-between p-4 border-l-4 border-gray-600 bg-white rounded shadow-sm">
         
         {/*Text*/}
-        <h1 className="text-2xl font-bold text-blue-900">{props.title}</h1>
+        <h1 className="text-2xl font-bold text-gray-600">{props.title}</h1>
     
         {/* Add User Button  */}
         {props.addUser && (

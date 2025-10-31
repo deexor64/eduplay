@@ -20,13 +20,18 @@ interface PersonalInfoFormProps {
 }
 
 export default function PersonalInfoForm(props: PersonalInfoFormProps) {
-  
+
   const { data, emailVerified, currentEmail, updateEmailHandler, updateTeacherInfo } = props;
-  
+
   const [formData, setFormData] = useState({
     firstName: data.firstName,
     lastName: data.lastName,
     email: data.email,
+  });
+  const [tempFormData, setTempFormData] = useState<any>({
+    firstName: undefined,
+    lastName: undefined,
+    email: undefined,
   });
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -41,26 +46,31 @@ export default function PersonalInfoForm(props: PersonalInfoFormProps) {
 
   // Handle input changes
   const handleInputChange = (field: keyof typeof formData, value: string) => {
-    setFormData(prev => ({
-      ...prev,
+    setTempFormData({
+      ...tempFormData,
       [field]: value
-    }));
+    });
   };
 
   // Handle save changes
   async function handleSaveChanges() {
     setIsSaving(true);
-    await updateTeacherInfo(formData);
+    await updateTeacherInfo(tempFormData);
+    setTempFormData({
+      firstName: undefined,
+      lastName: undefined,
+      email: undefined,
+    });
     setIsSaving(false);
     setIsEditing(false);
   };
 
   // Handle cancel changes
   function handleCancelChanges() {
-    setFormData({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
+    setTempFormData({
+      firstName: undefined,
+      lastName: undefined,
+      email: undefined,
     });
     setIsEditing(false);
   };
@@ -73,7 +83,7 @@ export default function PersonalInfoForm(props: PersonalInfoFormProps) {
           <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
           <input
             type="text"
-            value={formData.firstName}
+            value={tempFormData.firstName || formData.firstName}
             onChange={(e) => handleInputChange("firstName", e.target.value)}
             disabled={!isEditing}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
@@ -83,13 +93,13 @@ export default function PersonalInfoForm(props: PersonalInfoFormProps) {
           <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
           <input
             type="text"
-            value={formData.lastName}
+            value={tempFormData.lastName || formData.lastName}
             onChange={(e) => handleInputChange("lastName", e.target.value)}
             disabled={!isEditing}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
           />
         </div>
-        
+
         {data.teacher.role === "ADMIN" && (
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -106,7 +116,7 @@ export default function PersonalInfoForm(props: PersonalInfoFormProps) {
             <div className="flex items-center gap-2">
               <input
                 type="email"
-                value={formData.email}
+                value={tempFormData.email || formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
@@ -121,11 +131,11 @@ export default function PersonalInfoForm(props: PersonalInfoFormProps) {
                 </button>
               )}
             </div>
-          
+
           </div>
         )}
 
-        
+
         {/* Action Buttons */}
         <div className="flex space-x-4 pt-4">
           {!isEditing ? (
@@ -133,7 +143,7 @@ export default function PersonalInfoForm(props: PersonalInfoFormProps) {
               onClick={() => setIsEditing(true)}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
             >
-              Edit Info
+              Edit
             </button>
           ) : (
             <>
@@ -142,7 +152,7 @@ export default function PersonalInfoForm(props: PersonalInfoFormProps) {
                 disabled={isSaving}
                 className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50"
               >
-                {isSaving ? "Saving..." : "Save"}
+                Save
               </button>
               <button
                 onClick={handleCancelChanges}
