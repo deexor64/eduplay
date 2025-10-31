@@ -175,21 +175,20 @@ export default function Register() {
       <Title title={`Add ${toSentenceCase(userRegisterType)}s`} back={true} />
 
       {/* Main */}
-      <div className="min-h-[calc(100vh-500px)] bg-blue-300 p-6 relative">
+      <div className="min-h-[calc(100vh-500px)] relative">
         <div className="flex gap-6 max-w-7xl mx-auto min-h-dvh">
 
           {/* Action log */}
-          <div className="w-2/3 bg-gray-900 rounded-2xl shadow-lg p-6">
-            <div className="flex" >
-              <h2 className="text-xl font-bold text-white mb-4">Action Log</h2>
-              
-              {/*Clear log*/}
+          <div className="w-2/3 bg-gray-900 rounded shadow-lg p-6">
+            
+            {/*Clear log*/}
+            <div className="w-8 flex bg-gray-700 rounded justify-center items-center p-1 mb-2 mr-0 ml-auto">
               <button
                 onClick={() => setLogs([])}
-                className="text-red-600 hover:cursor-pointer hover:text-red-500 transition-colors ml-auto"
+                className="text-red-600 hover:cursor-pointer hover:text-red-500 transition-colors"
                 title="Clear Logs"
               >
-                <FontAwesomeIcon icon={faTrash} className="text-xs w-4 h-4" />
+                <FontAwesomeIcon textAnchor="Clear" icon={faTrash} className="text-xs w-4 h-4" />
               </button>
             </div>
             
@@ -212,7 +211,7 @@ export default function Register() {
             {/* Bulk switcher */}
             <button
               className="inline-flex items-center justify-center font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2
-              transition-colors duration-200 w-full  px-4 py-3 text-sm bg-blue-600 text-white  hover:bg-blue-700  focus:ring-blue-500 mb-3"
+              transition-colors duration-200 w-full px-4 py-3 bg-gray-700 text-white outline-0 hover:bg-gray-800  focus:ring-blue-500 mb-3"
               onClick={() => { setIsBulk(!isBulk) }}
             >
               {isBulk ? "< Manual register" : "Bulk register >"}
@@ -223,8 +222,6 @@ export default function Register() {
               {/* Manual Form */}
               {!isBulk && (
                 <form onSubmit={handleSubmit} className="space-y-6">
-
-                  <h2 className="text-2xl font-bold mb-4 bg-emerald-200 rounded p-2">Personal Details</h2>
 
                   <InputField
                     label="First Name"
@@ -306,7 +303,7 @@ export default function Register() {
                   />
 
                   <button type="submit" className="inline-flex items-center justify-center font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2
-                    transition-colors duration-200 w-full  px-4 py-3 text-sm bg-blue-600 text-white  hover:bg-blue-700  focus:ring-blue-500 mb-3"
+                    transition-colors duration-200 w-full  px-4 py-3 text-sm bg-gray-700 text-white  hover:bg-blue-700  focus:ring-blue-500 mb-3"
                   >
                     Register
                   </button>
@@ -341,7 +338,7 @@ export default function Register() {
 
                   <button
                     className="inline-flex items-center justify-center font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2
-                    transition-colors duration-200 w-full  px-4 py-3 text-sm bg-blue-600 text-white  hover:bg-blue-700  focus:ring-blue-500 mb-3"
+                    transition-colors duration-200 w-full  px-4 py-3 text-sm bg-gray-700 text-white  hover:bg-blue-700  focus:ring-blue-500 mb-3"
                     onClick={() => handleSubmit()}
                   >
                     Register

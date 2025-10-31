@@ -1,3 +1,5 @@
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NotificationType } from "@prisma/client";
 import React from "react";
 
@@ -28,25 +30,35 @@ export default function Notifications(props: NotificationsProps) {
       
       <div className="space-y-3 max-h-64 overflow-y-auto">
         {notifications.map((notification) => (
-          <div 
+          <div
             key={notification.notificationID}
-            className={"p-3 rounded-lg border-l-4 transition-colors bg-blue-50 border-blue-500 relative"}          >
+            className="p-3 rounded-lg border-l-4 transition-colors bg-blue-50 border-blue-500 relative"
+          >
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <h4 className="font-medium text-gray-800">{notification.title}</h4>
                 <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
               </div>
               <div className="text-xs text-gray-500 ml-2">
-                {notification.createdAt.toLocaleString()} {/* ISSUE: localDateString*/}
+                {new Date(notification.createdAt).toLocaleDateString(undefined, {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
               </div>
             </div>
+          
             {handleMarkNotificationRead && !notification.isRead && (
-              <button onClick={() => handleMarkNotificationRead(notification.notificationID)}
-                className="absolute top-2 right-2 text-xs px-2 py-1 bg-white/80 border rounded-md hover:bg-white cursor-pointer">
-                Mark as read
+              <button
+                onClick={() => handleMarkNotificationRead(notification.notificationID)}
+                className="cursor-pointer absolute bottom-2 right-2 flex items-center justify-center w-6 h-6 bg-white/80 border rounded-full hover:bg-white shadow-sm"
+                title="Mark as read"
+              >
+                <FontAwesomeIcon icon={faCheck} className="text-blue-600 text-xs" />
               </button>
             )}
           </div>
+
         ))}
       </div>
     </div>

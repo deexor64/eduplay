@@ -31,7 +31,7 @@ export default function Title(props: TitleProps) {
         {/* Add User Button  */}
         {props.addUser && (
           <Link href={`register?userType=${props.addUser.toUpperCase()}`} rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium 
+            className="cursor-pointer flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium 
                         rounded-lg shadow-md transition-colors
                         bg-blue-600 text-white hover:bg-blue-700"
           >
@@ -42,7 +42,7 @@ export default function Title(props: TitleProps) {
         {/* Back Button */}
         {props.back && (
           <button type="button" onClick={() => window.history.back()}
-            className="flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium 
+            className="cursor-pointer flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium 
                         rounded-lg shadow-md transition-colors
                         bg-red-500 text-white hover:bg-red-600"
           >
@@ -54,7 +54,7 @@ export default function Title(props: TitleProps) {
         {/* ISSUE: Animation not working*/}
         {props.syncTemplates && (
           <button  onClick={syncIconAnimation} disabled={isSyncing} title="Sync Templates"
-            className={`flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium 
+            className={`cursor-pointer flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium 
               rounded-lg shadow-md transition-colors text-white
            ${ isSyncing 
               ? "bg-gray-500 cursor-not-allowed" 
