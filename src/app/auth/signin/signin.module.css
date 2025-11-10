@@ -11,7 +11,7 @@
   /* make transparent so it doesn't cover UI; change back after verifying */
   background-color: transparent;
   /* Use a local image if present in public/images/signin-bg.jpg, otherwise fallback to the Unsplash image */
-  background-image: url('/images/signin-bg.jpg');
+  background-image: url('/images/signin-background.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   user-select: none;

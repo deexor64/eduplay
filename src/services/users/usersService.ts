@@ -1,6 +1,5 @@
 import { adminAuth } from '@/lib/firebaseAdmin';
 import { prisma } from '@/lib/prisma';
-import { ResType } from '@/lib/utils/types';
 
 const userListHandler: any = {
   TEACHER: prisma.teacher,

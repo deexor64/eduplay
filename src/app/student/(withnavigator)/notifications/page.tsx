@@ -75,9 +75,9 @@ export default function NotificationsPage() {
               <ViewNotificationItem key={notification.notificationID} {...notification} />
               {!notification.isRead && (
                 <button onClick={() => handleMarkNotificationRead(notification.notificationID)}
-                  className="absolute top-2 right-2 text-xs px-2 py-1 bg-white/80 border rounded-md hover:bg-white cursor:pointer"
+                  className="cursor-pointer absolute bottom-3 right-2 px-4 py-2 text-sm font-semibold text-white rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-200 ease-out animate-bounce-slow hover:scale-105 hover:shadow-lg bg-gradient-to-r from-fuchsia-400 via-purple-400 to-pink-400"
                 >
-                  Mark as read
+                  Got it!
                 </button>
               )}
             </div>

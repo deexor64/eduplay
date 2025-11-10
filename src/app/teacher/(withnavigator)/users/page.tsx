@@ -9,7 +9,6 @@ import ViewUserItem from "@/components/users/ViewUserItem";
 import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 import cleanParams from "@/lib/utils/cleanParams";
-import NavigatorLayout from "@/components/navigator/NavigatorLayout";
 import { TeacherRole, UserStatus, UserType } from "@prisma/client";
 import toast from "react-hot-toast";
 import { updateUserStatus } from "@/actions/user/updateUserStatus";
@@ -192,6 +191,7 @@ export default function Users() {
       </FilterWrapper>
       
       {/* Info */}
+      {/* TODO: Add new status tag for newly created users */}
       <div className="w-full min-h-[calc(100vh-380px)] table-auto text-left">
         {!dbData ? (
           <ListLoading />

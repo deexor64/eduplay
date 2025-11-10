@@ -179,10 +179,10 @@ export default function Register() {
         <div className="flex gap-6 max-w-7xl mx-auto min-h-dvh">
 
           {/* Action log */}
-          <div className="w-2/3 bg-gray-900 rounded shadow-lg p-6">
+          <div className="w-2/3 bg-stone-700 rounded shadow-lg p-6">
             
             {/*Clear log*/}
-            <div className="w-8 flex bg-gray-700 rounded justify-center items-center p-1 mb-2 mr-0 ml-auto">
+            <div className="w-8 flex bg-red-200 rounded justify-center items-center p-1 mb-2 mr-0 ml-auto">
               <button
                 onClick={() => setLogs([])}
                 className="text-red-600 hover:cursor-pointer hover:text-red-500 transition-colors"

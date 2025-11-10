@@ -121,8 +121,7 @@ export default function PandaSignIn() {
   };
 
   return (
-    <div className="min-h-screen bg-cover bg-center flex items-center justify-center p-4 font-poppins"
-      style={{ backgroundImage: "url('/images/login-background.jpg')" }}>
+    <div className="min-h-screen bg-cover bg-center flex items-center justify-center p-4 font-poppins">
 
       {/* Animated background symbols (non-interactive) */}
       <div className={styles.signinBackground} aria-hidden="true">
@@ -148,8 +147,10 @@ export default function PandaSignIn() {
         <PandaPaw />
         
         {/* Form */}
-        <form id="login-form" onSubmit={handleEmailLogin} className="pt-10 pb-4 absolute top-[9.5rem] left-1/2 -translate-x-1/2 w-[23.75rem] h-[22rem] bg-green-100 rounded-lg p-12 flex flex-col justify-center z-50">
-          
+        <form id="login-form" onSubmit={handleEmailLogin}
+          className="pt-10 pb-4 absolute top-[9.5rem] left-1/2 -translate-x-1/2 w-[23.75rem] h-[22rem] bg-teal-100/50 rounded-lg p-12 
+            flex flex-col justify-center z-50 border-2 border-fuchsia-400 shadow-lg shadow-fuchsia-500/40 backdrop-blur-md">
+
           {/* Google Login */}
           <button
             type="button"
@@ -168,7 +169,7 @@ export default function PandaSignIn() {
             id="email"
             type="email"
             placeholder="Email"
-            className="text-[0.95rem] font-normal text-[#3f3554] p-1 border-b-2 border-[#3f3554] outline-none focus:border-[#71c418] placeholder-[#b4b5b3] mb-4"
+            className="rounded text-[0.95rem] font-normal text-[#3f3554] p-1 border-b-2 border-[#3f3554] outline-none  placeholder-[#b4b5b3] mb-4"
             value={uEmail}
             onChange={(e) => setUEmail(e.target.value)}
             onFocus={() => {
@@ -185,7 +186,8 @@ export default function PandaSignIn() {
             id="password"
             type="password"
             placeholder="Password"
-            className="text-[0.95rem] font-normal text-[#3f3554] p-1 border-b-2 border-[#3f3554] outline-none focus:border-[#71c418] placeholder-[#b4b5b3] mb-4"
+            className="rounded text-[0.95rem] font-normal text-[#3f3554] p-1 border-b-2 border-[#3f3554] 
+            outline-none placeholder-[#b4b5b3] mb-4"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onFocus={() => {
@@ -194,7 +196,8 @@ export default function PandaSignIn() {
             }}
           />
           
-          <button type="submit" className="text-[0.95rem] p-2 w-full rounded bg-red-400 text-white uppercase font-semibold cursor-pointer tracking-wider mt-2 hover:bg-red-500">
+          <button type="submit" className="text-[0.95rem] p-2 w-full rounded bg-red-400 text-white 
+            uppercase font-semibold cursor-pointer tracking-wider mt-2 hover:bg-red-500">
             Login
           </button>
           

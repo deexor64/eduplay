@@ -1,7 +1,8 @@
 import { adminAuth } from '@/lib/firebaseAdmin';
 import { prisma } from '@/lib/prisma';
+import { createNotification } from '@/lib/utils/createNotification';
 import { ResType } from '@/lib/utils/types';
-import { TeacherRole, UserStatus, UserType } from '@prisma/client';
+import { NotificationType, TeacherRole, UserStatus, UserType } from '@prisma/client';
 
 export default async function registerService(data: any): 
 Promise<{ status: boolean, data: any }> {
@@ -143,6 +144,19 @@ Promise<{ status: boolean, data: any }> {
     }
    
   }
+  
+  if (userRegisterType === UserType.TEACHER) createNotification({
+    title: "User registered",
+    message: "New teacher registered",
+    type: NotificationType.SUCCESS,
+    group: UserType.TEACHER,
+  })
+  else if (userRegisterType === UserType.STUDENT) createNotification({
+    title: "User registered",
+    message: "New student registered",
+    type: NotificationType.SUCCESS,
+    group: UserType.STUDENT,
+  })
   
   // Return created users summery
   return { status: true, data: registerSummery };

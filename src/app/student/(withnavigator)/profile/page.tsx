@@ -13,6 +13,7 @@ import useFileStoreUploader from "@/hooks/useFileStoreUploader";
 import generateHash from "@/lib/utils/generateHash";
 import { EmailAuthProvider, reauthenticateWithCredential, sendEmailVerification, signOut, updateEmail, updatePassword } from "firebase/auth";
 import { clientAuth } from "@/lib/firebaseClient";
+import ListLoading from "@/components/student/loading/ListLoading";
 
 export default function Profile() {
   
@@ -142,6 +143,15 @@ export default function Profile() {
 
         <Title title="Profile" imageUrl="/images/student/title-activities.png" />
         
+        {
+          !dbData && ( 
+            <div className="col-span-full flex flex-col items-center justify-center py-12">
+              <ListLoading />
+              <div className="text-gray-500 mt-4">Loading profile...</div>
+            </div>
+          )
+        }
+        
         {/* Profile picture section */}
         {
           dbData && <ProfilePictureUpload 
@@ -163,7 +173,7 @@ export default function Profile() {
         {dbData && <PersonalInfoForm data={dbData} updateStudentInfo={updateStudentInfoHandler} />}
         
         {/* Password change */}
-        <PasswordChangeForm updatePasswordHandler={updatePasswordHandler} />
+        {dbData && <PasswordChangeForm updatePasswordHandler={updatePasswordHandler} /> }
 
       </div>
 

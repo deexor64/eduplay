@@ -88,7 +88,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     <>
       <div className="fixed h-screen">
         <div
-          className={`h-[calc(100vh-4rem)] bg-violet-600 backdrop-blur-lg  shadow-sm transition-all duration-100 ease-in-out px-2 py-1
+          className={`h-[calc(100vh-4rem)] bg-gradient-to-br from-violet-500 to-fuchsia-700 backdrop-blur-lg  shadow-sm transition-all duration-100 ease-in-out px-2 py-1
             flex flex-col justify-between ${isOpen ? "w-50" : "w-20"}`}>
 
           <ul className="space-y-6 mt-20">
