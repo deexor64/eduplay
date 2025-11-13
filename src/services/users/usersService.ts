@@ -40,7 +40,8 @@ Promise<{ status: boolean, data: any }> {
         lastName: true,
         email: true,
         displayPicUrl: true,
-        status: true
+        status: true,
+        createdAt: true,
       },
     },
   }
@@ -64,6 +65,16 @@ Promise<{ status: boolean, data: any }> {
       where: whereUsers,
     })
   }
+  
+  // Add "new" status atribute to user if user is a new one
+  const d = new Date(); // 14 days
+  const n = new Date();
+  d.setDate(n.getDate() - 14);
+  
+  users.users = users.users.map((u: any) => {
+    const newUser = u.user.createdAt >= d;
+    return { ...u, user: {...u.user, createdAt: undefined}, newUser, createdAt: undefined }
+  });
   
   // Add Verified attribute to users
   let dbUsers = users;

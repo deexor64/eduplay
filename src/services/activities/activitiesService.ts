@@ -35,6 +35,7 @@ Promise<{ status: boolean, data: any }> {
     grade: true,
     difficulty: true,
     isScored: true,
+    createdAt: true,
   }
 
   if (data.userPermissions.userType === "STUDENT") {
@@ -47,6 +48,16 @@ Promise<{ status: boolean, data: any }> {
     select: selectActivities,
     skip: (data.page - 1) * data.limit,
     take: data.limit,
+  });
+  
+  // Add "new" status atribute to activites if activity is a new one
+  const d = new Date(); // 14 days
+  const n = new Date();
+  d.setDate(n.getDate() - 14);
+  
+  activities = activities.map((a: any) => {
+    const newActivity = a.createdAt >= d;
+    return { ...a, newActivity, createdAt: undefined }
   });
 
   // For students include a "Completed" field
@@ -80,7 +91,7 @@ Promise<{ status: boolean, data: any }> {
     activities = activities.map((a: any) => {
       const completed = progressMap[String(a.activityID)] !== undefined;
       return completed
-        ? { ...a, completed: true, progressID: progressMap[String(a.activityID)] }
+        ? { ...a, newActivity: false, completed: true, progressID: progressMap[String(a.activityID)] }
         : { ...a, completed: false };
     });
     

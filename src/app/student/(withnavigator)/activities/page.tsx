@@ -27,6 +27,7 @@ export default function Activities() {
       grade: 1 | 2 | 3 | 4 | 5,
       isScored: boolean,
       difficulty: ActivityDifficulty,
+      newActivity: boolean,
       completed: boolean,
       progressID?: string,
     }>,

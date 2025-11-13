@@ -33,6 +33,7 @@ export default function Activities() {
       isScored: boolean,
       difficulty?: ActivityDifficulty,
       section: string,
+      newActivity: boolean,
     }>,
     total: number;
   } | null>(null);

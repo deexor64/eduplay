@@ -20,7 +20,8 @@ interface ViewUserItemProps {
       verified: boolean,
       status: UserStatus,
       displayPicUrl: string,
-    }
+    },
+    newUser: boolean,
   },
   userType: UserType,
   handleUpdateUserStatus: Function,
@@ -40,6 +41,8 @@ export default function ViewUserItem(props: ViewUserItemProps) {
     role: itemData.role,
     grade: itemData.grade,
   }
+  
+  console.log(itemData.newUser);
 
   return (
     <div className="border border-blue-200 bg-white rounded-xl p-4 flex items-center shadow hover:shadow-lg transition 
@@ -80,6 +83,11 @@ export default function ViewUserItem(props: ViewUserItemProps) {
               <InfoBadge text={itemData.user.status} colorTheme="gray" />
             )}
             <InfoBadge text={itemData.user.verified ? "VERIFIED" : "UNVERIFIED"} colorTheme="yellow" />
+            {itemData.newUser && (
+              <span className="px-3 py-1 text-md font-semibold bg-violet-400 text-yellow-400 rounded-full animate-bounce shadow-lg scale-110">
+                ✨ New
+              </span>
+            )}
           </div>
         </div>
      

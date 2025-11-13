@@ -24,7 +24,7 @@ export function ConfirmDialog({ state, setState }: ConfirmDialogProps) {
               state.resolve?.(false);
               setState(null);
             }}
-            className="w-1/3 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition"
+            className="cursor-pointer w-1/3 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition"
           >
             Cancel
           </button>
@@ -33,7 +33,7 @@ export function ConfirmDialog({ state, setState }: ConfirmDialogProps) {
               state.resolve?.(true);
               setState(null);
             }}
-            className="w-1/3 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
+            className="cursor-pointer w-1/3 px-4 py-2 bg-pink-700 hover:bg-pink-800 text-white rounded-lg transition"
           >
             Confirm
           </button>

@@ -15,6 +15,7 @@ type ViewActivityItemProps = {
     grade?: 1 | 2 | 3 | 4 | 5,
     isScored: boolean,
     difficulty: ActivityDifficulty,
+    newActivity: boolean,
     completed: boolean,
     progressID?: string,
   }
@@ -103,6 +104,11 @@ export default function StudentViewActivityItem(props: ViewActivityItemProps) {
             <InfoBadge type="subject" text={itemData.subject} />
             {itemData.isScored && (
               <InfoBadge type="scored" text="SCORED" emoji="🏆" />
+            )}
+            {itemData.newActivity && (
+              <span className="px-3 py-1 text-md font-semibold bg-violet-500  text-yellow-300 rounded-full animate-bounce shadow-lg scale-110">
+                ✨ New
+              </span>
             )}
           </div>
         </div>

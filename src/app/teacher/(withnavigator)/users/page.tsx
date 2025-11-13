@@ -41,6 +41,7 @@ export default function Users() {
         displayPicUrl: string,
         status: UserStatus
       }
+      newUser: boolean,
     }>,
     total: number;
   } | null>(null);

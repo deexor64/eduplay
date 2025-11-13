@@ -40,7 +40,7 @@ export function PromptDialog({ state, setState }: PromptDialogProps) {
               state.resolve?.(null);
               setState(null);
             }}
-            className="w-1/3 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition"
+            className="cursor-pointer w-1/3 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition"
           >
             Cancel
           </button>
@@ -49,7 +49,7 @@ export function PromptDialog({ state, setState }: PromptDialogProps) {
               state.resolve?.(value);
               setState(null);
             }}
-            className="w-1/3 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition"
+            className="cursor-pointer w-1/3 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition"
           >
             Confirm
           </button>

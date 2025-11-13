@@ -15,6 +15,7 @@ interface ViewActivityItemProps {
     isScored: boolean;
     difficulty?: ActivityDifficulty;
     section: string;
+    newActivity: boolean;
   };
   handleUpdateActivityStatus: (activityID: string, status: ActivityStatus) => void;
 }
@@ -60,6 +61,11 @@ export default function ViewActivityItem(props: ViewActivityItemProps) {
             <InfoBadge text="SCORED" colorTheme="purple" />
           )}
           <InfoBadge text={itemData.status} colorTheme="indigo" />
+          {itemData.newActivity && (
+            <span className="px-3 py-1 text-md font-semibold bg-violet-400 text-yellow-400 rounded-full animate-bounce shadow-lg scale-110">
+              ✨ New
+            </span>
+          )}
         </div>
 
       </div>
