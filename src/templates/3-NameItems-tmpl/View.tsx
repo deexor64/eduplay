@@ -128,14 +128,14 @@ export default function NameItems(props: ViewActivityProps) {
   }
 
   return (
-    <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
+    <section className="mb-6 bg-yellow-950/20 p-4 rounded-xl shadow-md">
       <h2 className="text-xl font-semibold mb-4">Name the Items</h2>
 
       {/* Items Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {nameData.items.map((item, index) => (
-          <div key={index} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="aspect-square mb-4 bg-white rounded border flex items-center justify-center overflow-hidden">
+          <div key={index} className="bg-white/10 p-4 rounded-lg  shadow-md">
+            <div className="aspect-square mb-4 bg-white rounded border border-gray-400 flex items-center justify-center overflow-hidden">
               <img
                 src={item.image}
                 alt={`Item ${index + 1}`}

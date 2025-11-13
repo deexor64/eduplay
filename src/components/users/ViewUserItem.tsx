@@ -84,7 +84,7 @@ export default function ViewUserItem(props: ViewUserItemProps) {
             )}
             <InfoBadge text={itemData.user.verified ? "VERIFIED" : "UNVERIFIED"} colorTheme="yellow" />
             {itemData.newUser && (
-              <span className="px-3 py-1 text-md font-semibold bg-violet-400 text-yellow-400 rounded-full animate-bounce shadow-lg scale-110">
+              <span className="px-3 py-1 text-md font-semibold bg-violet-400 text-yellow-300 rounded-full animate-bounce shadow-lg scale-110">
                 ✨ New
               </span>
             )}

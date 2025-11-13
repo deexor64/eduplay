@@ -53,12 +53,13 @@ export default function ViewTemplateItem(props: ViewTemplateItemProps) {
         </div>
      
       {/* Action buttons */}
-      <div className="flex flex-row items-end gap-2  ml-4">
+      {/*TODO: Add a prview image*/}
+      {/*<div className="flex flex-row items-end gap-2  ml-4">
         <div onMouseLeave={() => setShowPreview(false)}>
           <ViewItemActionButton text="Preview" colorTheme="blue"
             onAction={() => setShowPreview(true)} />
         </div>
-      </div>
+      </div>*/}
 
       {/* Image preview */}
       <ImagePreview previewImage="/images/avatar.png" showPreview={showPreview} />

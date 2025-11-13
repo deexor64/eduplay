@@ -41,7 +41,10 @@ export default function ViewActivityItem(props: ViewActivityItemProps) {
             cursor-pointer no-underline hover:text-gray-800"
             style={{ textDecoration: 'none' }}
           >
-            {itemData.section ? itemData.section + " | " + itemData.title 
+            {itemData.section ? 
+              <>
+                <span className="bg-stone-400/30 p-1 pl-3 pr-3 rounded-xl">{ itemData.section }</span> <span>{itemData.title}</span>
+              </>
             : itemData.title}
           </Link>
         </div>
@@ -62,7 +65,7 @@ export default function ViewActivityItem(props: ViewActivityItemProps) {
           )}
           <InfoBadge text={itemData.status} colorTheme="indigo" />
           {itemData.newActivity && (
-            <span className="px-3 py-1 text-md font-semibold bg-violet-400 text-yellow-400 rounded-full animate-bounce shadow-lg scale-110">
+            <span className="px-3 py-1 text-md font-semibold bg-violet-400 text-yellow-300 rounded-full animate-bounce shadow-lg scale-110">
               ✨ New
             </span>
           )}

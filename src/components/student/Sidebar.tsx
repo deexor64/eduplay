@@ -3,12 +3,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import useConfirm from "@/hooks/useConfirm";
 import { signOut } from "firebase/auth";
 import { clientAuth } from "@/lib/firebaseClient";
-import { ConfirmDialog } from "../shared/popups/confirmDialog";
 import { AuthContext } from "@/contexts/AuthProvider";
 import { getNavigatorInfo } from "@/actions/navigator/getNavigatorInfo";
+import Assistant from "./Assistant";
 
 export function LeftSidebar() {
 
@@ -42,7 +41,15 @@ export function LeftSidebar() {
 export function RightSidebar() {
 
   const { userType, user } = useContext(AuthContext);
-  const { confirm, confirmState, setConfirmState } = useConfirm();
+  
+  const [assistantMessage, setAssistantMessage] = useState<{
+    show: boolean,
+    text: string,
+    mood?: "happy" | "angry" | "sad" | "normal" | "scared" | "confused",
+    type?: "normal" | "error" | "success" | "warning" | "info",
+    question?: boolean,
+    onAnswer?: (answer: boolean) => void,
+  }>({show: false, text: ""});
 
   // User info shown on top
   const [navigatorInfo, setNavigatorInfo] = useState<{
@@ -76,10 +83,19 @@ export function RightSidebar() {
     fetchNavigatorInfo();
   }, [user]);
 
-  // Logout
   async function logOut() {
-    const ok = await confirm("Do you really want to Logout?");
-    if (ok) signOut(clientAuth);
+    setAssistantMessage({
+      show: true,
+      text: "Do you really want to Logout?",
+      question: true,
+      onAnswer: (answer: boolean) => {
+        if (answer) {
+          signOut(clientAuth);
+          return;
+        }
+        setAssistantMessage({show: false, text: ""});
+      }
+    })
   }
 
   return (
@@ -111,7 +127,11 @@ export function RightSidebar() {
         <span className="mt-2 text-md text-gray-700 font-bold">Logout</span>
       </button>
 
-      <ConfirmDialog state={confirmState} setState={setConfirmState} />
+      {/* Assistant */}
+      {/* Shown for notifications and error messages */}
+      { assistantMessage.show && 
+        <Assistant assistantMessage={assistantMessage} setAssistantMessage={setAssistantMessage} /> 
+      }
 
     </div>
   );

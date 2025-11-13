@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
 
 // Assistant is used to show system wide help messages to user.
 // Assistant is basically a replacement to regular notification feedback.
@@ -80,22 +82,24 @@ export default function Assistant(props: AssistantProps) {
 
       {/* Message box at top center */}
       <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center">
-        <div className="bg-gradient-to-br from-pink-100 via-blue-100 to-yellow-100 rounded-3xl shadow-2xl px-12 py-8 flex items-center gap-4 max-w-2xl min-w-[350px] border-2 border-pink-200">
+        <div className="bg-gradient-to-br from-pink-300 via-emerald-200 to-lime-200 rounded-3xl shadow-2xl px-12 py-8 flex items-center gap-4 max-w-2xl min-w-[350px] border-2 border-stone-600">
           <span className="text-2xl font-bold text-blue-900 text-center font-[Comic Sans MS, Comic Sans, cursive]" style={{ lineHeight: 1.4 }}>
             {props.assistantMessage.text}
             {props.assistantMessage.question && !answered && (
               <span className="ml-6 inline-flex gap-4 mt-4">
                 <button
-                  className="flex items-center gap-2 bg-green-400 hover:bg-green-500 active:bg-green-600 text-white text-lg font-bold py-2 px-6 rounded-full shadow-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-200 border-2 border-green-300"
+                  className="cursor-pointer flex items-center gap-2 bg-green-400 hover:bg-green-500 active:bg-green-600 text-white text-lg font-bold py-2 px-6 rounded-full shadow-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-200 border-2 border-green-300"
                   onClick={function() { handleAnswer(true) }}
                 >
-                  <span role="img" aria-label="Yes">👍</span> Yes
+                  <FontAwesomeIcon icon={faThumbsUp} className="w-5 h-5 animate-bounce" />
+                  Yes
                 </button>
                 <button
-                  className="flex items-center gap-2 bg-red-400 hover:bg-red-500 active:bg-red-600 text-white text-lg font-bold py-2 px-6 rounded-full shadow-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-200 border-2 border-red-300"
+                  className="cursor-pointer flex items-center gap-2 bg-red-400 hover:bg-red-500 active:bg-red-600 text-white text-lg font-bold py-2 px-6 rounded-full shadow-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-200 border-2 border-red-300"
                   onClick={function() { handleAnswer(false) }}
                 >
-                  <span role="img" aria-label="No">👎</span> No
+                  <FontAwesomeIcon icon={faThumbsDown} className="w-5 h-5 animate-bounce" />
+                  No
                 </button>
               </span>
             )}

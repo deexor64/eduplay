@@ -297,7 +297,8 @@ export default function ViewActivityLayout(props: ViewActivityLayoutProps) {
           <CoverImage templateCode={dbData.templateCode}>
             {/* Activity title */}
             <ActivityTitle viewMode={props.viewMode} templateCode={templateCode || dbData.templateCode}>
-              {`${dbData.section}: ${dbData.title}`}
+              <span className="p-1 rounded-xl pl-2 pr-2 bg-stone-600/20 font-semibold text-amber-300 drop-shadow-sm">{dbData.section}</span>
+              <span className="ml-2 text-gray-700">{dbData.title}</span>
             </ActivityTitle>
             {/* Instructions */}
             <Instructions instructions={dbData}>{ dbData.instructions }</Instructions>

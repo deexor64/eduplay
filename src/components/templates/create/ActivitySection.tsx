@@ -84,17 +84,24 @@ export default function ActivitySection({
             {filteredSections.map((item) => (
               <li
                 key={`${item.grade}-${item.subject}-${item.section}`}
-                className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-gray-800 transition-colors"
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center transition-colors"
                 onClick={() => handleSuggestionClick(item.section)}
               >
-                <span className="font-medium">{item.section}</span>
-                <span className="text-sm text-gray-500 ml-2">
-                  (Grade {item.grade}, {item.subject})
+                {/* Section title */}
+                <span className="font-semibold text-gray-800">{item.section}</span>
+        
+                {/* Grade & subject as pill/badge */}
+                <span className="ml-auto mr-1 text-sm bg-yellow-200 text-gray-700 px-2 py-0.5 rounded-full font-medium flex-shrink-0">
+                  Subject {item.subject}
+                </span>
+                <span className="text-sm bg-green-200 text-gray-700 px-2 py-0.5 rounded-full font-medium flex-shrink-0">
+                  Grade {item.grade}
                 </span>
               </li>
             ))}
           </ul>
         )}
+
       </div>
     </section>
   );

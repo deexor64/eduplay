@@ -11,7 +11,7 @@ export default function Instructions(props: InstructionsProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <section className="bg-white/40 backdrop-blur p-3 rounded-xl shadow-sm relative transition-all duration-300">
+    <section className="cursor-pointer bg-white/40 backdrop-blur p-3 rounded-xl shadow-sm relative transition-all duration-300">
       <div className="flex items-center" onClick={() => setOpen((v) => !v)}>
         
         {/* Heading */}

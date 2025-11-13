@@ -76,7 +76,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
 
   const { userID, email, userType, role, status, user } = useContext(AuthContext);
 
-  const [openedLink, setOpenedLink] = useState("/teacher/activities");
+  const [openedLink, setOpenedLink] = useState("");
   const { confirm, confirmState, setConfirmState } = useConfirm();
 
   async function logOut() {
