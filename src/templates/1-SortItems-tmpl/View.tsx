@@ -288,7 +288,7 @@ function SortItems(props: ViewActivityProps) {
 
   return (
     <DndContext collisionDetection={rectIntersection} onDragEnd={handleDragEnd}>
-      <section className="mb-6 bg-white p-4 rounded-xl shadow-md">
+      <section className="mb-6 bg-white p-4 rounded-xl shadow-md min-h-60">
         <h2 className="text-xl font-semibold mb-4">Items to Sort</h2>
         <DroppableZone id="box">
           <div className="flex flex-wrap gap-4">

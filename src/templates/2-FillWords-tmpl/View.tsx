@@ -261,7 +261,7 @@ export default function FillWords(props: ViewActivityProps) {
       <h2 className="text-xl font-semibold mb-4">Fill in the Missing Words</h2>
       
       {/* Paragraph Display with Input Boxes */}
-      <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+      <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200 min-h-70">
         <h3 className="text-lg font-semibold mb-3 text-gray-800">Paragraph</h3>
         <div className="text-gray-800 leading-10 text-lg whitespace-pre-wrap">
           {blanks.length > 0 ? (
