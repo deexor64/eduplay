@@ -174,11 +174,11 @@ export default function Profile() {
         
         {/* Password change */}
         {dbData && <PasswordChangeForm updatePasswordHandler={updatePasswordHandler} /> }
+        
+        {/* Assistant */}
+        <Assistant assistantMessage={assistantMessage} setAssistantMessage={setAssistantMessage} />
 
       </div>
-
-      {/* Assistant */}
-      <Assistant assistantMessage={assistantMessage} setAssistantMessage={setAssistantMessage} />
 
     </>
   );
