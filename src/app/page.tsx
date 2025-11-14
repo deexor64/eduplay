@@ -58,7 +58,7 @@ export default function Landing() {
 
           {/* intro card */}
           <div className={`${styles.fadeInUp} ${styles.animate} ${styles.delay1} max-w-3xl mx-auto mb-4`}>
-            <div className={`bg-white/20 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-white/30 ${styles.breathe} ${styles.introCardHover}`}>
+            <div className={`bg-white/20 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-white/30 ${styles.breathe} `}>
               <h3 className="text-xl font-extrabold text-white mb-4 drop-shadow-lg">
                 Welcome to NAKANO Learning Platform
               </h3>

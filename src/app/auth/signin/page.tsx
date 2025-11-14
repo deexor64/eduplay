@@ -125,7 +125,7 @@ export default function PandaSignIn() {
 
       {/* Animated background symbols (non-interactive) */}
       <div className={styles.signinBackground} aria-hidden="true">
-        {Array.from({ length: 8 }).map((_, i) => (
+        {Array.from({ length: 16 }).map((_, i) => (
           <div key={i}><span></span></div>
         ))}
       </div>
@@ -148,8 +148,8 @@ export default function PandaSignIn() {
         
         {/* Form */}
         <form id="login-form" onSubmit={handleEmailLogin}
-          className="pt-10 pb-4 absolute top-[9.5rem] left-1/2 -translate-x-1/2 w-[23.75rem] h-[22rem] bg-white/50 rounded-lg p-12 
-            flex flex-col justify-center z-50 border-2 border-fuchsia-300 shadow-lg shadow-fuchsia-500/40 backdrop-blur-md">
+          className="pt-10 pb-4 absolute top-[9.5rem] left-1/2 -translate-x-1/2 w-[23.75rem] h-[22rem] bg-green-200/30 rounded-lg p-12 
+            flex flex-col justify-center z-50 border-2 border-green-600/10  shadow-lg shadow-green-500/40 backdrop-blur-md">
 
           {/* Google Login */}
           <button
@@ -169,7 +169,7 @@ export default function PandaSignIn() {
             id="email"
             type="email"
             placeholder="Email"
-            className="rounded text-[0.95rem] font-normal text-[#3f3554] p-1 border-b-2 border-[#3f3554] outline-none  placeholder-[#b4b5b3] mb-4"
+            className="rounded text-[0.95rem] font-normal text-[#3f3554] p-1 border-b-2 border-gray-500 outline-none  placeholder-[#b4b5b3] mb-4"
             value={uEmail}
             onChange={(e) => setUEmail(e.target.value)}
             onFocus={() => {
@@ -186,7 +186,7 @@ export default function PandaSignIn() {
             id="password"
             type="password"
             placeholder="Password"
-            className="rounded text-[0.95rem] font-normal text-[#3f3554] p-1 border-b-2 border-[#3f3554] 
+            className="rounded text-[0.95rem] font-normal text-[#3f3554] p-1 border-b-2 border-gray-500 
             outline-none placeholder-[#b4b5b3] mb-4"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
