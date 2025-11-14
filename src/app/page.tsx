@@ -39,15 +39,7 @@ export default function Landing() {
               />
               {/* title */}
               <h1 className={`${SpaceNova.className} text-8xl font-bold bg-gradient-to-r from-emerald-600 to-purple-600 bg-clip-text text-transparent p-5`}>
-                {title.map((char, i) => (
-                  <span
-                    key={i}
-                    className={`${styles.letter} ${styles.titleLetter}`}
-                    style={{ animationDelay: `${i * 0.08}s` }}
-                  >
-                    {char}
-                  </span>
-                ))}
+                EDUPlay
               </h1>
             </div>
 
