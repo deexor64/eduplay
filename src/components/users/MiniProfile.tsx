@@ -39,7 +39,7 @@ export default function MiniProfile(props: MiniProfileProps) {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: (name == "grade" ? parseInt(value): value) }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
